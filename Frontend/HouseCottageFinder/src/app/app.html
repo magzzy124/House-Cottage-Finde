@@ -4,9 +4,11 @@
     <h1 class="font-[1000] text-3xl">HouseFinder</h1>
   </div>
   <ul class="flex gap-10 text-[1.2rem]">
-    <li class="text-[#5393d3] border-b-2 border-b-[#5393d3] font-semibold">Search</li>
-    <li class="font-semibold">Sell</li>
-    <li class="font-semibold">About</li>
+    @for(link of links;track link){
+      <li class="font-semibold hover:text-[#5393d3] transition-all">
+        <a [routerLink]="link">{{link | titlecase}}</a>
+      </li>
+    }
   </ul>
   <div class="profile border-2 flex gap-4.5">
     <img class="w-8" src="heart.svg" alt="heart">
@@ -15,3 +17,8 @@
     </div>
   </div>
 </div>
+
+
+
+<router-outlet></router-outlet>
+

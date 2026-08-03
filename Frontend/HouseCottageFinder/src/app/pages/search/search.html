@@ -1,0 +1,30 @@
+<div class="filters">
+<label class="input bg-[#f3f3f3] rounded-[15px] p-2 h-13 w-auto">
+  <svg class="h-[90%] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <g
+      stroke-linejoin="round"
+      stroke-linecap="round"
+      stroke-width="2.5"
+      fill="none"
+      stroke="currentColor"
+    >
+      <circle cx="11" cy="11" r="8"></circle>
+      <path d="m21 21-4.3-4.3"></path>
+    </g>
+  </svg>
+  <input type="search" class="grow text-[1.2em] w-66" placeholder="Enter an address, city or ZIP code" />
+</label>
+<!-- change popover-1 and --anchor-1 names. Use unique names for each dropdown -->
+<button class="btn bg-[#f3f3f3] border-0 h-13 rounded-[15px]" popovertarget="popover-1" style="anchor-name:button1">
+  Button
+</button>
+<ul class="dropdown menu w-52 rounded-box bg-base-100 shadow-sm"
+  popover id="popover-1" style="position-anchor:button1">
+  <li><a>Item 1</a></li>
+  <li><a>Item 2</a></li>
+</ul>
+</div>
+
+<div class="results">
+
+</div>
