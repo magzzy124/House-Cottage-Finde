@@ -11,8 +11,4 @@ import { RouterLink, RouterOutlet } from "@angular/router";
 export class App {
   protected readonly title = signal('HouseCottageFinder');
   links = ["search", "sell", "about"]
-
-  changeColor($event: Event) {
-    console.log($event)
-  }
 }

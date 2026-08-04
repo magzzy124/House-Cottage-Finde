@@ -25,6 +25,8 @@
 </ul>
 </div>
 
-<div class="results">
-
+<div class="results" (click)="fetchAllCards()">
+  @for(card of houseService.cards();track card.id){
+    <app-card [cardDetails]="card"/>
+  }
 </div>
