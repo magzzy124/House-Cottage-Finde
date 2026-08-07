@@ -1,14 +1,22 @@
-<div class="wrapper border w-fit rounded-3xl">
-  <div class="imageWrapper h-35 w-70 border-blue-900 border rounded-3xl">
+<div class="wrapper w-fit rounded-3xl bg-white">
+  <div
+    [style.background-image]="'url(house.jpg)'"
+    class="imageWrapper h-35 w-70 rounded-3xl bg-cover">
     <div class="tagWrapper">
-      <div class="tags">
-        <div class="new "></div>
-        <div class="forSale"></div>
+      <div class="tags flex gap-2 p-2">
+        <app-icon-tag [type]="TagType.new"/>
+        <app-icon-tag [type]="TagType.forSale"/>
       </div>
       <div class="save"></div>
     </div>
   </div>
-  <div class="content h-35 w-70">
-    <h1>{{cardDetails().title}}</h1>
+  <div class="content h-32 w-70 flex flex-col justify-around p-2 rounded-3xl">
+    <h1 class="text-2xl font-black">$ {{cardDetails().price}}</h1>
+    <h2>{{cardDetails().address}},{{cardDetails().city}}</h2>
+    <div class="widgets flex gap-2">
+      <app-icon-widget [count]="2" [type]="WidgetType.numOfBedrooms"/>
+      <app-icon-widget [count]="3" [type]="WidgetType.numOfBathrooms"/>
+      <app-icon-widget [count]="3" [type]="WidgetType.surfaceArea"/>
+    </div>
   </div>
 </div>
