@@ -1,5 +1,6 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, effect, inject } from '@angular/core';
 import * as L from "leaflet";
+import { SelectedLocation } from '../../services/selected-location';
 
 @Component({
   selector: 'app-map',
@@ -8,7 +9,20 @@ import * as L from "leaflet";
   styleUrl: './map.css',
 })
 export class Map implements AfterViewInit {
+  selectedLocService = inject(SelectedLocation);
   private map!: L.Map;
+
+  constructor() {
+    effect(() => {
+      const location = this.selectedLocService.selectedLocation();
+      if (location) {
+        const { lat, lon } = location;
+        this.map.setView([lat, lon])
+      }
+
+    })
+  }
+
   ngAfterViewInit(): void {
     this.map = L.map("map", {
       center: [51.505, -0.09],

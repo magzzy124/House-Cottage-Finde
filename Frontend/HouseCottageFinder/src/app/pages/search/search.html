@@ -1,5 +1,5 @@
-<div class="filters">
-<label class="input bg-[#f3f3f3] rounded-[15px] p-2 h-13 w-auto">
+<div class="filters flex">
+<div class="input bg-[#f3f3f3] rounded-[15px] p-2 h-13 w-150 flex items-center">
   <svg class="h-[90%] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <g
       stroke-linejoin="round"
@@ -12,8 +12,17 @@
       <path d="m21 21-4.3-4.3"></path>
     </g>
   </svg>
-  <input type="search" class="grow text-[1.2em] w-66" placeholder="Enter an address, city or ZIP code" />
-</label>
+<geoapify-geocoder-autocomplete
+  class="flex-1"
+  placeholder="Search for an address"
+  [lang]="'en'"
+  [limit]="8"
+  [addDetails]="true"
+  (placeSelect)="onPlaceSelected($event)"
+  (suggestionsChange)="onSuggestionsChange($event)">
+>
+</geoapify-geocoder-autocomplete>
+</div>
 <!-- change popover-1 and --anchor-1 names. Use unique names for each dropdown -->
 <button class="btn bg-[#f3f3f3] border-0 h-13 rounded-[15px]" popovertarget="popover-1" style="anchor-name:button1">
   Button
