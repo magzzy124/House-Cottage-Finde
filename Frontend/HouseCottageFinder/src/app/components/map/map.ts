@@ -12,14 +12,34 @@ export class Map implements AfterViewInit {
   selectedLocService = inject(SelectedLocation);
   private map!: L.Map;
 
+  createBBox(lat: number, lon: number): L.LatLngBounds {
+    const latOffset = 0.000002;
+    const lonOffset = 0.000007;
+
+    return L.latLngBounds(
+      [lat - latOffset, lon - lonOffset],
+      [lat + latOffset, lon + lonOffset]
+    );
+  }
+
   constructor() {
     effect(() => {
       const location = this.selectedLocService.selectedLocation();
       if (location) {
         const { lat, lon } = location;
-        this.map.setView([lat, lon])
-      }
+        this.map.setView([lat, lon], 1)
+        const bounds = location.bbox
+          ? L.latLngBounds(
+            [location.bbox[1], location.bbox[0]],
+            [location.bbox[3], location.bbox[2]]
+          )
+          : this.createBBox(location.lat, location.lon);
 
+        this.map.fitBounds(bounds, {
+          padding: [30, 30],
+          maxZoom: 17
+        });
+      }
     })
   }
 

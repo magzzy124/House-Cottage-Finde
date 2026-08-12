@@ -2,7 +2,8 @@ import { effect, Injectable, signal } from '@angular/core';
 
 interface Coordinates {
   lat: number,
-  lon: number
+  lon: number,
+  bbox: number[]
 }
 
 @Injectable({

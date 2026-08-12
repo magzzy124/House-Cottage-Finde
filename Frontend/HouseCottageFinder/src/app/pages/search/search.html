@@ -1,47 +1,122 @@
 <div class="filters flex">
-<div class="input bg-[#f3f3f3] rounded-[15px] p-2 h-13 w-150 flex items-center">
-  <svg class="h-[90%] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-    <g
-      stroke-linejoin="round"
-      stroke-linecap="round"
-      stroke-width="2.5"
-      fill="none"
-      stroke="currentColor"
+  <div class="input bg-[#f3f3f3] rounded-[15px] p-2 h-13 w-150 flex items-center">
+    <svg class="h-[90%] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <g
+        stroke-linejoin="round"
+        stroke-linecap="round"
+        stroke-width="2.5"
+        fill="none"
+        stroke="currentColor"
+      >
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.3-4.3"></path>
+      </g>
+    </svg>
+    <geoapify-geocoder-autocomplete
+      class="flex-1"
+      placeholder="Search for a city or an address"
+      [lang]="'en'"
+      [limit]="8"
+      [addDetails]="true"
+      (placeSelect)="onPlaceSelected($event)"
+      (suggestionsChange)="onSuggestionsChange($event)"
     >
-      <circle cx="11" cy="11" r="8"></circle>
-      <path d="m21 21-4.3-4.3"></path>
-    </g>
-  </svg>
-<geoapify-geocoder-autocomplete
-  class="flex-1"
-  placeholder="Search for an address"
-  [lang]="'en'"
-  [limit]="8"
-  [addDetails]="true"
-  (placeSelect)="onPlaceSelected($event)"
-  (suggestionsChange)="onSuggestionsChange($event)">
->
-</geoapify-geocoder-autocomplete>
-</div>
-<!-- change popover-1 and --anchor-1 names. Use unique names for each dropdown -->
-<button class="btn bg-[#f3f3f3] border-0 h-13 rounded-[15px]" popovertarget="popover-1" style="anchor-name:button1">
-  Button
-</button>
-<ul class="dropdown menu w-52 rounded-box bg-base-100 shadow-sm"
-  popover id="popover-1" style="position-anchor:button1">
-  <li><a>Item 1</a></li>
-  <li><a>Item 2</a></li>
-</ul>
+      >
+    </geoapify-geocoder-autocomplete>
+  </div>
+  <div class="dropdown dropdown-bottom">
+    <div tabindex="0" role="button" class="btn m-1 border-0 bg-white rounded-2xl">
+      Radius: {{ radius }} {{ selectedTab() }}
+    </div>
+    <div class="dropdown-content menu rounded-xl bg-white z-1000 w-72 p-3 shadow-lg flex gap-2">
+      <h1>Radius tool</h1>
+
+      <div class="flex flex-col">
+        <label
+          class="font-medium transition-colors duration-300 ease-in-out peer-disabled:opacity-70 text-xs whitespace-nowrap text-black"
+          for="textfield-1"
+          >Metric</label
+        >
+        <div
+          class="inline-flex h-9 w-full items-baseline justify-start rounded-lg bg-gray-100 p-1 sm:w-fit"
+        >
+          @for (tab of tabs; track tab) {
+            <button
+              type="button"
+              (click)="selectTab(tab)"
+              class="group inline-flex h-7 min-w-8 w-full items-center justify-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs font-semibold transition-all duration-300 ease-in-out sm:w-auto"
+              [class.rounded-md]="selectedTab() === tab"
+              [class.bg-white]="selectedTab() === tab"
+              [class.drop-shadow]="selectedTab() === tab"
+              [class.text-slate-950]="selectedTab() === tab"
+              [class.bg-transparent]="selectedTab() !== tab"
+              [class.text-slate-600]="selectedTab() !== tab"
+            >
+              {{ tab }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div
+        class="inline-flex w-full flex-col items-start gap-1.5 stroke-black transition-colors duration-300 ease-in-out max-w-sm"
+      >
+        <label
+          class="font-medium transition-colors duration-300 ease-in-out peer-disabled:opacity-70 text-xs whitespace-nowrap text-black"
+          for="textfield-1"
+          >Radius</label
+        >
+        <div class="relative w-full">
+          <input
+            [(ngModel)]="radius"
+            class="w-full rounded-lg border border-slate-200 px-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-300 ease-in-out disabled:cursor-not-allowed disabled:bg-slate-50 py-2 mb-0.5"
+            aria-disabled="false"
+            aria-describedby=":S2:"
+            id="textfield-1"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dropdown dropdown-bottom">
+    <div tabindex="0" role="button" class="btn m-1 border-0 bg-white rounded-2xl">Price</div>
+    <div class="dropdown-content menu rounded-xl bg-white z-1000 w-72 p-3 shadow-lg flex gap-2">
+      <h1>Price range</h1>
+
+      <ngx-slider [(value)]="value" [options]="options"></ngx-slider>
+
+      <div
+        class="inline-flex w-full flex-col items-start gap-1.5 stroke-black transition-colors duration-300 ease-in-out max-w-sm"
+      >
+        <label
+          class="font-medium transition-colors duration-300 ease-in-out peer-disabled:opacity-70 text-xs whitespace-nowrap text-black"
+          for="textfield-1"
+          >Radius</label
+        >
+        <div class="relative w-full">
+          <input
+            [(ngModel)]="radius"
+            class="w-full rounded-lg border border-slate-200 px-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-300 ease-in-out disabled:cursor-not-allowed disabled:bg-slate-50 py-2 mb-0.5"
+            aria-disabled="false"
+            aria-describedby=":S2:"
+            id="textfield-1"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="results flex justify-around h-[calc(100vh-52px-80px)]" (click)="fetchAllCards()">
-<div class="left flex-1 h-full grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-3 p-5 overflow-y-auto">
-  @for(card of houseService.cards();track card.id){
-    <app-card [cardDetails]="card"/>
-  }
-</div>
-<div class="right flex-1 h-full">
-<app-map/>
-
-</div>
+  <div
+    class="left flex-1 h-full grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-3 p-5 overflow-y-auto"
+  >
+    @for (card of houseService.cards(); track card.id) {
+      <app-card [cardDetails]="card" />
+    }
+  </div>
+  <div class="right flex-1 h-full">
+    <app-map />
+  </div>
 </div>
