@@ -22,12 +22,33 @@ export class Search {
   selectedTab = signal('km');
   radius = 10;
 
+  dealTypes = ['For rent', 'For sale'];
+  selectedDealType = signal('For rent');
+
+  selectDealType(dealType: string) {
+    this.selectedDealType.set(dealType);
+    this.applyPriceRange();
+  }
+
   value: number = 100;
+  maxValue: number = 200;
   options: Options = {
     floor: 0,
     ceil: 200
   };
 
+  private applyPriceRange() {
+    const isRent = this.selectedDealType() === 'For rent';
+
+    this.options = {
+      ...this.options,
+      floor: 0,
+      ceil: isRent ? 5000 : 1000000
+    };
+
+    this.value = 0;
+    this.maxValue = isRent ? 5000 : 1000000;
+  }
 
   selectTab(tab: string) {
     this.selectedTab.set(tab);

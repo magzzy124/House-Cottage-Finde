@@ -10,7 +10,11 @@ interface Coordinates {
   providedIn: 'root',
 })
 export class SelectedLocation {
-  private _selectedLocation = signal<Coordinates | null>(null);
+  private _selectedLocation = signal<Coordinates | null>({
+    lat: 44.7866,
+    lon: 20.4489,
+    bbox: []
+  });
   selectedLocation = this._selectedLocation.asReadonly();
 
   constructor() {

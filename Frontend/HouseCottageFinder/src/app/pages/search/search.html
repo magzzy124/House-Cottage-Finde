@@ -24,11 +24,15 @@
       >
     </geoapify-geocoder-autocomplete>
   </div>
+
   <div class="dropdown dropdown-bottom">
-    <div tabindex="0" role="button" class="btn m-1 border-0 bg-white rounded-2xl">
+    <div tabindex="0" role="button" class="btn m-1 border-0 bg-white rounded-2xl cursor-pointer">
       Radius: {{ radius }} {{ selectedTab() }}
     </div>
-    <div class="dropdown-content menu rounded-xl bg-white z-1000 w-72 p-3 shadow-lg flex gap-2">
+    <div
+      tabindex="-1"
+      class="dropdown-content menu rounded-xl bg-white z-1100 w-72 p-3 shadow-lg gap-2"
+    >
       <h1>Radius tool</h1>
 
       <div class="flex flex-col">
@@ -44,7 +48,7 @@
             <button
               type="button"
               (click)="selectTab(tab)"
-              class="group inline-flex h-7 min-w-8 w-full items-center justify-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs font-semibold transition-all duration-300 ease-in-out sm:w-auto"
+              class="group inline-flex h-7 min-w-8 w-full items-center justify-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs font-semibold transition-all duration-300 ease-in-out sm:w-auto cursor-pointer"
               [class.rounded-md]="selectedTab() === tab"
               [class.bg-white]="selectedTab() === tab"
               [class.drop-shadow]="selectedTab() === tab"
@@ -80,28 +84,75 @@
   </div>
 
   <div class="dropdown dropdown-bottom">
-    <div tabindex="0" role="button" class="btn m-1 border-0 bg-white rounded-2xl">Price</div>
-    <div class="dropdown-content menu rounded-xl bg-white z-1000 w-72 p-3 shadow-lg flex gap-2">
+    <div tabindex="0" role="button" class="btn m-1 border-0 bg-white rounded-2xl cursor-pointer">
+      {{ selectedDealType() }}
+    </div>
+    <div
+      tabindex="-1"
+      class="dropdown-content menu rounded-xl bg-white z-1100 w-72 p-3 shadow-lg gap-2"
+    >
+      <h1>Deal type</h1>
+
+      @for (dealType of dealTypes; track dealType) {
+        <label class="flex items-center gap-2 font-medium text-xs text-black cursor-pointer">
+          <input
+            type="radio"
+            name="dealType"
+            [value]="dealType"
+            [checked]="selectedDealType() === dealType"
+            (change)="selectDealType(dealType)"
+            class="radio radio-sm"
+          />
+          {{ dealType }}
+        </label>
+      }
+    </div>
+  </div>
+
+  <div class="dropdown dropdown-bottom">
+    <div tabindex="0" role="button" class="btn m-1 border-0 bg-white rounded-2xl cursor-pointer">Price</div>
+    <div
+      tabindex="-1"
+      class="dropdown-content menu rounded-xl bg-white z-1100 w-72 p-3 shadow-lg gap-2"
+    >
       <h1>Price range</h1>
 
-      <ngx-slider [(value)]="value" [options]="options"></ngx-slider>
+      <ngx-slider [(value)]="value" [(highValue)]="maxValue" [options]="options"></ngx-slider>
 
-      <div
-        class="inline-flex w-full flex-col items-start gap-1.5 stroke-black transition-colors duration-300 ease-in-out max-w-sm"
-      >
-        <label
-          class="font-medium transition-colors duration-300 ease-in-out peer-disabled:opacity-70 text-xs whitespace-nowrap text-black"
-          for="textfield-1"
-          >Radius</label
+      <div class="inline-flex w-full items-center gap-2">
+        <div
+          class="inline-flex w-full flex-col items-start gap-1.5 stroke-black transition-colors duration-300 ease-in-out max-w-sm"
         >
-        <div class="relative w-full">
-          <input
-            [(ngModel)]="radius"
-            class="w-full rounded-lg border border-slate-200 px-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-300 ease-in-out disabled:cursor-not-allowed disabled:bg-slate-50 py-2 mb-0.5"
-            aria-disabled="false"
-            aria-describedby=":S2:"
-            id="textfield-1"
-          />
+          <label
+            class="font-medium transition-colors duration-300 ease-in-out peer-disabled:opacity-70 text-xs whitespace-nowrap text-black"
+            for="price-min"
+            >Min</label
+          >
+          <div class="relative w-full">
+            <input
+              [(ngModel)]="value"
+              type="number"
+              class="w-full rounded-lg border border-slate-200 px-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-300 ease-in-out disabled:cursor-not-allowed disabled:bg-slate-50 py-2 mb-0.5"
+              id="price-min"
+            />
+          </div>
+        </div>
+        <div
+          class="inline-flex w-full flex-col items-start gap-1.5 stroke-black transition-colors duration-300 ease-in-out max-w-sm"
+        >
+          <label
+            class="font-medium transition-colors duration-300 ease-in-out peer-disabled:opacity-70 text-xs whitespace-nowrap text-black"
+            for="price-max"
+            >Max</label
+          >
+          <div class="relative w-full">
+            <input
+              [(ngModel)]="maxValue"
+              type="number"
+              class="w-full rounded-lg border border-slate-200 px-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-300 ease-in-out disabled:cursor-not-allowed disabled:bg-slate-50 py-2 mb-0.5"
+              id="price-max"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -117,6 +168,6 @@
     }
   </div>
   <div class="right flex-1 h-full">
-    <app-map />
+    <app-map [radius]="radius" [unit]="selectedTab()" />
   </div>
 </div>

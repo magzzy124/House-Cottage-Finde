@@ -1,24 +1,21 @@
 <div class="navbar border-2 h-20 flex justify-between items-center px-20">
-  <div class="logo border-2 flex items-center gap-2.5">
-    <img src="house.svg" alt="HouseSvg" class="w-10"/>
+  <div class="logo border-2 flex items-center gap-2.5 cursor-pointer">
+    <img src="house.svg" alt="HouseSvg" class="w-10" />
     <h1 class="font-[1000] text-3xl">HouseFinder</h1>
   </div>
   <ul class="flex gap-10 text-[1.2rem]">
-    @for(link of links;track link){
-      <li class="font-semibold hover:text-[#5393d3] transition-all">
-        <a [routerLink]="link">{{link | titlecase}}</a>
+    @for (link of links; track link) {
+      <li class="font-semibold hover:text-[#5393d3] transition-all cursor-pointer">
+        <a [routerLink]="link">{{ link | titlecase }}</a>
       </li>
     }
   </ul>
-  <div class="profile border-2 flex gap-4.5">
-    <img class="w-8" src="heart.svg" alt="heart">
-    <div class="profilePicture w-13 h-13 border rounded-full p-1.5">
-      <img src="user.svg" alt="User">
+<div class="profile border-2 flex gap-4.5">
+    <img class="w-8 cursor-pointer" src="heart.svg" alt="heart" />
+    <div class="profilePicture w-13 h-13 border rounded-full p-1.5 cursor-pointer">
+      <img src="user.svg" alt="User" />
     </div>
   </div>
 </div>
 
-
-
 <router-outlet></router-outlet>
-
