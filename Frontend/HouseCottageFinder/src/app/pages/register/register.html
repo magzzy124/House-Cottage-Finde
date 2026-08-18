@@ -1,0 +1,156 @@
+<div class="min-h-[calc(100vh-80px)] flex items-center justify-center bg-[#f3f3f3] p-5">
+  <div class="card w-full max-w-md bg-white shadow-lg rounded-2xl">
+    <div class="card-body p-8 gap-5">
+      <div class="flex flex-col items-center gap-2">
+        <img src="house.svg" alt="HouseLogo" class="w-14" />
+        <h1 class="font-[1000] text-3xl">Create account</h1>
+        <p class="text-sm text-slate-500">Join HouseFinder to start searching</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="flex flex-col gap-1.5">
+          <label class="font-medium text-xs text-black" for="firstName">First name</label>
+          <input
+            [(ngModel)]="firstName"
+            id="firstName"
+            type="text"
+            placeholder="John"
+            class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-300 ease-in-out focus:border-[#5393d3]"
+          />
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <label class="font-medium text-xs text-black" for="lastName">Last name</label>
+          <input
+            [(ngModel)]="lastName"
+            id="lastName"
+            type="text"
+            placeholder="Doe"
+            class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-300 ease-in-out focus:border-[#5393d3]"
+          />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="flex flex-col gap-1.5">
+          <label class="font-medium text-xs text-black" for="username">Username</label>
+          <input
+            [(ngModel)]="username"
+            id="username"
+            type="text"
+            placeholder="johndoe"
+            class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-300 ease-in-out focus:border-[#5393d3]"
+          />
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <label class="font-medium text-xs text-black" for="phone">Phone number</label>
+          <input
+            [(ngModel)]="phone"
+            id="phone"
+            type="tel"
+            placeholder="+1 555 123 4567"
+            class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-300 ease-in-out focus:border-[#5393d3]"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="font-medium text-xs text-black" for="email">Email</label>
+        <input
+          [(ngModel)]="email"
+          id="email"
+          type="email"
+          placeholder="you@example.com"
+          class="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-300 ease-in-out focus:border-[#5393d3]"
+        />
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="font-medium text-xs text-black" for="password">Password</label>
+        <div class="relative w-full">
+          <input
+            [(ngModel)]="password"
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            placeholder="Create a password"
+            class="w-full rounded-lg border border-slate-200 px-3 py-2 pr-11 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-300 ease-in-out focus:border-[#5393d3]"
+          />
+          <button
+            type="button"
+            (click)="togglePassword()"
+            class="absolute inset-y-0 right-0 flex items-center px-3 cursor-pointer opacity-60 hover:opacity-100"
+          >
+            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              @if (showPassword) {
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              } @else {
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              }
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="font-medium text-xs text-black" for="confirmPassword">Confirm password</label>
+        <div class="relative w-full">
+          <input
+            [(ngModel)]="confirmPassword"
+            id="confirmPassword"
+            [type]="showPassword ? 'text' : 'password'"
+            placeholder="Re-enter your password"
+            (ngModelChange)="onPasswordChange()"
+            class="w-full rounded-lg border border-slate-200 px-3 py-2 pr-11 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-300 ease-in-out focus:border-[#5393d3]"
+            [class.border-red-400]="mismatch"
+          />
+          <button
+            type="button"
+            (click)="togglePassword()"
+            class="absolute inset-y-0 right-0 flex items-center px-3 cursor-pointer opacity-60 hover:opacity-100"
+          >
+            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              @if (showPassword) {
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              } @else {
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              }
+            </svg>
+          </button>
+        </div>
+        @if (mismatch) {
+          <span class="text-xs text-red-500">Passwords do not match</span>
+        }
+      </div>
+
+      <button
+        type="button"
+        (click)="onRegister()"
+        [disabled]="loading"
+        class="btn btn-primary w-full rounded-xl text-base text-white bg-[#5393d3] border-0 hover:bg-[#3d7fbf] disabled:opacity-60"
+      >
+        @if (loading) {
+          <span class="loading loading-spinner loading-sm"></span>
+          Signing up...
+        } @else {
+          Sign up
+        }
+      </button>
+
+      @if (error) {
+        <div class="alert alert-error text-sm py-2">
+          <span>{{ error }}</span>
+        </div>
+      }
+
+      <p class="text-center text-sm text-slate-500">
+        Already have an account?
+        <a routerLink="/login" class="font-semibold text-[#5393d3] hover:underline cursor-pointer">Sign in</a>
+      </p>
+    </div>
+  </div>
+</div>

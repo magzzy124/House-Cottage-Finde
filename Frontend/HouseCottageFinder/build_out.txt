@@ -1,0 +1,350 @@
+[33m❯[39m Building...
+/*! 🌼 daisyUI 5.7.14 */
+[32m✔[39m Building...
+Application bundle generation failed. [1.598 seconds] - 2026-08-18T19:23:03.762Z
+
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular/core"[0m
+
+    src/app/app.config.ts:1:91:
+[37m      1 │ ...ersFrom, provideBrowserGlobalErrorListeners } from [32m'@angular/core'[37m;
+        ╵                                                       [32m~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular/core" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular/core" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular/router"[0m
+
+    src/app/app.config.ts:2:30:
+[37m      2 │ import { provideRouter } from [32m'@angular/router'[37m;
+        ╵                               [32m~~~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular/router" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular/router" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@geoapify/angular-geocoder-autocomplete"[0m
+
+    src/app/app.config.ts:5:51:
+[37m      5 │ ...utocompleteModule } from [32m'@geoapify/angular-geocoder-autocomplete'[37m;
+        ╵                             [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@geoapify/angular-geocoder-autocomplete" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@geoapify/angular-geocoder-autocomplete" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular/common"[0m
+
+    src/app/app.ts:1:30:
+[37m      1 │ import { TitleCasePipe } from [32m'@angular/common'[37m;
+        ╵                               [32m~~~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular/common" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular/common" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular/core"[0m
+
+    src/app/app.ts:2:34:
+[37m      2 │ import { Component, signal } from [32m'@angular/core'[37m;
+        ╵                                   [32m~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular/core" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular/core" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular/router"[0m
+
+    src/app/app.ts:3:41:
+[37m      3 │ import { RouterLink, RouterOutlet } from [32m"@angular/router"[37m;
+        ╵                                          [32m~~~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular/router" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular/router" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular/core"[0m
+
+    src/app/components/card/card.ts:1:33:
+[37m      1 │ import { Component, input } from [32m'@angular/core'[37m;
+        ╵                                  [32m~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular/core" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular/core" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular/core"[0m
+
+    src/app/components/icon-tag/icon-tag.ts:1:43:
+[37m      1 │ import { Component, computed, input } from [32m'@angular/core'[37m;
+        ╵                                            [32m~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular/core" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular/core" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular/core"[0m
+
+    src/app/components/icon-widget/icon-widget.ts:1:33:
+[37m      1 │ import { Component, input } from [32m'@angular/core'[37m;
+        ╵                                  [32m~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular/core" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular/core" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular/core"[0m
+
+    src/app/components/map/map.ts:1:64:
+[37m      1 │ ...rViewInit, Component, effect, inject, input } from [32m'@angular/core'[37m;
+        ╵                                                       [32m~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular/core" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular/core" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "leaflet"[0m
+
+    src/app/components/map/map.ts:2:19:
+[37m      2 │ import * as L from [32m"leaflet"[37m;
+        ╵                    [32m~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "leaflet" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "leaflet" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular/core"[0m
+
+    src/app/pages/about/about.ts:2:20:
+[37m      2 │ import * as i0 from [32m"@angular/core"[37m;
+        ╵                     [32m~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular/core" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular/core" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular/forms"[0m
+
+    src/app/pages/login/login.ts:2:28:
+[37m      2 │ import { FormsModule } from [32m'@angular/forms'[37m;
+        ╵                             [32m~~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular/forms" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular/forms" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular/core"[0m
+
+    src/app/pages/login/login.ts:3:20:
+[37m      3 │ import * as i0 from [32m"@angular/core"[37m;
+        ╵                     [32m~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular/core" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular/core" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular/core"[0m
+
+    src/app/pages/search/search.ts:1:42:
+[37m      1 │ import { Component, inject, signal } from [32m'@angular/core'[37m;
+        ╵                                           [32m~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular/core" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular/core" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@geoapify/angular-geocoder-autocomplete"[0m
+
+    src/app/pages/search/search.ts:5:51:
+[37m      5 │ ...utocompleteModule } from [32m"@geoapify/angular-geocoder-autocomplete"[37m;
+        ╵                             [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@geoapify/angular-geocoder-autocomplete" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@geoapify/angular-geocoder-autocomplete" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular/forms"[0m
+
+    src/app/pages/search/search.ts:7:28:
+[37m      7 │ import { FormsModule } from [32m'@angular/forms'[37m;
+        ╵                             [32m~~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular/forms" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular/forms" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular-slider/ngx-slider"[0m
+
+    src/app/pages/search/search.ts:8:41:
+[37m      8 │ import { NgxSliderModule, Options } from [32m'@angular-slider/ngx-slider'[37m;
+        ╵                                          [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular-slider/ngx-slider" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular-slider/ngx-slider" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular/core"[0m
+
+    src/app/pages/sell/sell.ts:2:20:
+[37m      2 │ import * as i0 from [32m"@angular/core"[37m;
+        ╵                     [32m~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular/core" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular/core" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular/common/http"[0m
+
+    src/app/services/house-service.ts:1:27:
+[37m      1 │ import { HttpClient } from [32m'@angular/common/http'[37m;
+        ╵                            [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular/common" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular/common/http" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular/core"[0m
+
+    src/app/services/house-service.ts:2:51:
+[37m      2 │ import { effect, inject, Injectable, signal } from [32m'@angular/core'[37m;
+        ╵                                                    [32m~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular/core" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular/core" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular/core"[0m
+
+    src/app/services/selected-location.ts:1:43:
+[37m      1 │ import { effect, Injectable, signal } from [32m'@angular/core'[37m;
+        ╵                                            [32m~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular/core" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular/core" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mCould not resolve "@angular/platform-browser"[0m
+
+    src/main.ts:1:37:
+[37m      1 │ import { bootstrapApplication } from [32m'@angular/platform-browser'[37m;
+        ╵                                      [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  The Yarn Plug'n'Play manifest forbids importing "@angular/platform-browser" here because it's not listed as a dependency of this package:
+
+    ../../../../../../.pnp.cjs:5677:31:
+[37m      5677 │         "packageDependencies": [32m[\[37m
+           ╵                                [32m~~[0m
+
+  You can mark the path "@angular/platform-browser" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+
+[39m[22m

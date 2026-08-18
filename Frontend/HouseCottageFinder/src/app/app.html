@@ -10,11 +10,32 @@
       </li>
     }
   </ul>
-<div class="profile border-2 flex gap-4.5">
+<div class="profile border-2 flex gap-4.5 items-center">
     <img class="w-8 cursor-pointer" src="heart.svg" alt="heart" />
-    <div class="profilePicture w-13 h-13 border rounded-full p-1.5 cursor-pointer">
-      <img src="user.svg" alt="User" />
-    </div>
+    @if (auth.currentUser(); as user) {
+      <div class="flex items-center gap-2.5">
+        <div class="profilePicture w-13 h-13 border rounded-full p-1.5 relative">
+          <img src="user.svg" alt="User" />
+          <span
+            class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white"
+            title="Online"
+          ></span>
+        </div>
+        <div class="flex flex-col leading-tight">
+          <span class="font-semibold text-sm">Hi, {{ user.firstName }}</span>
+          <button
+            (click)="logout()"
+            class="text-xs text-left text-slate-500 hover:text-red-500 transition-colors cursor-pointer"
+          >
+            Log out
+          </button>
+        </div>
+      </div>
+    } @else {
+      <a routerLink="/login" class="profilePicture w-13 h-13 border rounded-full p-1.5 cursor-pointer">
+        <img src="user.svg" alt="User" />
+      </a>
+    }
   </div>
 </div>
 
