@@ -1,0 +1,113 @@
+<div class="h-[calc(100vh-80px)] overflow-y-auto">
+  <div class="max-w-5xl mx-auto p-8">
+    @if (loaded()) {
+      @if (listing(); as item) {
+        <div class="flex items-center justify-between mb-6">
+          <a
+            routerLink="/search"
+            class="flex items-center gap-2 text-sm font-semibold text-[#4a8dd0] hover:underline cursor-pointer"
+          >
+            &larr; Back to search
+          </a>
+          <span class="flex items-center gap-2 text-sm text-slate-500">
+            <span class="text-[#4a8dd0]">Home</span> / <span>Details</span>
+          </span>
+        </div>
+
+        <div class="grid grid-cols-[1fr_120px] gap-3">
+          <div
+            class="h-96 rounded-3xl overflow-hidden bg-cover"
+            [style.background-image]="'url(' + activeImage() + ')'"
+          ></div>
+          <div class="flex flex-col gap-3">
+            @for (img of galleryImages(); track $index) {
+              <div
+                class="h-24 rounded-2xl overflow-hidden bg-cover cursor-pointer ring-2 transition-all"
+                [class.ring-[#4a8dd0]]="activeImage() === img"
+                [class.ring-slate-200]="activeImage() !== img"
+                [style.background-image]="'url(' + img + ')'"
+                (click)="setActiveImage(img)"
+              ></div>
+            }
+          </div>
+        </div>
+
+        <div
+          class="bg-white rounded-3xl shadow-[0_8px_25px_rgba(15,23,42,0.12)] p-8 -mt-10 relative mx-2"
+        >
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h1 class="text-3xl font-black text-slate-900">$ {{ item.price }}</h1>
+              <h2 class="text-xl font-semibold text-slate-800 mt-2">{{ item.title }}</h2>
+              <p class="text-slate-500 mt-1">{{ item.address }}, {{ item.city }}</p>
+            </div>
+            <div class="flex flex-col items-end gap-2">
+              <span
+                class="text-xs font-semibold px-3 py-1.5 rounded-full"
+                [style.background-color]="dealBg(item)"
+                [style.color]="dealColor(item)"
+              >
+                {{ item.dealType }}
+              </span>
+              <img
+                src="heart.svg"
+                alt="save"
+                class="w-9 h-9 bg-[#f3f3f3] rounded-full p-2 cursor-pointer hover:scale-110 transition-transform"
+              />
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 mt-7 pt-7 border-t border-slate-100">
+            <app-icon-widget [count]="item.bedrooms" [type]="WidgetType.numOfBedrooms" />
+            <app-icon-widget [count]="item.bathrooms" [type]="WidgetType.numOfBathrooms" />
+            <app-icon-widget [count]="item.area" [type]="WidgetType.surfaceArea" />
+          </div>
+
+          <h3 class="text-xl font-bold mt-8 mb-3 text-slate-800">Description</h3>
+          <p class="text-slate-600 leading-relaxed">
+            {{ item.description || 'No description provided for this listing.' }}
+          </p>
+
+          <h3 class="text-xl font-bold mt-8 mb-3 text-slate-800">Location</h3>
+          <div id="listing-map" class="h-72 rounded-3xl overflow-hidden"></div>
+        </div>
+      } @else {
+        <div class="flex flex-col items-center justify-center gap-4 text-center py-32">
+          <div class="w-20 h-20 rounded-full bg-white shadow-sm flex items-center justify-center">
+            <svg
+              class="w-8 h-8 text-slate-400"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 8h.01" />
+              <path d="M11 12h1v4h1" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold text-slate-700">Listing not found</h3>
+            <p class="text-sm text-slate-500 mt-1">
+              The listing you are looking for does not exist or is no longer available.
+            </p>
+          </div>
+          <a
+            routerLink="/search"
+            class="bg-[#4a8dd0] text-white font-semibold text-sm px-6 py-2.5 rounded-full hover:bg-[#3d7ab8] transition-colors cursor-pointer"
+          >
+            Back to search
+          </a>
+        </div>
+      }
+    } @else {
+      <div class="flex flex-col items-center justify-center gap-4 text-center py-32">
+        <div class="w-10 h-10 border-4 border-[#4a8dd0] border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-slate-500 text-sm">Loading listing…</p>
+      </div>
+    }
+  </div>
+</div>

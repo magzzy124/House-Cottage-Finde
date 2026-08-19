@@ -1,22 +1,30 @@
-<div class="wrapper w-fit rounded-3xl bg-white cursor-pointer">
+<div class="wrapper w-70 rounded-3xl bg-white cursor-pointer overflow-hidden" (click)="onClick()">
   <div
-    [style.background-image]="'url(house.jpg)'"
-    class="imageWrapper h-35 w-70 rounded-3xl bg-cover">
-    <div class="tagWrapper">
-      <div class="tags flex gap-2 p-2">
-        <app-icon-tag [type]="TagType.new"/>
-        <app-icon-tag [type]="TagType.forSale"/>
-      </div>
-      <div class="save cursor-pointer"></div>
+    [style.background-image]="'url(' + cardImage() + ')'"
+    class="imageWrapper relative h-40 w-70 bg-cover"
+  >
+    <div class="absolute top-2 left-2 flex gap-2">
+      <app-icon-tag [type]="TagType.new"/>
+    </div>
+    <div class="save absolute top-2 right-2 w-8 h-8 bg-white/90 rounded-full flex items-center justify-center cursor-pointer">
+      <img src="heart.svg" class="w-4" alt="save" />
     </div>
   </div>
-  <div class="content h-32 w-70 flex flex-col justify-around p-2 rounded-3xl">
-    <h1 class="text-2xl font-black">$ {{cardDetails().price}}</h1>
-    <h2>{{cardDetails().address}},{{cardDetails().city}}</h2>
-    <div class="widgets flex gap-2">
-      <app-icon-widget [count]="2" [type]="WidgetType.numOfBedrooms"/>
-      <app-icon-widget [count]="3" [type]="WidgetType.numOfBathrooms"/>
-      <app-icon-widget [count]="3" [type]="WidgetType.surfaceArea"/>
+  <div class="content flex flex-col gap-1.5 p-3">
+    <div class="flex items-center justify-between gap-2">
+      <h1 class="text-2xl font-black text-slate-900">$ {{cardDetails().price}}</h1>
+      <span
+        class="text-xs font-semibold px-2.5 py-1 rounded-full"
+        [style.background-color]="dealBg()"
+        [style.color]="dealColor()"
+      >{{ dealType() }}</span>
+    </div>
+    <h2 class="text-sm font-semibold text-slate-800 truncate">{{ cardDetails().title }}</h2>
+    <p class="text-sm text-slate-500 truncate">{{ cardDetails().address }},{{ cardDetails().city }}</p>
+    <div class="border-t border-slate-100 pt-2.5 mt-1 flex gap-2">
+      <app-icon-widget [count]="cardDetails().bedrooms" [type]="WidgetType.numOfBedrooms"/>
+      <app-icon-widget [count]="cardDetails().bathrooms" [type]="WidgetType.numOfBathrooms"/>
+      <app-icon-widget [count]="cardDetails().area" [type]="WidgetType.surfaceArea"/>
     </div>
   </div>
 </div>

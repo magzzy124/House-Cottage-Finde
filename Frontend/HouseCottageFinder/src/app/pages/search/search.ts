@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { Card } from "../../components/card/card";
 import { HouseService } from '../../services/house-service';
 import { Map } from "../../components/map/map";
@@ -13,29 +14,36 @@ import { NgxSliderModule, Options } from '@angular-slider/ngx-slider';
   templateUrl: './search.html',
   styleUrl: './search.css',
 })
-export class Search {
+export class Search implements OnInit {
   houseService = inject(HouseService)
   selectedLocService = inject(SelectedLocation)
+  private router = inject(Router);
 
   tabs = ['m', 'km'];
 
   selectedTab = signal('km');
   radius = 10;
 
-  dealTypes = ['For rent', 'For sale'];
-  selectedDealType = signal('For rent');
+  dealTypes = ['Any', 'For rent', 'For sale'];
+  selectedDealType = signal('Any');
 
   selectDealType(dealType: string) {
     this.selectedDealType.set(dealType);
     this.applyPriceRange();
+    this.applyFilters();
   }
 
-  value: number = 100;
-  maxValue: number = 200;
+  value: number = 0;
+  maxValue: number = 1000000;
   options: Options = {
     floor: 0,
-    ceil: 200
+    ceil: 1000000
   };
+
+  ngOnInit() {
+    this.applyPriceRange();
+    this.applyFilters();
+  }
 
   private applyPriceRange() {
     const isRent = this.selectedDealType() === 'For rent';
@@ -50,12 +58,40 @@ export class Search {
     this.maxValue = isRent ? 5000 : 1000000;
   }
 
-  selectTab(tab: string) {
-    this.selectedTab.set(tab);
+  applyFilters() {
+    const location = this.selectedLocService.selectedLocation();
+    const radiusInMeters = this.selectedTab() === 'km' ? Number(this.radius) * 1000 : Number(this.radius);
+
+    this.houseService.setFilters({
+      lat: location?.lat ?? 44.7866,
+      lon: location?.lon ?? 20.4489,
+      radiusKm: radiusInMeters / 1000,
+      dealType: this.selectedDealType(),
+      minPrice: this.value,
+      maxPrice: this.maxValue
+    });
   }
 
-  fetchAllCards() {
-    this.houseService.fetchAllItems();
+  onCardClicked(id: number) {
+    this.router.navigate(['/listing', id]);
+  }
+
+  selectTab(tab: string) {
+    this.selectedTab.set(tab);
+    this.applyFilters();
+  }
+
+  resetFilters() {
+    this.selectedDealType.set('Any');
+    this.selectedTab.set('km');
+    this.radius = 10;
+    this.applyPriceRange();
+    this.selectedLocService.setSelectedLocation({
+      lat: 44.7866,
+      lon: 20.4489,
+      bbox: []
+    });
+    this.applyFilters();
   }
 
   onPlaceSelected(feature: any) {
@@ -63,6 +99,7 @@ export class Search {
     this.selectedLocService.setSelectedLocation({
       lat: feature.properties.lat, lon: feature.properties.lon, bbox: feature.bbox
     })
+    this.applyFilters();
   }
 
   onSuggestionsChange(list: any[]) {
