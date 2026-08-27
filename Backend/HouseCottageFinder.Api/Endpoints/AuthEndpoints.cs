@@ -77,6 +77,60 @@ public static class AuthEndpoints
             return Results.Created($"/api/users/{user.Id}", new { message = "User registered", userId = user.Id });
         }).WithName("Register");
 
+        app.MapGet("/api/auth/profile", async (int userId, AppDbContext db) =>
+        {
+            var user = await db.Users.FindAsync(userId);
+            if (user is null) return Results.NotFound(new { message = "User not found" });
+
+            var favoritesCount = await db.Favorites.CountAsync(f => f.UserId == user.Id);
+            var memberSince = user.CreatedAt;
+
+            return Results.Ok(new
+            {
+                id = user.Id,
+                firstName = user.FirstName,
+                lastName = user.LastName,
+                username = user.Username,
+                phone = user.Phone,
+                email = user.Email,
+                createdAt = memberSince,
+                favoritesCount
+            });
+        }).WithName("GetProfile");
+
+        app.MapPut("/api/auth/profile", async (int userId, UpdateProfileRequest request, AppDbContext db, IPasswordHasher<User> hasher) =>
+        {
+            var user = await db.Users.FindAsync(userId);
+            if (user is null) return Results.NotFound(new { message = "User not found" });
+
+            if (!string.IsNullOrWhiteSpace(request.FirstName))
+                user.FirstName = request.FirstName;
+            if (!string.IsNullOrWhiteSpace(request.LastName))
+                user.LastName = request.LastName;
+            if (!string.IsNullOrWhiteSpace(request.Phone))
+                user.Phone = request.Phone;
+
+            if (!string.IsNullOrWhiteSpace(request.NewPassword))
+            {
+                var result = hasher.VerifyHashedPassword(user, user.PasswordHash, request.CurrentPassword ?? "");
+                if (result == PasswordVerificationResult.Failed)
+                    return Results.BadRequest(new { message = "Current password is incorrect" });
+                user.PasswordHash = hasher.HashPassword(user, request.NewPassword);
+            }
+
+            await db.SaveChangesAsync();
+
+            return Results.Ok(new
+            {
+                id = user.Id,
+                firstName = user.FirstName,
+                lastName = user.LastName,
+                username = user.Username,
+                email = user.Email,
+                message = "Profile updated"
+            });
+        }).WithName("UpdateProfile");
+
         return app;
     }
 }

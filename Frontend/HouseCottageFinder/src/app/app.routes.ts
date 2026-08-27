@@ -8,6 +8,7 @@ import { ListingDetails } from './pages/listing-details/listing-details';
 import { Favorites } from './pages/favorites/favorites';
 import { Stats } from './pages/stats/stats';
 import { Compare } from './pages/compare/compare';
+import { Profile } from './pages/profile/profile';
 
 export const routes: Routes = [
   {
@@ -45,5 +46,9 @@ export const routes: Routes = [
   {
     path: "compare",
     component: Compare
+  },
+  {
+    path: "profile",
+    component: Profile
   }
 ];

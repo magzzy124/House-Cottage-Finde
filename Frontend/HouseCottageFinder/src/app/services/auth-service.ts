@@ -9,6 +9,25 @@ export interface User {
   email: string;
 }
 
+export interface UserProfile {
+  id: number;
+  firstName: string;
+  lastName: string;
+  username: string;
+  phone: string;
+  email: string;
+  createdAt: string;
+  favoritesCount: number;
+}
+
+export interface UpdateProfilePayload {
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  currentPassword?: string;
+  newPassword?: string;
+}
+
 export interface RegisterPayload {
   firstName: string;
   lastName: string;
@@ -39,6 +58,16 @@ export class AuthService {
 
   register(payload: RegisterPayload) {
     return this.http.post<{ message: string; userId: number }>(`${this.api}/register`, payload);
+  }
+
+  getProfile() {
+    const userId = this._currentUser()?.id;
+    return this.http.get<UserProfile>(`${this.api}/profile?userId=${userId}`);
+  }
+
+  updateProfile(payload: UpdateProfilePayload) {
+    const userId = this._currentUser()?.id;
+    return this.http.put<User & { message: string }>(`${this.api}/profile?userId=${userId}`, payload);
   }
 
   setCurrentUser(user: User) {
