@@ -53,6 +53,10 @@ export class HouseService {
     return this.http.get<any>(`/api/properties/${id}`);
   }
 
+  getPriceHistory(id: number) {
+    return this.http.get<{ price: number; date: string }[]>(`/api/properties/${id}/price-history`);
+  }
+
   private fetch() {
     if (this.fetchTimer) {
       clearTimeout(this.fetchTimer);

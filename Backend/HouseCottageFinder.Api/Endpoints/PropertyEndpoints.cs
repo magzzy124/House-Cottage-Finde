@@ -1,4 +1,5 @@
 using HouseCottageFinder.Api.Data;
+using HouseCottageFinder.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HouseCottageFinder.Api.Endpoints;
@@ -53,6 +54,41 @@ public static class PropertyEndpoints
                 ? Results.NotFound(new { message = "Property not found" })
                 : Results.Ok(property);
         }).WithName("GetPropertyById");
+
+        app.MapGet("/api/properties/{id:int}/price-history", async (int id, AppDbContext db) =>
+        {
+            var history = await db.PriceHistory
+                .Where(ph => ph.PropertyId == id)
+                .OrderBy(ph => ph.RecordedAt)
+                .Select(ph => new { price = ph.Price, date = ph.RecordedAt })
+                .ToListAsync();
+
+            return Results.Ok(history);
+        }).WithName("GetPriceHistory");
+
+        app.MapPost("/api/properties", async (CreatePropertyRequest request, int userId, AppDbContext db) =>
+        {
+            var property = new Property
+            {
+                Title = request.Title,
+                Address = request.Address,
+                City = request.City,
+                DealType = request.DealType,
+                Price = request.Price,
+                Bedrooms = request.Bedrooms,
+                Bathrooms = request.Bathrooms,
+                Area = request.Area,
+                Latitude = request.Latitude,
+                Longitude = request.Longitude,
+                Description = request.Description ?? "",
+                ImageUrl = request.ImageUrl ?? "house.jpg"
+            };
+
+            db.Properties.Add(property);
+            await db.SaveChangesAsync();
+
+            return Results.Created($"/api/properties/{property.Id}", new { id = property.Id, message = "Listing created" });
+        }).WithName("CreateProperty");
 
         return app;
     }
