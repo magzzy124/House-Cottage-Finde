@@ -1,6 +1,10 @@
-<div class="filters flex">
-  <div class="input bg-[#f3f3f3] rounded-[15px] p-2 h-13 w-150 flex items-center">
-    <svg class="h-[90%] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+<div
+  class="filters flex items-center gap-3 px-6 py-3 bg-slate-50/80 backdrop-blur-sm border-b border-slate-100 relative z-50"
+>
+  <div
+    class="input bg-white rounded-2xl p-2 h-12 w-150 flex items-center shadow-sm border border-slate-100 hover:border-slate-200 focus-within:border-[#4a8dd0] focus-within:ring-2 focus-within:ring-[#4a8dd0]/10 transition-all duration-200"
+  >
+    <svg class="h-[80%] opacity-40 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
       <g
         stroke-linejoin="round"
         stroke-linecap="round"
@@ -12,49 +16,41 @@
         <path d="m21 21-4.3-4.3"></path>
       </g>
     </svg>
-    <geoapify-geocoder-autocomplete
-      class="flex-1"
-      placeholder="Search for a city or an address"
-      [lang]="'en'"
-      [limit]="8"
-      [addDetails]="true"
-      (placeSelect)="onPlaceSelected($event)"
+    <geoapify-geocoder-autocomplete>
+      class="flex-1" placeholder="Search for a city or an address" [lang]="'en'" [limit]="8"
+      [addDetails]="true" (placeSelect)="onPlaceSelected($event)"
       (suggestionsChange)="onSuggestionsChange($event)"
-    >
-      >
     </geoapify-geocoder-autocomplete>
   </div>
 
   <div class="dropdown dropdown-bottom">
-    <div tabindex="0" role="button" class="btn m-1 border-0 bg-white rounded-2xl cursor-pointer">
+    <div
+      tabindex="0"
+      role="button"
+      class="btn h-12 m-0 border border-slate-100 bg-white rounded-2xl cursor-pointer shadow-sm hover:shadow-md hover:border-slate-200 text-sm font-medium text-slate-700 transition-all duration-200 px-4"
+    >
       Radius: {{ radius }} {{ selectedTab() }}
     </div>
     <div
       tabindex="-1"
-      class="dropdown-content menu rounded-xl bg-white z-1100 w-72 p-3 shadow-lg gap-2"
+      class="dropdown-content menu rounded-2xl bg-white z-1100 w-72 p-4 shadow-xl shadow-slate-200/50 gap-3 border border-slate-100"
     >
-      <h1>Radius tool</h1>
+      <h1 class="text-sm font-bold text-slate-800">Radius tool</h1>
 
-      <div class="flex flex-col">
-        <label
-          class="font-medium transition-colors duration-300 ease-in-out peer-disabled:opacity-70 text-xs whitespace-nowrap text-black"
-          for="textfield-1"
-          >Metric</label
-        >
-        <div
-          class="inline-flex h-9 w-full items-baseline justify-start rounded-lg bg-gray-100 p-1 sm:w-fit"
-        >
+      <div class="flex flex-col gap-1.5">
+        <label class="font-medium text-xs text-slate-500" for="textfield-1">Metric</label>
+        <div class="inline-flex h-9 w-full items-center justify-start rounded-xl bg-slate-100 p-1">
           @for (tab of tabs; track tab) {
             <button
               type="button"
               (click)="selectTab(tab)"
-              class="group inline-flex h-7 min-w-8 w-full items-center justify-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs font-semibold transition-all duration-300 ease-in-out sm:w-auto cursor-pointer"
-              [class.rounded-md]="selectedTab() === tab"
+              class="inline-flex h-7 min-w-8 w-full items-center justify-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs font-semibold transition-all duration-200 sm:w-auto cursor-pointer"
+              [class.rounded-lg]="selectedTab() === tab"
               [class.bg-white]="selectedTab() === tab"
-              [class.drop-shadow]="selectedTab() === tab"
-              [class.text-slate-950]="selectedTab() === tab"
+              [class.shadow-sm]="selectedTab() === tab"
+              [class.text-slate-900]="selectedTab() === tab"
               [class.bg-transparent]="selectedTab() !== tab"
-              [class.text-slate-600]="selectedTab() !== tab"
+              [class.text-slate-500]="selectedTab() !== tab"
             >
               {{ tab }}
             </button>
@@ -62,19 +58,13 @@
         </div>
       </div>
 
-      <div
-        class="inline-flex w-full flex-col items-start gap-1.5 stroke-black transition-colors duration-300 ease-in-out max-w-sm"
-      >
-        <label
-          class="font-medium transition-colors duration-300 ease-in-out peer-disabled:opacity-70 text-xs whitespace-nowrap text-black"
-          for="textfield-1"
-          >Radius</label
-        >
+      <div class="inline-flex w-full flex-col items-start gap-1.5">
+        <label class="font-medium text-xs text-slate-500" for="textfield-1">Radius</label>
         <div class="relative w-full">
           <input
             [(ngModel)]="radius"
             (ngModelChange)="applyFilters()"
-            class="w-full rounded-lg border border-slate-200 px-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-300 ease-in-out disabled:cursor-not-allowed disabled:bg-slate-50 py-2 mb-0.5"
+            class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
             aria-disabled="false"
             aria-describedby=":S2:"
             id="textfield-1"
@@ -85,24 +75,30 @@
   </div>
 
   <div class="dropdown dropdown-bottom">
-    <div tabindex="0" role="button" class="btn m-1 border-0 bg-white rounded-2xl cursor-pointer">
-      {{ selectedDealType() }}
+    <div
+      tabindex="0"
+      role="button"
+      class="btn h-12 m-0 border border-slate-100 bg-white rounded-2xl cursor-pointer shadow-sm hover:shadow-md hover:border-slate-200 text-sm font-medium text-slate-700 transition-all duration-200 px-4"
+    >
+      Deal type: {{ selectedDealType() }}
     </div>
     <div
       tabindex="-1"
-      class="dropdown-content menu rounded-xl bg-white z-1100 w-72 p-3 shadow-lg gap-2"
+      class="dropdown-content menu rounded-2xl bg-white z-1100 w-72 p-4 shadow-xl shadow-slate-200/50 gap-3 border border-slate-100"
     >
-      <h1>Deal type</h1>
+      <h1 class="text-sm font-bold text-slate-800">Deal type</h1>
 
       @for (dealType of dealTypes; track dealType) {
-        <label class="flex items-center gap-2 font-medium text-xs text-black cursor-pointer">
+        <label
+          class="flex items-center gap-3 font-medium text-sm text-slate-700 cursor-pointer hover:bg-slate-50 rounded-xl px-3 py-2 transition-colors"
+        >
           <input
             type="radio"
             name="dealType"
             [value]="dealType"
             [checked]="selectedDealType() === dealType"
             (change)="selectDealType(dealType)"
-            class="radio radio-sm"
+            class="radio radio-sm checked:bg-[#4a8dd0]"
           />
           {{ dealType }}
         </label>
@@ -111,53 +107,47 @@
   </div>
 
   <div class="dropdown dropdown-bottom">
-    <div tabindex="0" role="button" class="btn m-1 border-0 bg-white rounded-2xl cursor-pointer">Price</div>
+    <div
+      tabindex="0"
+      role="button"
+      class="btn h-12 m-0 border border-slate-100 bg-white rounded-2xl cursor-pointer shadow-sm hover:shadow-md hover:border-slate-200 text-sm font-medium text-slate-700 transition-all duration-200 px-4"
+    >
+      Price: {{ formatPrice(value) }} - {{ formatPrice(maxValue) }}
+    </div>
     <div
       tabindex="-1"
-      class="dropdown-content menu rounded-xl bg-white z-1100 w-72 p-3 shadow-lg gap-2"
+      class="dropdown-content menu rounded-2xl bg-white z-1100 w-72 p-4 shadow-xl shadow-slate-200/50 gap-3 border border-slate-100"
     >
-      <h1>Price range</h1>
+      <h1 class="text-sm font-bold text-slate-800">Price range</h1>
 
       <ngx-slider
-            [(value)]="value"
-            [(highValue)]="maxValue"
-            [options]="options"
-            (userChangeEnd)="applyFilters()"
-          ></ngx-slider>
+        [(value)]="value"
+        [(highValue)]="maxValue"
+        [options]="options"
+        (userChangeEnd)="applyFilters()"
+      ></ngx-slider>
 
-      <div class="inline-flex w-full items-center gap-2">
-        <div
-          class="inline-flex w-full flex-col items-start gap-1.5 stroke-black transition-colors duration-300 ease-in-out max-w-sm"
-        >
-          <label
-            class="font-medium transition-colors duration-300 ease-in-out peer-disabled:opacity-70 text-xs whitespace-nowrap text-black"
-            for="price-min"
-            >Min</label
-          >
+      <div class="inline-flex w-full items-center gap-3">
+        <div class="inline-flex w-full flex-col items-start gap-1.5">
+          <label class="font-medium text-xs text-slate-500" for="price-min">Min</label>
           <div class="relative w-full">
             <input
               [(ngModel)]="value"
               (ngModelChange)="applyFilters()"
               type="number"
-              class="w-full rounded-lg border border-slate-200 px-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-300 ease-in-out disabled:cursor-not-allowed disabled:bg-slate-50 py-2 mb-0.5"
+              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
               id="price-min"
             />
           </div>
         </div>
-        <div
-          class="inline-flex w-full flex-col items-start gap-1.5 stroke-black transition-colors duration-300 ease-in-out max-w-sm"
-        >
-          <label
-            class="font-medium transition-colors duration-300 ease-in-out peer-disabled:opacity-70 text-xs whitespace-nowrap text-black"
-            for="price-max"
-            >Max</label
-          >
+        <div class="inline-flex w-full flex-col items-start gap-1.5">
+          <label class="font-medium text-xs text-slate-500" for="price-max">Max</label>
           <div class="relative w-full">
             <input
               [(ngModel)]="maxValue"
               (ngModelChange)="applyFilters()"
               type="number"
-              class="w-full rounded-lg border border-slate-200 px-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-300 ease-in-out disabled:cursor-not-allowed disabled:bg-slate-50 py-2 mb-0.5"
+              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
               id="price-max"
             />
           </div>
@@ -167,17 +157,17 @@
   </div>
 </div>
 
-<div class="results flex justify-around h-[calc(100vh-52px-80px)]">
+<div class="results flex h-[calc(100vh-72px-56px)]">
   <div class="left flex-1 h-full flex flex-col overflow-hidden">
     @if (houseService.cards().length > 0) {
-      <div class="flex items-center justify-between px-6 pt-4 pb-1">
-        <h2 class="text-lg font-bold text-slate-800">
-          <span class="text-[#4a8dd0]">{{ houseService.cards().length }}</span>
+      <div class="flex items-center justify-between px-6 pt-5 pb-2">
+        <h2 class="text-base font-semibold text-slate-600">
+          <span class="text-[#4a8dd0] font-bold">{{ houseService.cards().length }}</span>
           {{ houseService.cards().length === 1 ? 'listing' : 'listings' }} found
         </h2>
       </div>
       <div
-        class="grid grid-cols-[repeat(auto-fit,minmax(290px,1fr))] justify-items-center gap-4 px-6 py-3 overflow-y-auto pb-6"
+        class="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] justify-items-center gap-5 px-6 py-2 overflow-y-auto pb-6"
       >
         @for (card of houseService.cards(); track card.id) {
           <app-card [cardDetails]="card" (clicked)="onCardClicked($event)" />
@@ -185,16 +175,18 @@
       </div>
     } @else {
       <div
-        class="emptyState flex-1 flex flex-col items-center justify-center gap-4 text-center px-10"
+        class="emptyState flex-1 flex flex-col items-center justify-center gap-5 text-center px-10"
       >
-        <div class="w-24 h-24 rounded-3xl bg-white shadow-sm flex items-center justify-center">
+        <div
+          class="w-28 h-28 rounded-3xl bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center shadow-inner"
+        >
           <svg
-            class="w-10 h-10 text-slate-400"
+            class="w-12 h-12 text-slate-300"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
+            stroke-width="1.5"
             stroke-linecap="round"
             stroke-linejoin="round"
           >
@@ -208,21 +200,21 @@
         </div>
         <div>
           <h3 class="text-xl font-bold text-slate-700">No listings found</h3>
-          <p class="text-sm text-slate-500 mt-1.5 max-w-sm">
-            There are no listings that match your selected filters. Try widening the radius,
-            adjusting the price range or picking a different location.
+          <p class="text-sm text-slate-400 mt-2 max-w-xs mx-auto leading-relaxed">
+            No listings match your filters. Try widening the radius, adjusting the price range, or
+            picking a different location.
           </p>
         </div>
         <button
           (click)="resetFilters()"
-          class="bg-[#4a8dd0] text-white font-semibold text-sm px-6 py-2.5 rounded-full hover:bg-[#3d7ab8] transition-colors cursor-pointer"
+          class="bg-[#4a8dd0] text-white font-semibold text-sm px-7 py-3 rounded-full hover:bg-[#3d7ab8] shadow-md shadow-[#4a8dd0]/20 hover:shadow-lg hover:shadow-[#4a8dd0]/30 transition-all duration-200 cursor-pointer"
         >
           Reset filters
         </button>
       </div>
     }
   </div>
-  <div class="right flex-1 h-full">
+  <div class="right flex-1 h-full relative z-0">
     <app-map [radius]="radius" [unit]="selectedTab()" />
   </div>
 </div>

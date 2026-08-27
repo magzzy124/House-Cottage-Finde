@@ -27,6 +27,10 @@ export class Search implements OnInit {
   dealTypes = ['Any', 'For rent', 'For sale'];
   selectedDealType = signal('Any');
 
+  formatPrice(price: number): string {
+    return price >= 1000 ? `$${(price / 1000).toFixed(price % 1000 === 0 ? 0 : 1)}k` : `$${price}`;
+  }
+
   selectDealType(dealType: string) {
     this.selectedDealType.set(dealType);
     this.applyPriceRange();

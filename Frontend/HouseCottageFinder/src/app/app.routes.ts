@@ -5,6 +5,8 @@ import { About } from './pages/about/about';
 import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { ListingDetails } from './pages/listing-details/listing-details';
+import { Favorites } from './pages/favorites/favorites';
+import { Stats } from './pages/stats/stats';
 
 export const routes: Routes = [
   {
@@ -30,5 +32,13 @@ export const routes: Routes = [
   {
     path: "register",
     component: Register
+  },
+  {
+    path: "favorites",
+    component: Favorites
+  },
+  {
+    path: "stats",
+    component: Stats
   }
 ];

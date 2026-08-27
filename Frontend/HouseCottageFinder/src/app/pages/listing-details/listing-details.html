@@ -1,30 +1,37 @@
-<div class="h-[calc(100vh-80px)] overflow-y-auto">
-  <div class="max-w-5xl mx-auto p-8">
+<div class="h-[calc(100vh-72px)] overflow-y-auto">
+  <div class="max-w-5xl mx-auto px-8 py-8">
     @if (loaded()) {
       @if (listing(); as item) {
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between mb-8">
           <a
             routerLink="/search"
-            class="flex items-center gap-2 text-sm font-semibold text-[#4a8dd0] hover:underline cursor-pointer"
+            class="flex items-center gap-2 text-sm font-semibold text-[#4a8dd0] hover:text-[#3d7ab8] transition-colors cursor-pointer"
           >
-            &larr; Back to search
+            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            Back to search
           </a>
-          <span class="flex items-center gap-2 text-sm text-slate-500">
-            <span class="text-[#4a8dd0]">Home</span> / <span>Details</span>
+          <span class="flex items-center gap-2 text-xs font-medium text-slate-400">
+            <a routerLink="/search" class="text-slate-500 hover:text-[#4a8dd0] transition-colors">Home</a>
+            <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            <span class="text-slate-700">Details</span>
           </span>
         </div>
 
-        <div class="grid grid-cols-[1fr_120px] gap-3">
+        <div class="grid grid-cols-[1fr_140px] gap-4">
           <div
-            class="h-96 rounded-3xl overflow-hidden bg-cover"
+            class="h-[28rem] rounded-3xl overflow-hidden bg-cover bg-center shadow-lg"
             [style.background-image]="'url(' + activeImage() + ')'"
           ></div>
           <div class="flex flex-col gap-3">
             @for (img of galleryImages(); track $index) {
               <div
-                class="h-24 rounded-2xl overflow-hidden bg-cover cursor-pointer ring-2 transition-all"
+                class="h-28 rounded-2xl overflow-hidden bg-cover bg-center cursor-pointer transition-all duration-200"
+                [class.ring-2]="activeImage() === img"
                 [class.ring-[#4a8dd0]]="activeImage() === img"
-                [class.ring-slate-200]="activeImage() !== img"
+                [class.ring-offset-2]="activeImage() === img"
+                [class.opacity-100]="activeImage() === img"
+                [class.opacity-60]="activeImage() !== img"
+                [class.hover:opacity-90]="activeImage() !== img"
                 [style.background-image]="'url(' + img + ')'"
                 (click)="setActiveImage(img)"
               ></div>
@@ -33,54 +40,77 @@
         </div>
 
         <div
-          class="bg-white rounded-3xl shadow-[0_8px_25px_rgba(15,23,42,0.12)] p-8 -mt-10 relative mx-2"
+          class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 p-8 -mt-12 relative mx-3 border border-slate-100"
         >
           <div class="flex items-start justify-between gap-4">
             <div>
-              <h1 class="text-3xl font-black text-slate-900">$ {{ item.price }}</h1>
-              <h2 class="text-xl font-semibold text-slate-800 mt-2">{{ item.title }}</h2>
-              <p class="text-slate-500 mt-1">{{ item.address }}, {{ item.city }}</p>
+              <h1 class="text-4xl font-black text-slate-900 tracking-tight">$ {{ item.price }}</h1>
+              <h2 class="text-xl font-bold text-slate-800 mt-3">{{ item.title }}</h2>
+              <p class="text-slate-400 mt-1.5 flex items-center gap-1.5 text-sm">
+                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                {{ item.address }}, {{ item.city }}
+              </p>
             </div>
-            <div class="flex flex-col items-end gap-2">
+            <div class="flex flex-col items-end gap-3">
               <span
-                class="text-xs font-semibold px-3 py-1.5 rounded-full"
+                class="text-xs font-bold uppercase tracking-wide px-3 py-1.5 rounded-lg"
                 [style.background-color]="dealBg(item)"
                 [style.color]="dealColor(item)"
               >
                 {{ item.dealType }}
               </span>
-              <img
-                src="heart.svg"
-                alt="save"
-                class="w-9 h-9 bg-[#f3f3f3] rounded-full p-2 cursor-pointer hover:scale-110 transition-transform"
-              />
+              @if (isLoggedIn()) {
+                <button
+                  (click)="toggleFavorite()"
+                  class="w-11 h-11 rounded-full flex items-center justify-center cursor-pointer hover:scale-110 transition-all duration-200 border-0 shadow-sm"
+                  [style.background-color]="isFavorited() ? 'rgba(244,63,94,0.1)' : 'rgb(248,250,252)'"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    [style.color]="isFavorited() ? '#f43f5e' : '#94a3b8'"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    [attr.fill]="isFavorited() ? 'currentColor' : 'none'"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+                  </svg>
+                </button>
+              } @else {
+                <div class="w-11 h-11 bg-slate-50 rounded-full flex items-center justify-center border border-slate-100">
+                  <img src="heart.svg" alt="save" class="w-5 h-5 opacity-30" />
+                </div>
+              }
             </div>
           </div>
 
-          <div class="flex items-center gap-4 mt-7 pt-7 border-t border-slate-100">
+          <div class="flex items-center gap-3 mt-8 pt-8 border-t border-slate-100">
             <app-icon-widget [count]="item.bedrooms" [type]="WidgetType.numOfBedrooms" />
             <app-icon-widget [count]="item.bathrooms" [type]="WidgetType.numOfBathrooms" />
             <app-icon-widget [count]="item.area" [type]="WidgetType.surfaceArea" />
           </div>
 
-          <h3 class="text-xl font-bold mt-8 mb-3 text-slate-800">Description</h3>
-          <p class="text-slate-600 leading-relaxed">
+          <h3 class="text-lg font-bold mt-10 mb-3 text-slate-800">Description</h3>
+          <p class="text-slate-500 leading-relaxed text-sm">
             {{ item.description || 'No description provided for this listing.' }}
           </p>
 
-          <h3 class="text-xl font-bold mt-8 mb-3 text-slate-800">Location</h3>
-          <div id="listing-map" class="h-72 rounded-3xl overflow-hidden"></div>
+          <h3 class="text-lg font-bold mt-10 mb-3 text-slate-800">Location</h3>
+          <div id="listing-map" class="h-72 rounded-3xl overflow-hidden border border-slate-100 shadow-sm"></div>
         </div>
       } @else {
-        <div class="flex flex-col items-center justify-center gap-4 text-center py-32">
-          <div class="w-20 h-20 rounded-full bg-white shadow-sm flex items-center justify-center">
+        <div class="flex flex-col items-center justify-center gap-5 text-center py-32">
+          <div class="w-24 h-24 rounded-full bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center shadow-inner">
             <svg
-              class="w-8 h-8 text-slate-400"
+              class="w-10 h-10 text-slate-300"
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
+              stroke-width="1.5"
               stroke-linecap="round"
               stroke-linejoin="round"
             >
@@ -91,22 +121,22 @@
           </div>
           <div>
             <h3 class="text-xl font-bold text-slate-700">Listing not found</h3>
-            <p class="text-sm text-slate-500 mt-1">
+            <p class="text-sm text-slate-400 mt-2 max-w-xs mx-auto">
               The listing you are looking for does not exist or is no longer available.
             </p>
           </div>
           <a
             routerLink="/search"
-            class="bg-[#4a8dd0] text-white font-semibold text-sm px-6 py-2.5 rounded-full hover:bg-[#3d7ab8] transition-colors cursor-pointer"
+            class="bg-[#4a8dd0] text-white font-semibold text-sm px-7 py-3 rounded-full hover:bg-[#3d7ab8] shadow-md shadow-[#4a8dd0]/20 hover:shadow-lg transition-all duration-200 cursor-pointer"
           >
             Back to search
           </a>
         </div>
       }
     } @else {
-      <div class="flex flex-col items-center justify-center gap-4 text-center py-32">
-        <div class="w-10 h-10 border-4 border-[#4a8dd0] border-t-transparent rounded-full animate-spin"></div>
-        <p class="text-slate-500 text-sm">Loading listing…</p>
+      <div class="flex flex-col items-center justify-center gap-5 text-center py-32">
+        <div class="w-12 h-12 border-4 border-[#4a8dd0] border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-slate-400 text-sm font-medium">Loading listing...</p>
       </div>
     }
   </div>

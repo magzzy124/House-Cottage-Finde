@@ -1,42 +1,55 @@
-<div class="navbar border-2 h-20 flex justify-between items-center px-20">
-  <div class="logo border-2 flex items-center gap-2.5 cursor-pointer">
-    <img src="house.svg" alt="HouseSvg" class="w-10" />
-    <h1 class="font-[1000] text-3xl">HouseFinder</h1>
+<nav class="h-18 flex items-center justify-between px-8 bg-white shadow-sm border-b border-slate-100 sticky top-0 z-50">
+  <div class="flex items-center gap-3 cursor-pointer group" routerLink="/search">
+    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[#4a8dd0] to-[#3568a0] flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
+      <img src="house.svg" alt="HouseFinder" class="w-5 h-5 brightness-0 invert" />
+    </div>
+    <h1 class="text-xl font-bold tracking-tight text-slate-800">
+      House<span class="text-[#4a8dd0]">Finder</span>
+    </h1>
   </div>
-  <ul class="flex gap-10 text-[1.2rem]">
+
+  <ul class="flex items-center gap-1">
     @for (link of links; track link) {
-      <li class="font-semibold hover:text-[#5393d3] transition-all cursor-pointer">
-        <a [routerLink]="link">{{ link | titlecase }}</a>
+      <li>
+        <a [routerLink]="link"
+           class="relative px-4 py-2 text-sm font-medium text-slate-600 rounded-lg hover:text-[#4a8dd0] hover:bg-[#4a8dd0]/5 transition-all duration-200">
+          {{ link | titlecase }}
+        </a>
       </li>
     }
   </ul>
-<div class="profile border-2 flex gap-4.5 items-center">
-    <img class="w-8 cursor-pointer" src="heart.svg" alt="heart" />
+
+  <div class="flex items-center gap-3">
+    <a routerLink="/favorites" class="relative w-10 h-10 flex items-center justify-center rounded-xl text-slate-500 hover:text-rose-500 hover:bg-rose-50 transition-all duration-200">
+      <img src="heart.svg" alt="Favorites" class="w-5 h-5" />
+    </a>
+
     @if (auth.currentUser(); as user) {
-      <div class="flex items-center gap-2.5">
-        <div class="profilePicture w-13 h-13 border rounded-full p-1.5 relative">
-          <img src="user.svg" alt="User" />
-          <span
-            class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white"
-            title="Online"
-          ></span>
+      <div class="flex items-center gap-3 pl-3 border-l border-slate-200">
+        <div class="relative">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#4a8dd0] to-[#3568a0] flex items-center justify-center ring-2 ring-white shadow-sm">
+            <img src="user.svg" alt="User" class="w-5 h-5 brightness-0 invert" />
+          </div>
+          <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 rounded-full border-2 border-white"></span>
         </div>
-        <div class="flex flex-col leading-tight">
-          <span class="font-semibold text-sm">Hi, {{ user.firstName }}</span>
+        <div class="flex flex-col">
+          <span class="text-sm font-semibold text-slate-700 leading-tight">Hi, {{ user.firstName }}</span>
           <button
             (click)="logout()"
-            class="text-xs text-left text-slate-500 hover:text-red-500 transition-colors cursor-pointer"
+            class="text-xs text-slate-400 hover:text-red-500 transition-colors cursor-pointer leading-tight"
           >
             Log out
           </button>
         </div>
       </div>
     } @else {
-      <a routerLink="/login" class="profilePicture w-13 h-13 border rounded-full p-1.5 cursor-pointer">
-        <img src="user.svg" alt="User" />
+      <a routerLink="/login"
+         class="flex items-center gap-2 px-4 py-2 bg-[#4a8dd0] text-white text-sm font-semibold rounded-xl hover:bg-[#3d7ab8] shadow-sm hover:shadow-md transition-all duration-200">
+        <img src="user.svg" alt="User" class="w-4 h-4 brightness-0 invert" />
+        Sign in
       </a>
     }
   </div>
-</div>
+</nav>
 
 <router-outlet></router-outlet>

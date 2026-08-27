@@ -4,6 +4,8 @@ import * as L from 'leaflet';
 import { HouseService } from '../../services/house-service';
 import { IconWidget } from '../../components/icon-widget/icon-widget';
 import { WidgetType } from '../../models/widgetType';
+import { FavoritesService } from '../../services/favorites-service';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-listing-details',
@@ -13,6 +15,8 @@ import { WidgetType } from '../../models/widgetType';
 })
 export class ListingDetails implements AfterViewInit {
   houseService = inject(HouseService);
+  favoritesService = inject(FavoritesService);
+  authService = inject(AuthService);
   route = inject(ActivatedRoute);
 
   WidgetType = WidgetType;
@@ -29,6 +33,14 @@ export class ListingDetails implements AfterViewInit {
     return [base, base, base, base];
   });
 
+  isFavorited = computed(() => {
+    const item = this.listing();
+    if (!item) return false;
+    return this.favoritesService.isFavorited(item.id);
+  });
+
+  isLoggedIn = computed(() => this.authService.isAuthenticated());
+
   private map: L.Map | null = null;
 
   dealColor(item: any): string {
@@ -43,6 +55,12 @@ export class ListingDetails implements AfterViewInit {
     this.activeImage.set(image);
   }
 
+  toggleFavorite() {
+    const item = this.listing();
+    if (!item || !this.isLoggedIn()) return;
+    this.favoritesService.toggleFavorite(item.id);
+  }
+
   ngAfterViewInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
@@ -52,6 +70,9 @@ export class ListingDetails implements AfterViewInit {
         this.activeImage.set(res.imageUrl || 'house.jpg');
         this.loaded.set(true);
         this.renderMap();
+        if (this.isLoggedIn()) {
+          this.favoritesService.checkFavorite(res.id);
+        }
       },
       error: () => this.loaded.set(true),
     });

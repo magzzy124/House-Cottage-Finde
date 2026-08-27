@@ -11,7 +11,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
     importProvidersFrom(
-      GeoapifyGeocoderAutocompleteModule.withConfig("22fc40470ba04fb7a0b18a29ea1aa3b4")
+      GeoapifyGeocoderAutocompleteModule.withConfig("9818f96fef344aa388bf7452fe382826")
     )
 
   ]

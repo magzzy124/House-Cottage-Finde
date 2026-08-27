@@ -1,0 +1,26 @@
+@HouseCottageFinder.Api_HostAddress = http://localhost:5131
+
+POST {{HouseCottageFinder.Api_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "pass123"
+}
+
+###
+
+POST {{HouseCottageFinder.Api_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "username": "johndoe",
+  "phone": "+1 555 123 4567",
+  "email": "test@example.com",
+  "password": "pass123",
+  "confirmPassword": "pass123"
+}
+
+###
