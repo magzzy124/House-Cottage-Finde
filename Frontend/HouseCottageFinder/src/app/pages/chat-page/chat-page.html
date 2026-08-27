@@ -1,0 +1,36 @@
+<div class="h-[calc(100vh-72px)] overflow-y-auto">
+  <div class="max-w-3xl mx-auto px-8 py-8">
+    <div class="flex items-center justify-between mb-6">
+      <a
+        [routerLink]="['/listing', propertyId]"
+        class="flex items-center gap-2 text-sm font-semibold text-[#4a8dd0] hover:text-[#3d7ab8] transition-colors cursor-pointer"
+      >
+        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        Back to listing
+      </a>
+    </div>
+
+    @if (listing(); as l) {
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-4 mb-4 flex items-center gap-4">
+        <div
+          class="w-16 h-16 rounded-xl bg-cover bg-center shrink-0"
+          [style.background-image]="'url(' + (l.imageUrl || 'house.jpg') + ')'"
+        ></div>
+        <div class="min-w-0">
+          <h2 class="text-sm font-bold text-slate-800 truncate">{{ l.title }}</h2>
+          <p class="text-xs text-slate-400 truncate">{{ l.address }}, {{ l.city }}</p>
+          <p class="text-sm font-black text-[#4a8dd0] mt-1">$ {{ l.price }}</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        <app-chat [propertyId]="propertyId" />
+      </div>
+    } @else {
+      <div class="flex flex-col items-center justify-center gap-5 text-center py-32">
+        <div class="w-12 h-12 border-4 border-[#4a8dd0] border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-slate-400 text-sm font-medium">Loading...</p>
+      </div>
+    }
+  </div>
+</div>

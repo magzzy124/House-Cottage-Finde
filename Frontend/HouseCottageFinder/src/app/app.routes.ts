@@ -9,6 +9,7 @@ import { Favorites } from './pages/favorites/favorites';
 import { Stats } from './pages/stats/stats';
 import { Compare } from './pages/compare/compare';
 import { Profile } from './pages/profile/profile';
+import { ChatPage } from './pages/chat-page/chat-page';
 
 export const routes: Routes = [
   {
@@ -50,5 +51,9 @@ export const routes: Routes = [
   {
     path: "profile",
     component: Profile
+  },
+  {
+    path: "chat/:id",
+    component: ChatPage
   }
 ];

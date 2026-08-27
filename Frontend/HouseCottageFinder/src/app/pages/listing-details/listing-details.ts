@@ -69,10 +69,10 @@ export class ListingDetails implements AfterViewInit {
         this.listing.set(res);
         this.activeImage.set(res.imageUrl || 'house.jpg');
         this.loaded.set(true);
-        this.renderMap();
         if (this.isLoggedIn()) {
           this.favoritesService.checkFavorite(res.id);
         }
+        setTimeout(() => this.renderMap(), 100);
       },
       error: () => this.loaded.set(true),
     });
@@ -81,6 +81,9 @@ export class ListingDetails implements AfterViewInit {
   private renderMap() {
     const item = this.listing();
     if (!item) return;
+
+    const el = document.getElementById('listing-map');
+    if (!el) return;
 
     this.map = L.map('listing-map', {
       center: [item.latitude, item.longitude],
@@ -97,5 +100,7 @@ export class ListingDetails implements AfterViewInit {
       .addTo(this.map)
       .bindPopup(`<strong>${item.title}</strong><br>${item.address}, ${item.city}`)
       .openPopup();
+
+    this.map.invalidateSize();
   }
 }

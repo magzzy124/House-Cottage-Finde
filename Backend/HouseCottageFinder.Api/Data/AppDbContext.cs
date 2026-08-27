@@ -13,6 +13,8 @@ public class AppDbContext : DbContext
 
     public DbSet<Favorite> Favorites { get; set; } = null!;
 
+    public DbSet<Message> Messages { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>()

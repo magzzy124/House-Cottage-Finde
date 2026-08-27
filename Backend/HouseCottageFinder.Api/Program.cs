@@ -51,5 +51,6 @@ app.MapAuthEndpoints();
 app.MapPropertyEndpoints();
 app.MapFavoritesEndpoints();
 app.MapStatsEndpoints();
+app.MapChatEndpoints();
 
 app.Run();
