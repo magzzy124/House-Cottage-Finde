@@ -4,6 +4,7 @@ import { WidgetType, TagType } from '../../models/widgetType';
 import { IconTag } from "../icon-tag/icon-tag";
 import { FavoritesService } from '../../services/favorites-service';
 import { AuthService } from '../../services/auth-service';
+import { CompareService } from '../../services/compare-service';
 
 @Component({
   selector: 'app-card',
@@ -19,12 +20,14 @@ export class Card {
 
   favoritesService = inject(FavoritesService);
   authService = inject(AuthService);
+  compareService = inject(CompareService);
 
   dealType = computed(() => this.cardDetails()?.dealType ?? 'For sale');
   dealColor = computed(() => this.dealType() === 'For sale' ? '#4a8dd0' : '#f59e0b');
   dealBg = computed(() => this.dealType() === 'For sale' ? '#e8f1fa' : '#fdf1e2');
   cardImage = computed(() => this.cardDetails()?.imageUrl || 'house.jpg');
   isFavorited = computed(() => this.favoritesService.isFavorited(this.cardDetails()?.id));
+  isCompared = computed(() => this.compareService.isSelected(this.cardDetails()?.id));
   isLoggedIn = computed(() => this.authService.isAuthenticated());
 
   onClick() {
@@ -36,5 +39,11 @@ export class Card {
     event.preventDefault();
     if (!this.isLoggedIn()) return;
     this.favoritesService.toggleFavorite(this.cardDetails()?.id);
+  }
+
+  toggleCompare(event: Event) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.compareService.toggle(this.cardDetails());
   }
 }

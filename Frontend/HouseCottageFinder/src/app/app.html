@@ -53,3 +53,45 @@
 </nav>
 
 <router-outlet></router-outlet>
+
+@if (showCompareBar()) {
+  <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-white rounded-2xl shadow-2xl shadow-slate-900/15 border border-slate-200 px-5 py-3 flex items-center gap-4 animate-slide-up">
+    <div class="flex items-center gap-2">
+      <svg class="w-5 h-5 text-[#4a8dd0]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/>
+      </svg>
+      <span class="text-sm font-semibold text-slate-700">
+        {{ compareService.count }} / {{ compareService.maxCompare }} selected
+      </span>
+    </div>
+
+    <div class="flex items-center gap-2">
+      @for (item of compareService.items(); track item.id) {
+        <div class="relative group">
+          <div
+            class="w-9 h-9 rounded-lg bg-cover bg-center border-2 border-[#4a8dd0]"
+            [style.background-image]="'url(' + item.imageUrl + ')'"
+          ></div>
+          <button
+            (click)="compareService.remove(item.id)"
+            class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center text-[10px] font-bold cursor-pointer hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+          >×</button>
+        </div>
+      }
+    </div>
+
+    <a
+      routerLink="/compare"
+      class="bg-[#4a8dd0] text-white text-sm font-bold px-5 py-2 rounded-xl hover:bg-[#3d7ab8] shadow-md shadow-[#4a8dd0]/20 transition-all duration-200 whitespace-nowrap"
+    >
+      Compare now
+    </a>
+
+    <button
+      (click)="compareService.clear()"
+      class="text-slate-400 hover:text-red-500 transition-colors cursor-pointer p-1"
+    >
+      <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+  </div>
+}

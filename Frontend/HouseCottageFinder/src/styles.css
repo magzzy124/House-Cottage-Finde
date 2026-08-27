@@ -93,3 +93,19 @@ input:focus, button:focus-visible {
 .geoapify-geocoder-autocomplete .geoapify-geocoder-autocomplete__items {
   z-index: 1000 !important;
 }
+
+/* Compare bar slide up */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.25s ease-out;
+}

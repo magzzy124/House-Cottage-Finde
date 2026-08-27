@@ -1,8 +1,9 @@
 import { TitleCasePipe } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from "@angular/router";
 import { AuthService } from './services/auth-service';
 import { FavoritesService } from './services/favorites-service';
+import { CompareService } from './services/compare-service';
 
 @Component({
   selector: 'app-root',
@@ -16,9 +17,17 @@ export class App implements OnInit {
 
   protected auth = inject(AuthService);
   private favoritesService = inject(FavoritesService);
+  protected compareService = inject(CompareService);
   private router = inject(Router);
 
+  private currentUrl = signal('');
+  protected showCompareBar = computed(() => this.compareService.showBar() && this.currentUrl() !== '/compare');
+
   ngOnInit() {
+    this.currentUrl.set(this.router.url);
+    this.router.events.subscribe(() => {
+      this.currentUrl.set(this.router.url);
+    });
     if (this.auth.isAuthenticated()) {
       this.favoritesService.loadFavorites();
     }

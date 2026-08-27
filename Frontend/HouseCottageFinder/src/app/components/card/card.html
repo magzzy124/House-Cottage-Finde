@@ -7,31 +7,54 @@
     <div class="absolute top-3 left-3 flex gap-2 z-10">
       <app-icon-tag [type]="TagType.new"/>
     </div>
-    @if (isLoggedIn()) {
+    <div class="absolute top-3 right-3 z-10 flex gap-2">
       <button
-        (click)="toggleFavorite($event)"
-        class="absolute top-3 right-3 z-10 w-9 h-9 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 shadow-sm cursor-pointer border-0"
-        [style.background-color]="isFavorited() ? 'rgba(244,63,94,0.9)' : 'rgba(255,255,255,0.9)'"
+        (click)="toggleCompare($event)"
+        class="w-9 h-9 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 shadow-sm cursor-pointer border-0"
+        [style.background-color]="isCompared() ? 'rgba(74,141,208,0.9)' : 'rgba(255,255,255,0.9)'"
+        title="Compare"
       >
         <svg
           class="w-4 h-4"
-          [style.color]="isFavorited() ? '#fff' : '#475569'"
+          [style.color]="isCompared() ? '#fff' : '#475569'"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          [attr.fill]="isFavorited() ? 'currentColor' : 'none'"
+          fill="none"
           stroke="currentColor"
           stroke-width="2"
           stroke-linecap="round"
           stroke-linejoin="round"
         >
-          <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+          <line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/>
         </svg>
       </button>
-    } @else {
-      <div class="absolute top-3 right-3 z-10 w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm">
-        <img src="heart.svg" class="w-4 opacity-40" alt="save" />
-      </div>
-    }
+      @if (isLoggedIn()) {
+        <button
+          (click)="toggleFavorite($event)"
+          class="w-9 h-9 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-200 shadow-sm cursor-pointer border-0"
+          [style.background-color]="isFavorited() ? 'rgba(244,63,94,0.9)' : 'rgba(255,255,255,0.9)'"
+          title="Favorite"
+        >
+          <svg
+            class="w-4 h-4"
+            [style.color]="isFavorited() ? '#fff' : '#475569'"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            [attr.fill]="isFavorited() ? 'currentColor' : 'none'"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+          </svg>
+        </button>
+      } @else {
+        <div class="w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm">
+          <img src="heart.svg" class="w-4 opacity-40" alt="save" />
+        </div>
+      }
+    </div>
   </div>
   <div class="content flex flex-col gap-2 p-4">
     <div class="flex items-center justify-between gap-2">
