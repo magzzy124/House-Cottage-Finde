@@ -27,6 +27,11 @@ export class Search implements OnInit {
   dealTypes = ['Any', 'For rent', 'For sale'];
   selectedDealType = signal('Any');
 
+  minBedrooms: number | null = null;
+  maxBedrooms: number | null = null;
+  minArea: number | null = null;
+  maxArea: number | null = null;
+
   formatPrice(price: number): string {
     return price >= 1000 ? `$${(price / 1000).toFixed(price % 1000 === 0 ? 0 : 1)}k` : `$${price}`;
   }
@@ -72,7 +77,11 @@ export class Search implements OnInit {
       radiusKm: radiusInMeters / 1000,
       dealType: this.selectedDealType(),
       minPrice: this.value,
-      maxPrice: this.maxValue
+      maxPrice: this.maxValue,
+      minBedrooms: this.minBedrooms,
+      maxBedrooms: this.maxBedrooms,
+      minArea: this.minArea,
+      maxArea: this.maxArea,
     });
   }
 
@@ -89,6 +98,10 @@ export class Search implements OnInit {
     this.selectedDealType.set('Any');
     this.selectedTab.set('km');
     this.radius = 10;
+    this.minBedrooms = null;
+    this.maxBedrooms = null;
+    this.minArea = null;
+    this.maxArea = null;
     this.applyPriceRange();
     this.selectedLocService.setSelectedLocation({
       lat: 44.7866,

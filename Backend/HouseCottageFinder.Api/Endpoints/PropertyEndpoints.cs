@@ -15,7 +15,11 @@ public static class PropertyEndpoints
             double? radius,
             string? dealType,
             decimal? minPrice,
-            decimal? maxPrice) =>
+            decimal? maxPrice,
+            int? minBedrooms,
+            int? maxBedrooms,
+            int? minArea,
+            int? maxArea) =>
         {
             var query = db.Properties.AsQueryable();
 
@@ -32,6 +36,26 @@ public static class PropertyEndpoints
             if (maxPrice.HasValue)
             {
                 query = query.Where(p => p.Price <= maxPrice.Value);
+            }
+
+            if (minBedrooms.HasValue)
+            {
+                query = query.Where(p => p.Bedrooms >= minBedrooms.Value);
+            }
+
+            if (maxBedrooms.HasValue)
+            {
+                query = query.Where(p => p.Bedrooms <= maxBedrooms.Value);
+            }
+
+            if (minArea.HasValue)
+            {
+                query = query.Where(p => p.Area >= minArea.Value);
+            }
+
+            if (maxArea.HasValue)
+            {
+                query = query.Where(p => p.Area <= maxArea.Value);
             }
 
             var properties = await query.OrderBy(p => p.CreatedAt).ToListAsync();

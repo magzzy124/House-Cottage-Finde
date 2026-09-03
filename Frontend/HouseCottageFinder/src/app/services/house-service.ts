@@ -8,6 +8,10 @@ export interface PropertyFilters {
   dealType: string;
   minPrice: number | null;
   maxPrice: number | null;
+  minBedrooms: number | null;
+  maxBedrooms: number | null;
+  minArea: number | null;
+  maxArea: number | null;
 }
 
 @Injectable({
@@ -29,6 +33,10 @@ export class HouseService {
     dealType: 'Any',
     minPrice: null,
     maxPrice: null,
+    minBedrooms: null,
+    maxBedrooms: null,
+    minArea: null,
+    maxArea: null,
   });
 
   private fetchTimer: ReturnType<typeof setTimeout> | null = null;
@@ -72,11 +80,23 @@ export class HouseService {
       if (f.dealType !== 'Any') {
         params['dealType'] = f.dealType;
       }
-      if (f.minPrice !== null) {
+      if (f.minPrice !== null && f.minPrice > 0) {
         params['minPrice'] = f.minPrice;
       }
-      if (f.maxPrice !== null) {
+      if (f.maxPrice !== null && f.maxPrice < 1000000) {
         params['maxPrice'] = f.maxPrice;
+      }
+      if (f.minBedrooms !== null) {
+        params['minBedrooms'] = f.minBedrooms;
+      }
+      if (f.maxBedrooms !== null) {
+        params['maxBedrooms'] = f.maxBedrooms;
+      }
+      if (f.minArea !== null) {
+        params['minArea'] = f.minArea;
+      }
+      if (f.maxArea !== null) {
+        params['maxArea'] = f.maxArea;
       }
 
       this.http.get('/api/properties', { params }).subscribe({
