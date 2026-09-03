@@ -1,12 +1,12 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth-service';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-sell',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule],
   templateUrl: './sell.html',
   styleUrl: './sell.css',
 })
