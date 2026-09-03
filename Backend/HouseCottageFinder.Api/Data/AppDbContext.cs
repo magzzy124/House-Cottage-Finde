@@ -17,6 +17,10 @@ public class AppDbContext : DbContext
 
     public DbSet<PriceHistory> PriceHistory { get; set; } = null!;
 
+    public DbSet<Notification> Notifications { get; set; } = null!;
+
+    public DbSet<SavedSearch> SavedSearches { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>()

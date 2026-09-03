@@ -50,5 +50,7 @@ app.MapPropertyEndpoints();
 app.MapFavoritesEndpoints();
 app.MapStatsEndpoints();
 app.MapChatEndpoints();
+app.MapNotificationEndpoints();
+app.MapSavedSearchEndpoints();
 
 app.Run();
