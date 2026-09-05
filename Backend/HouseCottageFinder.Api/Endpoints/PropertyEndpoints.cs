@@ -1,5 +1,6 @@
 using HouseCottageFinder.Api.Data;
 using HouseCottageFinder.Api.Models;
+using HouseCottageFinder.Api.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace HouseCottageFinder.Api.Endpoints;
@@ -90,10 +91,58 @@ public static class PropertyEndpoints
             return Results.Ok(history);
         }).WithName("GetPriceHistory");
 
+        app.MapGet("/api/properties/my", async (int userId, AppDbContext db) =>
+        {
+            var properties = await db.Properties
+                .Where(p => p.UserId == userId)
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
+
+            return Results.Ok(properties);
+        }).WithName("GetMyProperties");
+
+        app.MapPut("/api/properties/{id:int}", async (int id, int userId, UpdatePropertyRequest request, AppDbContext db) =>
+        {
+            var property = await db.Properties.FindAsync(id);
+            if (property is null) return Results.NotFound(new { message = "Property not found" });
+            if (property.UserId != userId) return Results.Forbid();
+
+            property.Title = request.Title;
+            property.Address = request.Address;
+            property.City = request.City;
+            property.DealType = request.DealType;
+            property.Price = request.Price;
+            property.Bedrooms = request.Bedrooms;
+            property.Bathrooms = request.Bathrooms;
+            property.Area = request.Area;
+            property.Latitude = request.Latitude;
+            property.Longitude = request.Longitude;
+            property.Description = request.Description ?? "";
+            property.ImageUrl = request.ImageUrl ?? property.ImageUrl;
+            property.ImageUrls = request.ImageUrls ?? property.ImageUrls;
+
+            await db.SaveChangesAsync();
+
+            return Results.Ok(new { message = "Listing updated" });
+        }).WithName("UpdateProperty");
+
+        app.MapDelete("/api/properties/{id:int}", async (int id, int userId, AppDbContext db) =>
+        {
+            var property = await db.Properties.FindAsync(id);
+            if (property is null) return Results.NotFound(new { message = "Property not found" });
+            if (property.UserId != userId) return Results.Forbid();
+
+            db.Properties.Remove(property);
+            await db.SaveChangesAsync();
+
+            return Results.Ok(new { message = "Listing deleted" });
+        }).WithName("DeleteProperty");
+
         app.MapPost("/api/properties", async (CreatePropertyRequest request, int userId, AppDbContext db) =>
         {
             var property = new Property
             {
+                UserId = userId,
                 Title = request.Title,
                 Address = request.Address,
                 City = request.City,
@@ -105,11 +154,14 @@ public static class PropertyEndpoints
                 Latitude = request.Latitude,
                 Longitude = request.Longitude,
                 Description = request.Description ?? "",
-                ImageUrl = request.ImageUrl ?? "house.jpg"
+                ImageUrl = request.ImageUrl ?? "house.jpg",
+                ImageUrls = request.ImageUrls ?? ""
             };
 
             db.Properties.Add(property);
             await db.SaveChangesAsync();
+
+            await NotificationService.CheckAndCreateNotifications(db, property);
 
             return Results.Created($"/api/properties/{property.Id}", new { id = property.Id, message = "Listing created" });
         }).WithName("CreateProperty");

@@ -5,3 +5,6 @@ node_modules/
 dist/
 .cache/
 *.user
+wwwroot/uploads/
+test-results/
+playwright-report/

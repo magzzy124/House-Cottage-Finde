@@ -90,8 +90,45 @@ input:focus, button:focus-visible {
   z-index: 100;
 }
 
-.geoapify-geocoder-autocomplete .geoapify-geocoder-autocomplete__items {
+.geoapify-geocoder-autocomplete .geoapify-autocomplete-items {
   z-index: 1000 !important;
+}
+
+/* Geoapify input seamless inside wrapper */
+.geoapify-geocoder-autocomplete-container {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+}
+
+.geoapify-input-wrapper {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  flex: 1 1 auto !important;
+  max-width: 100% !important;
+}
+
+.geoapify-autocomplete-input {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  padding: 0 12px !important;
+  height: 48px !important;
+  line-height: 48px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: #1e293b !important;
+  outline: none !important;
+  width: 100% !important;
+}
+
+.geoapify-autocomplete-input::placeholder {
+  color: #94a3b8 !important;
 }
 
 /* Compare bar slide up */

@@ -2,5 +2,9 @@
   "/api": {
     "target": "http://127.0.0.1:5131",
     "secure": false
+  },
+  "/uploads": {
+    "target": "http://127.0.0.1:5131",
+    "secure": false
   }
 }

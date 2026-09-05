@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { FavoritesService } from '../../services/favorites-service';
+import { NotificationService } from '../../services/notification-service';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +23,7 @@ export class Login implements OnInit {
 
   private auth = inject(AuthService);
   private favoritesService = inject(FavoritesService);
+  private notificationService = inject(NotificationService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
@@ -45,6 +47,7 @@ export class Login implements OnInit {
       next: (user) => {
         this.auth.setCurrentUser(user);
         this.favoritesService.loadFavorites();
+        this.notificationService.startPolling();
         this.loading = false;
         this.router.navigate(['/search']);
       },

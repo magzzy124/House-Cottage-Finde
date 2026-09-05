@@ -1,13 +1,27 @@
 <div class="h-[calc(100vh-72px)] overflow-y-auto">
   <div class="max-w-2xl mx-auto px-8 py-10">
-    <h1 class="text-2xl font-bold text-slate-900 mb-1">Create a listing</h1>
-    <p class="text-sm text-slate-400 mb-8">Fill in the details below to publish your property</p>
+    <div class="flex items-center justify-between mb-1">
+      <h1 class="text-2xl font-bold text-slate-900">Edit listing</h1>
+      <a
+        routerLink="/my-listings"
+        class="flex items-center gap-2 text-sm font-semibold text-[#4a8dd0] hover:text-[#3d7ab8] transition-colors cursor-pointer"
+      >
+        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        Back to listings
+      </a>
+    </div>
+    <p class="text-sm text-slate-400 mb-8">Update your property details</p>
 
-    @if (success()) {
+    @if (loading()) {
+      <div class="flex flex-col items-center justify-center gap-5 text-center py-32">
+        <div class="w-12 h-12 border-4 border-[#4a8dd0] border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-slate-400 text-sm font-medium">Loading listing...</p>
+      </div>
+    } @else if (success()) {
       <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 text-center">
         <svg class="w-12 h-12 text-emerald-500 mx-auto mb-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        <p class="text-lg font-bold text-emerald-700">Listing created!</p>
-        <p class="text-sm text-emerald-600 mt-1">Redirecting to your listing...</p>
+        <p class="text-lg font-bold text-emerald-700">Listing updated!</p>
+        <p class="text-sm text-emerald-600 mt-1">Redirecting to your listings...</p>
       </div>
     } @else {
       <div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-8">
@@ -169,14 +183,14 @@
 
           <button
             (click)="onSubmit()"
-            [disabled]="loading()"
+            [disabled]="saving()"
             class="w-full rounded-xl py-3 text-sm font-bold text-white bg-gradient-to-r from-[#4a8dd0] to-[#3568a0] hover:from-[#3d7ab8] hover:to-[#2d5a8c] shadow-lg shadow-[#4a8dd0]/25 hover:shadow-xl hover:shadow-[#4a8dd0]/30 disabled:opacity-60 transition-all duration-200 cursor-pointer"
           >
-            @if (loading()) {
+            @if (saving()) {
               <span class="loading loading-spinner loading-sm"></span>
-              Publishing...
+              Saving...
             } @else {
-              Publish listing
+              Save changes
             }
           </button>
         </div>

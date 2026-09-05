@@ -7,6 +7,8 @@ import { GeoapifyGeocoderAutocompleteModule } from "@geoapify/angular-geocoder-a
 import { SelectedLocation } from '../../services/selected-location';
 import { FormsModule } from '@angular/forms';
 import { NgxSliderModule, Options } from '@angular-slider/ngx-slider';
+import { SavedSearchService } from '../../services/saved-search-service';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-search',
@@ -17,6 +19,8 @@ import { NgxSliderModule, Options } from '@angular-slider/ngx-slider';
 export class Search implements OnInit {
   houseService = inject(HouseService)
   selectedLocService = inject(SelectedLocation)
+  savedSearchService = inject(SavedSearchService)
+  authService = inject(AuthService)
   private router = inject(Router);
 
   tabs = ['m', 'km'];
@@ -31,6 +35,10 @@ export class Search implements OnInit {
   maxBedrooms: number | null = null;
   minArea: number | null = null;
   maxArea: number | null = null;
+
+  saveSearchName = '';
+  saveSearchSuccess = signal(false);
+  saveSearchError = signal('');
 
   formatPrice(price: number): string {
     return price >= 1000 ? `$${(price / 1000).toFixed(price % 1000 === 0 ? 0 : 1)}k` : `$${price}`;
@@ -121,6 +129,52 @@ export class Search implements OnInit {
 
   onSuggestionsChange(list: any[]) {
     console.log('Suggestions:', list);
+  }
+
+  openSaveSearchModal() {
+    const modal = document.getElementById('save-search-modal') as HTMLDialogElement;
+    this.saveSearchName = '';
+    this.saveSearchSuccess.set(false);
+    this.saveSearchError.set('');
+    modal?.showModal();
+  }
+
+  closeSaveSearchModal() {
+    const modal = document.getElementById('save-search-modal') as HTMLDialogElement;
+    modal?.close();
+  }
+
+  saveSearch() {
+    if (!this.saveSearchName.trim()) {
+      this.saveSearchError.set('Please enter a name for this search');
+      return;
+    }
+
+    const location = this.selectedLocService.selectedLocation();
+    const radiusInMeters = this.selectedTab() === 'km' ? Number(this.radius) * 1000 : Number(this.radius);
+
+    this.savedSearchService.saveSearch({
+      name: this.saveSearchName.trim(),
+      dealType: this.selectedDealType(),
+      minPrice: this.value,
+      maxPrice: this.maxValue,
+      minBedrooms: this.minBedrooms,
+      maxBedrooms: this.maxBedrooms,
+      minArea: this.minArea,
+      maxArea: this.maxArea,
+      lat: location?.lat ?? 44.7866,
+      lon: location?.lon ?? 20.4489,
+      radiusKm: radiusInMeters / 1000,
+    }).subscribe({
+      next: () => {
+        this.saveSearchSuccess.set(true);
+        this.saveSearchError.set('');
+        setTimeout(() => this.closeSaveSearchModal(), 1500);
+      },
+      error: (err) => {
+        this.saveSearchError.set(err.error?.message || 'Failed to save search');
+      },
+    });
   }
 
 }

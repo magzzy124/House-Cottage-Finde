@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, OnDestroy, signal } from '@angular/core';
 import { AuthService } from './auth-service';
 
 export interface AppNotification {
@@ -15,7 +15,7 @@ export interface AppNotification {
 @Injectable({
   providedIn: 'root',
 })
-export class NotificationService {
+export class NotificationService implements OnDestroy {
   private http = inject(HttpClient);
   private auth = inject(AuthService);
   private api = '/api/notifications';
@@ -28,6 +28,23 @@ export class NotificationService {
 
   private _loading = signal(false);
   loading = this._loading.asReadonly();
+
+  private pollTimer: ReturnType<typeof setInterval> | null = null;
+
+  startPolling() {
+    this.loadUnreadCount();
+    this.pollTimer = setInterval(() => {
+      if (this.auth.isAuthenticated()) {
+        this.loadUnreadCount();
+      }
+    }, 30000);
+  }
+
+  ngOnDestroy() {
+    if (this.pollTimer) {
+      clearInterval(this.pollTimer);
+    }
+  }
 
   private getUserId(): number | null {
     return this.auth.currentUser()?.id ?? null;

@@ -2,27 +2,34 @@
   class="filters flex items-center gap-3 px-6 py-3 bg-slate-50/80 backdrop-blur-sm border-b border-slate-100 relative z-50"
 >
   <div
-    class="input bg-white rounded-2xl p-2 h-12 w-150 flex items-center shadow-sm border border-slate-100 hover:border-slate-200 focus-within:border-[#4a8dd0] focus-within:ring-2 focus-within:ring-[#4a8dd0]/10 transition-all duration-200"
+    class="input bg-white rounded-2xl h-12 w-full max-w-96 flex items-center shadow-sm border border-slate-100 hover:border-slate-200 focus-within:border-[#4a8dd0] focus-within:ring-2 focus-within:ring-[#4a8dd0]/10 transition-all duration-200 relative"
   >
-    <svg class="h-[80%] opacity-40 ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-      <g
-        stroke-linejoin="round"
-        stroke-linecap="round"
-        stroke-width="2.5"
-        fill="none"
-        stroke="currentColor"
-      >
-        <circle cx="11" cy="11" r="8"></circle>
-        <path d="m21 21-4.3-4.3"></path>
-      </g>
+    <svg
+      class="w-5 h-5 opacity-40 ml-3.5 flex-shrink-0"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <circle cx="11" cy="11" r="8"></circle>
+      <path d="m21 21-4.3-4.3"></path>
     </svg>
-    <geoapify-geocoder-autocomplete>
-      class="flex-1" placeholder="Search for a city or an address" [lang]="'en'" [limit]="8"
-      [addDetails]="true" (placeSelect)="onPlaceSelected($event)"
-      (suggestionsChange)="onSuggestionsChange($event)"
-    </geoapify-geocoder-autocomplete>
+    <div class="flex-1 min-w-0 h-full flex items-center">
+      <geoapify-geocoder-autocomplete
+        class="w-full"
+        placeholder="Search for a city or an address"
+        [lang]="'en'"
+        [limit]="8"
+        [addDetails]="true"
+        (placeSelect)="onPlaceSelected($event)"
+        (suggestionsChange)="onSuggestionsChange($event)"
+      >
+      </geoapify-geocoder-autocomplete>
+    </div>
   </div>
-
   <div class="dropdown dropdown-bottom">
     <div
       tabindex="0"
@@ -162,7 +169,11 @@
       role="button"
       class="btn h-12 m-0 border border-slate-100 bg-white rounded-2xl cursor-pointer shadow-sm hover:shadow-md hover:border-slate-200 text-sm font-medium text-slate-700 transition-all duration-200 px-4"
     >
-      Rooms{{ (minBedrooms !== null || maxBedrooms !== null) ? ': ' + (minBedrooms ?? 'Any') + ' - ' + (maxBedrooms ?? 'Any') : '' }}
+      Rooms{{
+        minBedrooms !== null || maxBedrooms !== null
+          ? ': ' + (minBedrooms ?? 'Any') + ' - ' + (maxBedrooms ?? 'Any')
+          : ''
+      }}
     </div>
     <div
       tabindex="-1"
@@ -209,7 +220,11 @@
       role="button"
       class="btn h-12 m-0 border border-slate-100 bg-white rounded-2xl cursor-pointer shadow-sm hover:shadow-md hover:border-slate-200 text-sm font-medium text-slate-700 transition-all duration-200 px-4"
     >
-      Area{{ (minArea !== null || maxArea !== null) ? ': ' + (minArea ?? 'Any') + 'm² - ' + (maxArea ?? 'Any') + 'm²' : '' }}
+      Area{{
+        minArea !== null || maxArea !== null
+          ? ': ' + (minArea ?? 'Any') + 'm² - ' + (maxArea ?? 'Any') + 'm²'
+          : ''
+      }}
     </div>
     <div
       tabindex="-1"
@@ -249,6 +264,31 @@
       </div>
     </div>
   </div>
+
+  @if (authService.isAuthenticated()) {
+    <button
+      (click)="openSaveSearchModal()"
+      class="btn h-12 m-0 border border-slate-100 bg-white rounded-2xl cursor-pointer shadow-sm hover:shadow-md hover:border-slate-200 text-sm font-medium text-slate-700 transition-all duration-200 px-4 flex items-center gap-2"
+    >
+      <svg
+        class="w-4 h-4 text-[#4a8dd0]"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path
+          d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"
+        />
+        <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
+        <path d="M7 3v4a1 1 0 0 0 1 1h7" />
+      </svg>
+      Save search
+    </button>
+  }
 </div>
 
 <div class="results flex h-[calc(100vh-72px-56px)]">
@@ -312,3 +352,62 @@
     <app-map [radius]="radius" [unit]="selectedTab()" />
   </div>
 </div>
+
+<dialog id="save-search-modal" class="modal">
+  <div class="modal-box bg-white rounded-3xl shadow-2xl max-w-md p-8">
+    <h3 class="text-lg font-bold text-slate-900 mb-4">Save this search</h3>
+
+    @if (saveSearchSuccess()) {
+      <div class="flex flex-col items-center gap-3 py-6">
+        <div class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center">
+          <svg
+            class="w-6 h-6 text-emerald-600"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M20 6 9 17l-5-5" />
+          </svg>
+        </div>
+        <p class="text-sm font-semibold text-slate-700">Search saved successfully!</p>
+      </div>
+    } @else {
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-1.5">
+          <label class="font-medium text-xs text-slate-500" for="search-name">Search name</label>
+          <input
+            [(ngModel)]="saveSearchName"
+            type="text"
+            placeholder="e.g. Apartments in Belgrade"
+            class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+            id="search-name"
+          />
+        </div>
+        @if (saveSearchError()) {
+          <p class="text-xs text-red-500">{{ saveSearchError() }}</p>
+        }
+        <div class="flex gap-3 justify-end mt-2">
+          <button
+            (click)="closeSaveSearchModal()"
+            class="px-4 py-2 text-sm font-semibold text-slate-600 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            (click)="saveSearch()"
+            class="px-5 py-2 text-sm font-semibold text-white bg-[#4a8dd0] rounded-xl hover:bg-[#3d7ab8] shadow-sm transition-all cursor-pointer"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>

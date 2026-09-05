@@ -1,0 +1,108 @@
+<div class="h-[calc(100vh-72px)] overflow-y-auto">
+  <div class="max-w-3xl mx-auto px-8 py-8">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">Notifications</h1>
+        <p class="text-sm text-slate-400 mt-1">
+          @if (notificationService.unreadCount() > 0) {
+            {{ notificationService.unreadCount() }} unread
+          } @else {
+            All caught up
+          }
+        </p>
+      </div>
+      <div class="flex items-center gap-3">
+        @if (notificationService.unreadCount() > 0) {
+          <button
+            (click)="markAllRead()"
+            class="text-sm font-semibold text-[#4a8dd0] hover:text-[#3d7ab8] transition-colors cursor-pointer"
+          >
+            Mark all as read
+          </button>
+        }
+        <a
+          routerLink="/saved-searches"
+          class="text-sm font-semibold text-[#4a8dd0] hover:text-[#3d7ab8] transition-colors cursor-pointer"
+        >
+          Saved searches
+        </a>
+      </div>
+    </div>
+
+    @if (notificationService.loading()) {
+      <div class="flex flex-col items-center justify-center gap-5 text-center py-32">
+        <div class="w-12 h-12 border-4 border-[#4a8dd0] border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-slate-400 text-sm font-medium">Loading notifications...</p>
+      </div>
+    } @else if (notificationService.notifications().length > 0) {
+      <div class="flex flex-col gap-2">
+        @for (n of notificationService.notifications(); track n.id) {
+          <div
+            (click)="onNotificationClick(n)"
+            class="flex items-start gap-4 p-4 rounded-2xl cursor-pointer transition-all duration-200 border"
+            [class.bg-white]="n.isRead"
+            [class.border-slate-100]="n.isRead"
+            [class.hover:bg-slate-50]="n.isRead"
+            [class.bg-amber-50/50]="!n.isRead"
+            [class.border-amber-100]="!n.isRead"
+            [class.hover:bg-amber-50]="!n.isRead"
+          >
+            <div
+              class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+              [class.bg-amber-100]="!n.isRead"
+              [class.bg-slate-100]="n.isRead"
+            >
+              <svg class="w-5 h-5" [class.text-amber-600]="!n.isRead" [class.text-slate-400]="n.isRead" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+              </svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-start justify-between gap-3">
+                <p class="text-sm font-semibold" [class.text-slate-900]="!n.isRead" [class.text-slate-600]="n.isRead">
+                  {{ n.title }}
+                </p>
+                <span class="text-xs text-slate-400 whitespace-nowrap flex-shrink-0">{{ formatDate(n.createdAt) }}</span>
+              </div>
+              <p class="text-sm text-slate-500 mt-1 leading-relaxed">{{ n.message }}</p>
+              @if (n.propertyTitle) {
+                <p class="text-xs text-[#4a8dd0] font-medium mt-2">{{ n.propertyTitle }}</p>
+              }
+            </div>
+            @if (!n.isRead) {
+              <div class="w-2.5 h-2.5 rounded-full bg-amber-400 flex-shrink-0 mt-2"></div>
+            }
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="flex flex-col items-center justify-center gap-5 text-center py-32">
+        <div class="w-28 h-28 rounded-3xl bg-gradient-to-br from-amber-50 to-amber-100 flex items-center justify-center shadow-inner">
+          <svg
+            class="w-12 h-12 text-amber-300"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold text-slate-700">No notifications yet</h3>
+          <p class="text-sm text-slate-400 mt-2 max-w-xs mx-auto leading-relaxed">
+            Save a search on the search page and you'll get notified when new listings match your criteria.
+          </p>
+        </div>
+        <a
+          routerLink="/search"
+          class="bg-[#4a8dd0] text-white font-semibold text-sm px-7 py-3 rounded-full hover:bg-[#3d7ab8] shadow-md shadow-[#4a8dd0]/20 hover:shadow-lg hover:shadow-[#4a8dd0]/30 transition-all duration-200 cursor-pointer"
+        >
+          Go to search
+        </a>
+      </div>
+    }
+  </div>
+</div>

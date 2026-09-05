@@ -36,8 +36,11 @@ export class ListingDetails implements AfterViewInit {
   galleryImages = computed(() => {
     const item = this.listing();
     if (!item) return [];
+    if (item.imageUrls && item.imageUrls.length > 0) {
+      return item.imageUrls.split(',').filter((u: string) => u.trim());
+    }
     const base = item.imageUrl || 'house.jpg';
-    return [base, base, base, base];
+    return [base];
   });
 
   isFavorited = computed(() => {

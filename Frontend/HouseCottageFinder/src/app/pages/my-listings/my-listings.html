@@ -1,0 +1,84 @@
+<div class="h-[calc(100vh-72px)] overflow-y-auto">
+  <div class="max-w-5xl mx-auto px-8 py-8">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">My Listings</h1>
+        <p class="text-sm text-slate-400 mt-1">
+          {{ listings().length }} {{ listings().length === 1 ? 'listing' : 'listings' }}
+        </p>
+      </div>
+      <a
+        routerLink="/sell"
+        class="flex items-center gap-2 px-4 py-2.5 bg-[#4a8dd0] text-white text-sm font-semibold rounded-xl hover:bg-[#3d7ab8] shadow-sm transition-all duration-200"
+      >
+        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+        New listing
+      </a>
+    </div>
+
+    @if (loading()) {
+      <div class="flex flex-col items-center justify-center gap-5 text-center py-32">
+        <div class="w-12 h-12 border-4 border-[#4a8dd0] border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-slate-400 text-sm font-medium">Loading your listings...</p>
+      </div>
+    } @else if (listings().length > 0) {
+      <div class="flex flex-col gap-3">
+        @for (item of listings(); track item.id) {
+          <div class="flex items-center gap-4 p-4 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-200">
+            <div
+              class="w-24 h-24 rounded-xl bg-cover bg-center flex-shrink-0 cursor-pointer"
+              [style.background-image]="'url(' + (item.imageUrl || 'house.jpg') + ')'"
+              (click)="onCardClicked(item.id)"
+            ></div>
+            <div class="flex-1 min-w-0 cursor-pointer" (click)="onCardClicked(item.id)">
+              <div class="flex items-center gap-2">
+                <h3 class="text-sm font-bold text-slate-800 truncate">{{ item.title }}</h3>
+                <span
+                  class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-md flex-shrink-0"
+                  [style.background-color]="dealBg(item)"
+                  [style.color]="dealColor(item)"
+                >{{ item.dealType }}</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-0.5 truncate">{{ item.address }}, {{ item.city }}</p>
+              <p class="text-lg font-black text-slate-900 mt-1">{{ item.price | number:'1.0-0' }} $</p>
+            </div>
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <a
+                [routerLink]="['/edit-listing', item.id]"
+                class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-[#4a8dd0] hover:bg-[#4a8dd0]/5 transition-all duration-200 cursor-pointer"
+              >
+                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+              </a>
+              <button
+                (click)="deleteListing(item.id)"
+                class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all duration-200 cursor-pointer"
+              >
+                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <div class="flex flex-col items-center justify-center gap-5 text-center py-32">
+        <div class="w-28 h-28 rounded-3xl bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center shadow-inner">
+          <svg class="w-12 h-12 text-slate-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold text-slate-700">No listings yet</h3>
+          <p class="text-sm text-slate-400 mt-2 max-w-xs mx-auto leading-relaxed">
+            Start selling by creating your first property listing.
+          </p>
+        </div>
+        <a
+          routerLink="/sell"
+          class="bg-[#4a8dd0] text-white font-semibold text-sm px-7 py-3 rounded-full hover:bg-[#3d7ab8] shadow-md shadow-[#4a8dd0]/20 hover:shadow-lg hover:shadow-[#4a8dd0]/30 transition-all duration-200 cursor-pointer"
+        >
+          Create listing
+        </a>
+      </div>
+    }
+  </div>
+</div>

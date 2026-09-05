@@ -1,20 +1,21 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth-service';
 import { HttpClient } from '@angular/common/http';
 import { GeoapifyGeocoderAutocompleteModule } from '@geoapify/angular-geocoder-autocomplete';
 
 @Component({
-  selector: 'app-sell',
-  imports: [FormsModule, GeoapifyGeocoderAutocompleteModule],
-  templateUrl: './sell.html',
-  styleUrl: './sell.css',
+  selector: 'app-edit-listing',
+  imports: [FormsModule, RouterLink, GeoapifyGeocoderAutocompleteModule],
+  templateUrl: './edit-listing.html',
+  styleUrl: './edit-listing.css',
 })
-export class Sell implements OnInit {
+export class EditListing implements OnInit {
   private auth = inject(AuthService);
   private http = inject(HttpClient);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   title = '';
   address = '';
@@ -34,7 +35,8 @@ export class Sell implements OnInit {
   mainImageIndex = 0;
   uploading = signal(false);
 
-  loading = signal(false);
+  loading = signal(true);
+  saving = signal(false);
   error = signal('');
   success = signal(false);
 
@@ -43,7 +45,41 @@ export class Sell implements OnInit {
   ngOnInit() {
     if (!this.auth.isAuthenticated()) {
       this.router.navigate(['/login']);
+      return;
     }
+
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    this.http.get<any>(`/api/properties/${id}`).subscribe({
+      next: (property) => {
+        this.title = property.title;
+        this.address = property.address;
+        this.city = property.city;
+        this.dealType = property.dealType;
+        this.price = property.price;
+        this.bedrooms = property.bedrooms;
+        this.bathrooms = property.bathrooms;
+        this.area = property.area;
+        this.description = property.description || '';
+        this.imageUrl = property.imageUrl || '';
+        this.latitude = property.latitude;
+        this.longitude = property.longitude;
+
+        if (property.imageUrls && property.imageUrls.length > 0) {
+          this.uploadedImages = property.imageUrls.split(',').filter((u: string) => u.trim());
+          if (this.uploadedImages.length > 0) {
+            this.mainImageIndex = 0;
+          }
+        } else if (property.imageUrl && property.imageUrl !== 'house.jpg') {
+          this.uploadedImages = [property.imageUrl];
+        }
+
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.error.set('Failed to load listing');
+      },
+    });
   }
 
   onPlaceSelected(feature: any) {
@@ -101,13 +137,14 @@ export class Sell implements OnInit {
       return;
     }
 
-    this.loading.set(true);
+    this.saving.set(true);
 
+    const id = Number(this.route.snapshot.paramMap.get('id'));
     const mainImage = this.uploadedImages.length > 0
       ? this.uploadedImages[this.mainImageIndex]
       : 'house.jpg';
 
-    this.http.post('/api/properties?userId=' + this.auth.currentUser()?.id, {
+    this.http.put(`/api/properties/${id}?userId=${this.auth.currentUser()?.id}`, {
       title: this.title,
       address: this.address,
       city: this.city,
@@ -122,14 +159,14 @@ export class Sell implements OnInit {
       imageUrl: mainImage,
       imageUrls: this.uploadedImages.join(','),
     }).subscribe({
-      next: (res: any) => {
-        this.loading.set(false);
+      next: () => {
+        this.saving.set(false);
         this.success.set(true);
-        setTimeout(() => this.router.navigate(['/listing', res.id]), 1500);
+        setTimeout(() => this.router.navigate(['/my-listings']), 1500);
       },
       error: (err) => {
-        this.loading.set(false);
-        this.error.set(err.error?.message || 'Failed to create listing');
+        this.saving.set(false);
+        this.error.set(err.error?.message || 'Failed to update listing');
       },
     });
   }

@@ -4,6 +4,7 @@ import { Router, RouterLink, RouterOutlet } from "@angular/router";
 import { AuthService } from './services/auth-service';
 import { FavoritesService } from './services/favorites-service';
 import { CompareService } from './services/compare-service';
+import { NotificationService } from './services/notification-service';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +19,7 @@ export class App implements OnInit {
   protected auth = inject(AuthService);
   private favoritesService = inject(FavoritesService);
   protected compareService = inject(CompareService);
+  protected notificationService = inject(NotificationService);
   private router = inject(Router);
 
   private currentUrl = signal('');
@@ -30,12 +32,14 @@ export class App implements OnInit {
     });
     if (this.auth.isAuthenticated()) {
       this.favoritesService.loadFavorites();
+      this.notificationService.startPolling();
     }
   }
 
   logout() {
     this.auth.logout();
     this.favoritesService.loadFavorites();
+    this.notificationService.ngOnDestroy();
     this.router.navigate(['/login']);
   }
 }

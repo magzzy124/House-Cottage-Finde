@@ -32,6 +32,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureDeleted();
     db.Database.EnsureCreated();
 }
 
@@ -45,6 +46,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors();
 
+app.UseStaticFiles();
+
 app.MapAuthEndpoints();
 app.MapPropertyEndpoints();
 app.MapFavoritesEndpoints();
@@ -52,5 +55,6 @@ app.MapStatsEndpoints();
 app.MapChatEndpoints();
 app.MapNotificationEndpoints();
 app.MapSavedSearchEndpoints();
+app.MapUploadEndpoints();
 
 app.Run();

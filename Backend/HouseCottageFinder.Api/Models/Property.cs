@@ -7,6 +7,8 @@ public class Property
     [Key]
     public int Id { get; set; }
 
+    public int UserId { get; set; }
+
     [Required]
     [MaxLength(200)]
     public string Title { get; set; } = string.Empty;
@@ -41,6 +43,9 @@ public class Property
 
     [MaxLength(500)]
     public string? ImageUrl { get; set; }
+
+    [MaxLength(2000)]
+    public string? ImageUrls { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
