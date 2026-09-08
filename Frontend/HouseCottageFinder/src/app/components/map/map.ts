@@ -4,6 +4,8 @@ import * as L from "leaflet";
 import "leaflet.markercluster";
 import { SelectedLocation } from '../../services/selected-location';
 import { HouseService } from '../../services/house-service';
+import { FavoritesService } from '../../services/favorites-service';
+import { AuthService } from '../../services/auth-service';
 
 @Component({
   selector: 'app-map',
@@ -14,6 +16,8 @@ import { HouseService } from '../../services/house-service';
 export class Map implements AfterViewInit {
   selectedLocService = inject(SelectedLocation);
   houseService = inject(HouseService);
+  favoritesService = inject(FavoritesService);
+  authService = inject(AuthService);
   private router = inject(Router);
   private map!: L.Map;
   private circle: L.Circle | null = null;
@@ -45,6 +49,21 @@ export class Map implements AfterViewInit {
 
   constructor() {
     (globalThis as any).openListing = (id: number) => this.router.navigate(['/listing', id]);
+    (globalThis as any).toggleFavorite = (id: number) => {
+      if (!this.authService.isAuthenticated()) return;
+      const wasFav = this.favoritesService.isFavorited(id);
+      this.favoritesService.toggleFavorite(id);
+      const btn = document.querySelector(`button[data-fav-id="${id}"]`) as HTMLElement | null;
+      if (btn) {
+        const nowFav = !wasFav;
+        btn.style.background = nowFav ? 'rgba(244,63,94,0.9)' : 'rgba(255,255,255,0.9)';
+        const svg = btn.querySelector('svg');
+        if (svg) {
+          svg.style.color = nowFav ? '#fff' : '#475569';
+          svg.setAttribute('fill', nowFav ? 'currentColor' : 'none');
+        }
+      }
+    };
 
     effect(() => {
       const location = this.selectedLocService.selectedLocation();
@@ -69,6 +88,23 @@ export class Map implements AfterViewInit {
       const id = this.houseService.focusedPropertyId();
       if (id !== null && this.map && this.clusterGroup) {
         this.focusMarker(id);
+      }
+    });
+
+    effect(() => {
+      const favIds = this.favoritesService.favoriteIds();
+      const popupEl = this.map?.getContainer().querySelector('.leaflet-popup');
+      if (popupEl) {
+        popupEl.querySelectorAll('button[data-fav-id]').forEach((btn) => {
+          const propertyId = Number(btn.getAttribute('data-fav-id'));
+          const nowFav = favIds.has(propertyId);
+          (btn as HTMLElement).style.background = nowFav ? 'rgba(244,63,94,0.9)' : 'rgba(255,255,255,0.9)';
+          const svg = btn.querySelector('svg');
+          if (svg) {
+            svg.style.color = nowFav ? '#fff' : '#475569';
+            svg.setAttribute('fill', nowFav ? 'currentColor' : 'none');
+          }
+        });
       }
     });
   }
@@ -140,7 +176,20 @@ export class Map implements AfterViewInit {
         continue;
       }
 
-      const marker = L.marker(position).bindPopup(this.buildPopupContent(card), {
+      const marker = L.marker(position, {
+        icon: L.divIcon({
+          className: '',
+          iconSize: [30, 40],
+          iconAnchor: [15, 40],
+          popupAnchor: [0, -40],
+          html: `<div style="position:relative;width:30px;height:40px">
+            <svg viewBox="0 0 30 40" width="30" height="40" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 0C6.7 0 0 6.7 0 15c0 10.5 15 25 15 25s15-14.5 15-25C30 6.7 23.3 0 15 0z" fill="${card.dealType === 'For sale' ? '#4a8dd0' : '#f59e0b'}" stroke="#fff" stroke-width="2"/>
+              <circle cx="15" cy="14" r="6" fill="#fff"/>
+            </svg>
+          </div>`
+        }),
+      }).bindPopup(() => this.buildPopupContent(card), {
         maxWidth: 800,
         minWidth: 200
       });
@@ -158,11 +207,28 @@ export class Map implements AfterViewInit {
   private buildPopupContent(card: any): string {
     const image = card.imageUrl || 'house.jpg';
     const dealColor = card.dealType === 'For sale' ? '#4a8dd0' : '#f59e0b';
+    const isLoggedIn = this.authService.isAuthenticated();
+    const isFav = this.favoritesService.isFavorited(card.id);
+    const favBg = isFav ? 'rgba(244,63,94,0.9)' : 'rgba(255,255,255,0.9)';
+    const favColor = isFav ? '#fff' : '#475569';
+    const favFill = isFav ? 'currentColor' : 'none';
+
+    const heartButton = isLoggedIn
+      ? `<button data-fav-id="${card.id}" onclick="window.toggleFavorite(${card.id});event.stopPropagation()" style="position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;background:${favBg};box-shadow:0 2px 6px rgba(0,0,0,0.15);transition:all 0.2s" title="Favorite">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="${favFill}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" style="color:${favColor}">
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+          </svg>
+        </button>`
+      : `<div style="position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.9);box-shadow:0 2px 6px rgba(0,0,0,0.15)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" style="color:#475569;opacity:0.4">
+            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+          </svg>
+        </div>`;
 
     return `
       <div style="display:flex;width:max-content;background:#fff;border-radius:20px;box-shadow:0 8px 25px rgba(0,0,0,0.12);font-family:'DM Sans',sans-serif">
         <div style="position:relative;width:140px;height:140px;flex-shrink:0;border-radius:20px;background-image:url('${image}');background-size:cover;background-position:center">
-          <img src="heart.svg" alt="save" style="position:absolute;top:10px;right:10px;width:20px;cursor:pointer" />
+          ${heartButton}
         </div>
         <div style="display:flex;flex-direction:column;justify-content:space-around;padding:8px 14px;width:max-content;min-width:0;border-radius:20px">
           <div style="display:flex;align-items:center;gap:10px;width:max-content">

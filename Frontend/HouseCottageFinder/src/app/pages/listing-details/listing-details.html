@@ -22,10 +22,10 @@
             class="h-[28rem] rounded-3xl overflow-hidden bg-cover bg-center shadow-lg"
             [style.background-image]="'url(' + activeImage() + ')'"
           ></div>
-          <div class="flex flex-col gap-3">
+          <div class="flex flex-col gap-3 max-h-[28rem] overflow-y-auto pr-1 scrollbar-thin">
             @for (img of galleryImages(); track $index) {
               <div
-                class="h-28 rounded-2xl overflow-hidden bg-cover bg-center cursor-pointer transition-all duration-200"
+                class="h-28 rounded-2xl bg-cover bg-center cursor-pointer transition-all duration-200"
                 [class.ring-2]="activeImage() === img"
                 [class.ring-[#4a8dd0]]="activeImage() === img"
                 [class.ring-offset-2]="activeImage() === img"
@@ -40,7 +40,7 @@
         </div>
 
         <div
-          class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 p-8 -mt-12 relative mx-3 border border-slate-100"
+          class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 p-8 relative mt-6 border border-slate-100"
         >
           <div class="flex items-start justify-between gap-4">
             <div class="flex-1">
