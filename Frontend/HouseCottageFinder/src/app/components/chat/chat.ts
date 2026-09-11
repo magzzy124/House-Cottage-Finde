@@ -20,11 +20,11 @@ export class Chat implements OnInit, OnDestroy {
   currentUserId = computed(() => this.authService.currentUser()?.id ?? 0);
 
   ngOnInit() {
-    this.chatService.startPolling(this.propertyId());
+    this.chatService.startListening(this.propertyId());
   }
 
   ngOnDestroy() {
-    this.chatService.stopPolling();
+    this.chatService.stopListening(this.propertyId());
   }
 
   isOwnMessage(senderId: number): boolean {

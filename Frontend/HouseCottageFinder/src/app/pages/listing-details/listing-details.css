@@ -18,3 +18,79 @@
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+
+::ng-deep .listing-gallery-container gallery {
+  display: block;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: transparent !important;
+}
+
+::ng-deep .listing-gallery-container gallery-core {
+  height: 100% !important;
+  background: transparent !important;
+}
+
+::ng-deep .listing-gallery-container gallery-core > * {
+  background: transparent !important;
+}
+
+::ng-deep .listing-gallery-container gallery-slider {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  background: transparent !important;
+}
+
+::ng-deep .listing-gallery-container gallery-slider .g-slider {
+  height: 100% !important;
+  background: transparent !important;
+}
+
+::ng-deep .listing-gallery-container gallery-slider .g-slider-content {
+  height: 100% !important;
+}
+
+::ng-deep .listing-gallery-container .g-slide {
+  height: 100% !important;
+}
+
+::ng-deep .listing-gallery-container gallery-image {
+  height: 100%;
+  width: 100%;
+}
+
+::ng-deep .listing-gallery-container gallery-image img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+::ng-deep .listing-gallery-container gallery-thumb {
+  background: transparent !important;
+}
+
+::ng-deep .listing-gallery-container gallery-thumbs {
+  background: transparent !important;
+}
+
+::ng-deep .listing-gallery-container gallery-thumbs .g-slider {
+  background: transparent !important;
+}
+
+::ng-deep .listing-gallery-container .g-thumb {
+  opacity: 0.6;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+::ng-deep .listing-gallery-container .g-thumb:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+::ng-deep .listing-gallery-container .g-active-thumb {
+  opacity: 1 !important;
+  box-shadow: 0 0 0 2px #4a8dd0;
+}

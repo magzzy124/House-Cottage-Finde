@@ -2,11 +2,20 @@ import { Component, computed, inject, signal, AfterViewInit } from '@angular/cor
 import { DecimalPipe } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import * as L from 'leaflet';
+import { GalleryModule, ImageItem } from 'ng-gallery';
+import { LightboxModule } from 'ng-gallery/lightbox';
 import { HouseService } from '../../services/house-service';
 import { IconWidget } from '../../components/icon-widget/icon-widget';
 import { WidgetType } from '../../models/widgetType';
 import { FavoritesService } from '../../services/favorites-service';
 import { AuthService } from '../../services/auth-service';
+
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+  iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+});
 
 interface PricePoint {
   price: number;
@@ -15,7 +24,7 @@ interface PricePoint {
 
 @Component({
   selector: 'app-listing-details',
-  imports: [RouterLink, IconWidget, DecimalPipe],
+  imports: [RouterLink, IconWidget, DecimalPipe, GalleryModule, LightboxModule],
   templateUrl: './listing-details.html',
   styleUrl: './listing-details.css',
 })
@@ -31,16 +40,17 @@ export class ListingDetails implements AfterViewInit {
   loaded = signal(false);
   priceHistory = signal<PricePoint[]>([]);
 
-  activeImage = signal('house.jpg');
-
-  galleryImages = computed(() => {
+  galleryItems = computed(() => {
+    console.log("galleryitems computed")
     const item = this.listing();
     if (!item) return [];
+    let urls: string[] = [];
     if (item.imageUrls && item.imageUrls.length > 0) {
-      return item.imageUrls.split(',').filter((u: string) => u.trim());
+      urls = item.imageUrls.split(',').filter((u: string) => u.trim());
+    } else {
+      urls = [item.imageUrl || 'house.jpg'];
     }
-    const base = item.imageUrl || 'house.jpg';
-    return [base];
+    return urls.map((url: string) => new ImageItem({ src: url, thumb: url }));
   });
 
   isFavorited = computed(() => {
@@ -69,10 +79,6 @@ export class ListingDetails implements AfterViewInit {
 
   dealBg(item: any): string {
     return item?.dealType === 'For sale' ? '#e8f1fa' : '#fdf1e2';
-  }
-
-  setActiveImage(image: string) {
-    this.activeImage.set(image);
   }
 
   toggleFavorite() {
@@ -108,7 +114,6 @@ export class ListingDetails implements AfterViewInit {
     this.houseService.getProperty(id).subscribe({
       next: (res) => {
         this.listing.set(res);
-        this.activeImage.set(res.imageUrl || 'house.jpg');
         this.loaded.set(true);
         if (this.isLoggedIn()) {
           this.favoritesService.checkFavorite(res.id);

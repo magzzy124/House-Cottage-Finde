@@ -6,7 +6,7 @@ export default defineConfig({
   retries: 1,
   use: {
     baseURL: 'http://localhost:4200',
-    headless: true,
+    headless: false,
     screenshot: 'only-on-failure',
   },
   webServer: {

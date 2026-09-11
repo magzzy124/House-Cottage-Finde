@@ -146,3 +146,11 @@ input:focus, button:focus-visible {
 .animate-slide-up {
   animation: slide-up 0.25s ease-out;
 }
+
+/* ng-gallery listing styles */
+.listing-gallery-container {
+  height: 32rem;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}

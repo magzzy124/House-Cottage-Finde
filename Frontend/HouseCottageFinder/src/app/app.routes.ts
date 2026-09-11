@@ -17,8 +17,13 @@ import { EditListing } from './pages/edit-listing/edit-listing';
 
 export const routes: Routes = [
   {
+    path: "",
+    redirectTo: "search",
+    pathMatch: "full"
+  },
+  {
     path: "search",
-    component: Search
+    component: Search,
   },
   {
     path: "listing/:id",
