@@ -12,6 +12,8 @@ export interface PropertyFilters {
   maxBedrooms: number | null;
   minArea: number | null;
   maxArea: number | null;
+  minPlotSize: number | null;
+  maxPlotSize: number | null;
 }
 
 @Injectable({
@@ -37,6 +39,8 @@ export class HouseService {
     maxBedrooms: null,
     minArea: null,
     maxArea: null,
+    minPlotSize: null,
+    maxPlotSize: null,
   });
 
   private fetchTimer: ReturnType<typeof setTimeout> | null = null;
@@ -97,6 +101,12 @@ export class HouseService {
       }
       if (f.maxArea !== null) {
         params['maxArea'] = f.maxArea;
+      }
+      if (f.minPlotSize !== null) {
+        params['minPlotSize'] = f.minPlotSize;
+      }
+      if (f.maxPlotSize !== null) {
+        params['maxPlotSize'] = f.maxPlotSize;
       }
 
       this.http.get('/api/properties', { params }).subscribe({

@@ -13,6 +13,8 @@ export interface SavedSearch {
   maxBedrooms: number | null;
   minArea: number | null;
   maxArea: number | null;
+  minPlotSize: number | null;
+  maxPlotSize: number | null;
   lat: number | null;
   lon: number | null;
   radiusKm: number | null;
@@ -28,6 +30,8 @@ export interface SaveSearchPayload {
   maxBedrooms: number | null;
   minArea: number | null;
   maxArea: number | null;
+  minPlotSize: number | null;
+  maxPlotSize: number | null;
   lat: number;
   lon: number;
   radiusKm: number;

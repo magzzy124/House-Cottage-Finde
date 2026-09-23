@@ -10,6 +10,7 @@ export interface CompareItem {
   bedrooms: number;
   bathrooms: number;
   area: number;
+  plotSize: number | null;
   imageUrl: string;
   latitude: number;
   longitude: number;
@@ -50,6 +51,7 @@ export class CompareService {
           bedrooms: item.bedrooms,
           bathrooms: item.bathrooms,
           area: item.area,
+          plotSize: item.plotSize ?? null,
           imageUrl: item.imageUrl || 'house.jpg',
           latitude: item.latitude,
           longitude: item.longitude,

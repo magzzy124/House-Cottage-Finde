@@ -35,6 +35,8 @@ export class Search implements OnInit {
   maxBedrooms: number | null = null;
   minArea: number | null = null;
   maxArea: number | null = null;
+  minPlotSize: number | null = null;
+  maxPlotSize: number | null = null;
 
   saveSearchName = '';
   saveSearchSuccess = signal(false);
@@ -90,6 +92,8 @@ export class Search implements OnInit {
       maxBedrooms: this.maxBedrooms,
       minArea: this.minArea,
       maxArea: this.maxArea,
+      minPlotSize: this.minPlotSize,
+      maxPlotSize: this.maxPlotSize,
     });
   }
 
@@ -110,6 +114,8 @@ export class Search implements OnInit {
     this.maxBedrooms = null;
     this.minArea = null;
     this.maxArea = null;
+    this.minPlotSize = null;
+    this.maxPlotSize = null;
     this.applyPriceRange();
     this.selectedLocService.setSelectedLocation({
       lat: 44.7866,
@@ -162,6 +168,8 @@ export class Search implements OnInit {
       maxBedrooms: this.maxBedrooms,
       minArea: this.minArea,
       maxArea: this.maxArea,
+      minPlotSize: this.minPlotSize,
+      maxPlotSize: this.maxPlotSize,
       lat: location?.lat ?? 44.7866,
       lon: location?.lon ?? 20.4489,
       radiusKm: radiusInMeters / 1000,

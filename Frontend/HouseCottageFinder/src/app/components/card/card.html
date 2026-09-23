@@ -74,6 +74,9 @@
       <app-icon-widget [count]="cardDetails().bedrooms" [type]="WidgetType.numOfBedrooms"/>
       <app-icon-widget [count]="cardDetails().bathrooms" [type]="WidgetType.numOfBathrooms"/>
       <app-icon-widget [count]="cardDetails().area" [type]="WidgetType.surfaceArea"/>
+      @if (cardDetails().plotSize) {
+        <app-icon-widget [count]="cardDetails().plotSize" [type]="WidgetType.plotSize"/>
+      }
     </div>
   </div>
 </div>

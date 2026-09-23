@@ -25,6 +25,7 @@ export class EditListing implements OnInit {
   bedrooms: number | null = null;
   bathrooms: number | null = null;
   area: number | null = null;
+  plotSize: number | null = null;
   description = '';
   imageUrl = '';
 
@@ -59,6 +60,7 @@ export class EditListing implements OnInit {
         this.bedrooms = property.bedrooms;
         this.bathrooms = property.bathrooms;
         this.area = property.area;
+        this.plotSize = property.plotSize ?? null;
         this.description = property.description || '';
         this.imageUrl = property.imageUrl || '';
         this.latitude = property.latitude;
@@ -153,6 +155,7 @@ export class EditListing implements OnInit {
       bedrooms: this.bedrooms,
       bathrooms: this.bathrooms,
       area: this.area,
+      plotSize: this.plotSize,
       latitude: this.latitude,
       longitude: this.longitude,
       description: this.description,

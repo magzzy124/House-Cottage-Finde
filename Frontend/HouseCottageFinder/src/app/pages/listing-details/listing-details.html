@@ -154,6 +154,9 @@
             <app-icon-widget [count]="item.bedrooms" [type]="WidgetType.numOfBedrooms" />
             <app-icon-widget [count]="item.bathrooms" [type]="WidgetType.numOfBathrooms" />
             <app-icon-widget [count]="item.area" [type]="WidgetType.surfaceArea" />
+            @if (item.plotSize) {
+              <app-icon-widget [count]="item.plotSize" [type]="WidgetType.plotSize" />
+            }
           </div>
 
           <h3 class="text-lg font-bold mt-10 mb-3 text-slate-800">Description</h3>

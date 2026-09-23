@@ -24,6 +24,7 @@ export class Sell implements OnInit {
   bedrooms: number | null = null;
   bathrooms: number | null = null;
   area: number | null = null;
+  plotSize: number | null = null;
   description = '';
   imageUrl = '';
 
@@ -116,6 +117,7 @@ export class Sell implements OnInit {
       bedrooms: this.bedrooms,
       bathrooms: this.bathrooms,
       area: this.area,
+      plotSize: this.plotSize,
       latitude: this.latitude,
       longitude: this.longitude,
       description: this.description,

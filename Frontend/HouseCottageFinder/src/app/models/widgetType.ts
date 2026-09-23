@@ -1,7 +1,8 @@
 export enum WidgetType {
   numOfBedrooms = "bedroom",
   numOfBathrooms = "bathroom",
-  surfaceArea = "surface"
+  surfaceArea = "surface",
+  plotSize = "plot"
 }
 
 export enum TagType {
