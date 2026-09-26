@@ -62,6 +62,12 @@ public static class NotificationService
         if (search.MaxArea.HasValue && property.Area > search.MaxArea.Value)
             return false;
 
+        if (search.MinPlotSize.HasValue && (!property.PlotSize.HasValue || property.PlotSize.Value < search.MinPlotSize.Value))
+            return false;
+
+        if (search.MaxPlotSize.HasValue && (!property.PlotSize.HasValue || property.PlotSize.Value > search.MaxPlotSize.Value))
+            return false;
+
         if (search.Lat.HasValue && search.Lon.HasValue && search.RadiusKm.HasValue && search.RadiusKm.Value > 0)
         {
             var distanceKm = DistanceInKm(search.Lat.Value, search.Lon.Value, property.Latitude, property.Longitude);

@@ -30,6 +30,9 @@ export class App implements OnInit {
     this.router.events.subscribe(() => {
       this.currentUrl.set(this.router.url);
     });
+  }
+
+  onSessionReady() {
     if (this.auth.isAuthenticated()) {
       this.favoritesService.loadFavorites();
       this.notificationService.startPolling();

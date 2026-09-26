@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using HouseCottageFinder.Api.Data;
 using HouseCottageFinder.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace HouseCottageFinder.Api.Endpoints;
@@ -8,8 +10,9 @@ public static class SavedSearchEndpoints
 {
     public static IEndpointRouteBuilder MapSavedSearchEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/saved-searches", async (int userId, AppDbContext db) =>
+        app.MapGet("/api/saved-searches", [Authorize] async (HttpContext http, AppDbContext db) =>
         {
+            var userId = GetUserId(http);
             var searches = await db.SavedSearches
                 .Where(s => s.UserId == userId)
                 .OrderByDescending(s => s.CreatedAt)
@@ -18,8 +21,9 @@ public static class SavedSearchEndpoints
             return Results.Ok(searches);
         }).WithName("GetSavedSearches");
 
-        app.MapPost("/api/saved-searches", async (SavedSearchRequest request, int userId, AppDbContext db) =>
+        app.MapPost("/api/saved-searches", [Authorize] async (SavedSearchRequest request, HttpContext http, AppDbContext db) =>
         {
+            var userId = GetUserId(http);
             var search = new SavedSearch
             {
                 UserId = userId,
@@ -31,6 +35,8 @@ public static class SavedSearchEndpoints
                 MaxBedrooms = request.MaxBedrooms,
                 MinArea = request.MinArea,
                 MaxArea = request.MaxArea,
+                MinPlotSize = request.MinPlotSize,
+                MaxPlotSize = request.MaxPlotSize,
                 Lat = request.Lat,
                 Lon = request.Lon,
                 RadiusKm = request.RadiusKm
@@ -53,6 +59,11 @@ public static class SavedSearchEndpoints
 
         return app;
     }
+
+    private static int GetUserId(HttpContext http)
+    {
+        return int.Parse(http.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    }
 }
 
 public record SavedSearchRequest(
@@ -64,6 +75,8 @@ public record SavedSearchRequest(
     int? MaxBedrooms,
     int? MinArea,
     int? MaxArea,
+    int? MinPlotSize,
+    int? MaxPlotSize,
     double? Lat,
     double? Lon,
     double? RadiusKm

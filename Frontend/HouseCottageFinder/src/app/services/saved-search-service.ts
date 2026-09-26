@@ -51,19 +51,14 @@ export class SavedSearchService {
   private _loading = signal(false);
   loading = this._loading.asReadonly();
 
-  private getUserId(): number | null {
-    return this.auth.currentUser()?.id ?? null;
-  }
-
   loadSearches() {
-    const userId = this.getUserId();
-    if (!userId) {
+    if (!this.auth.isAuthenticated()) {
       this._searches.set([]);
       return;
     }
 
     this._loading.set(true);
-    this.http.get<SavedSearch[]>(`${this.api}?userId=${userId}`).subscribe({
+    this.http.get<SavedSearch[]>(`${this.api}`).subscribe({
       next: (res) => {
         this._searches.set(res);
         this._loading.set(false);
@@ -73,9 +68,8 @@ export class SavedSearchService {
   }
 
   saveSearch(payload: SaveSearchPayload) {
-    const userId = this.getUserId()!;
     return this.http.post<{ id: number; message: string }>(
-      `${this.api}?userId=${userId}`,
+      `${this.api}`,
       payload
     );
   }

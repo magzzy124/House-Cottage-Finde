@@ -1,16 +1,24 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using HouseCottageFinder.Api.Data;
 using HouseCottageFinder.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace HouseCottageFinder.Api.Endpoints;
 
 public static class AuthEndpoints
 {
+    private const string CookieName = "HcfAuth";
+
     public static IEndpointRouteBuilder MapAuthEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapPost("/api/auth/login",
-            async (LoginRequest request, AppDbContext db, IPasswordHasher<User> hasher, ILogger<Program> logger) =>
+            async (LoginRequest request, AppDbContext db, IPasswordHasher<User> hasher,
+                   IConfiguration config, HttpContext http, ILogger<Program> logger) =>
         {
             logger.LogInformation("Login attempt received for email: {Email}", request.Email);
 
@@ -28,7 +36,36 @@ public static class AuthEndpoints
                 return Results.Unauthorized();
             }
 
+            var token = GenerateJwtToken(user, config);
+
+            SetAuthCookie(http, token, config);
+
             logger.LogInformation("User logged in: {Id} {Email}", user.Id, user.Email);
+
+            return Results.Ok(new
+            {
+                user = new
+                {
+                    id = user.Id,
+                    firstName = user.FirstName,
+                    lastName = user.LastName,
+                    username = user.Username,
+                    email = user.Email
+                }
+            });
+        }).WithName("Login");
+
+        app.MapPost("/api/auth/logout", (HttpContext http) =>
+        {
+            http.Response.Cookies.Delete(CookieName);
+            return Results.Ok(new { message = "Logged out" });
+        }).WithName("Logout");
+
+        app.MapGet("/api/auth/me", [Authorize] async (HttpContext http, AppDbContext db) =>
+        {
+            var userId = GetUserId(http);
+            var user = await db.Users.FindAsync(userId);
+            if (user is null) return Results.NotFound(new { message = "User not found" });
 
             return Results.Ok(new
             {
@@ -38,7 +75,7 @@ public static class AuthEndpoints
                 username = user.Username,
                 email = user.Email
             });
-        }).WithName("Login");
+        }).WithName("GetCurrentUser");
 
         app.MapPost("/api/auth/register",
             async (RegisterRequest request, AppDbContext db, IPasswordHasher<User> hasher, ILogger<Program> logger) =>
@@ -77,8 +114,9 @@ public static class AuthEndpoints
             return Results.Created($"/api/users/{user.Id}", new { message = "User registered", userId = user.Id });
         }).WithName("Register");
 
-        app.MapGet("/api/auth/profile", async (int userId, AppDbContext db) =>
+        app.MapGet("/api/auth/profile", [Authorize] async (HttpContext http, AppDbContext db) =>
         {
+            var userId = GetUserId(http);
             var user = await db.Users.FindAsync(userId);
             if (user is null) return Results.NotFound(new { message = "User not found" });
 
@@ -98,8 +136,9 @@ public static class AuthEndpoints
             });
         }).WithName("GetProfile");
 
-        app.MapPut("/api/auth/profile", async (int userId, UpdateProfileRequest request, AppDbContext db, IPasswordHasher<User> hasher) =>
+        app.MapPut("/api/auth/profile", [Authorize] async (HttpContext http, UpdateProfileRequest request, AppDbContext db, IPasswordHasher<User> hasher) =>
         {
+            var userId = GetUserId(http);
             var user = await db.Users.FindAsync(userId);
             if (user is null) return Results.NotFound(new { message = "User not found" });
 
@@ -132,5 +171,52 @@ public static class AuthEndpoints
         }).WithName("UpdateProfile");
 
         return app;
+    }
+
+    private static int GetUserId(HttpContext http)
+    {
+        return int.Parse(http.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+    }
+
+    private static void SetAuthCookie(HttpContext http, string token, IConfiguration config)
+    {
+        var expirationMinutes = double.Parse(config["Jwt:ExpirationMinutes"]!);
+
+        var isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
+
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = !isDevelopment,
+            SameSite = SameSiteMode.Lax,
+            Path = "/",
+            Expires = DateTime.UtcNow.AddMinutes(expirationMinutes),
+            MaxAge = TimeSpan.FromMinutes(expirationMinutes),
+        };
+
+        http.Response.Cookies.Append(CookieName, token, cookieOptions);
+    }
+
+    private static string GenerateJwtToken(User user, IConfiguration config)
+    {
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!));
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}")
+        };
+
+        var token = new JwtSecurityToken(
+            issuer: config["Jwt:Issuer"],
+            audience: config["Jwt:Audience"],
+            claims: claims,
+            expires: DateTime.UtcNow.AddMinutes(double.Parse(config["Jwt:ExpirationMinutes"]!)),
+            signingCredentials: credentials
+        );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }

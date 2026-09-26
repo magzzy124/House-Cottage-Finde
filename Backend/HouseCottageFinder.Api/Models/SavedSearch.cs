@@ -24,6 +24,10 @@ public class SavedSearch
 
     public int? MaxArea { get; set; }
 
+    public int? MinPlotSize { get; set; }
+
+    public int? MaxPlotSize { get; set; }
+
     public double? Lat { get; set; }
 
     public double? Lon { get; set; }

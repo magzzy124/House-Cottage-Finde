@@ -1,6 +1,8 @@
+using System.Security.Claims;
 using HouseCottageFinder.Api.Data;
 using HouseCottageFinder.Api.Models;
 using HouseCottageFinder.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace HouseCottageFinder.Api.Endpoints;
@@ -20,7 +22,9 @@ public static class PropertyEndpoints
             int? minBedrooms,
             int? maxBedrooms,
             int? minArea,
-            int? maxArea) =>
+            int? maxArea,
+            int? minPlotSize,
+            int? maxPlotSize) =>
         {
             var query = db.Properties.AsQueryable();
 
@@ -59,6 +63,16 @@ public static class PropertyEndpoints
                 query = query.Where(p => p.Area <= maxArea.Value);
             }
 
+            if (minPlotSize.HasValue)
+            {
+                query = query.Where(p => p.PlotSize != null && p.PlotSize >= minPlotSize.Value);
+            }
+
+            if (maxPlotSize.HasValue)
+            {
+                query = query.Where(p => p.PlotSize != null && p.PlotSize <= maxPlotSize.Value);
+            }
+
             var properties = await query.OrderBy(p => p.CreatedAt).ToListAsync();
 
             if (lat.HasValue && lon.HasValue && radius.HasValue && radius.Value > 0)
@@ -91,8 +105,9 @@ public static class PropertyEndpoints
             return Results.Ok(history);
         }).WithName("GetPriceHistory");
 
-        app.MapGet("/api/properties/my", async (int userId, AppDbContext db) =>
+        app.MapGet("/api/properties/my", [Authorize] async (HttpContext http, AppDbContext db) =>
         {
+            var userId = GetUserId(http);
             var properties = await db.Properties
                 .Where(p => p.UserId == userId)
                 .OrderByDescending(p => p.CreatedAt)
@@ -101,8 +116,9 @@ public static class PropertyEndpoints
             return Results.Ok(properties);
         }).WithName("GetMyProperties");
 
-        app.MapPut("/api/properties/{id:int}", async (int id, int userId, UpdatePropertyRequest request, AppDbContext db) =>
+        app.MapPut("/api/properties/{id:int}", [Authorize] async (int id, HttpContext http, UpdatePropertyRequest request, AppDbContext db) =>
         {
+            var userId = GetUserId(http);
             var property = await db.Properties.FindAsync(id);
             if (property is null) return Results.NotFound(new { message = "Property not found" });
             if (property.UserId != userId) return Results.Forbid();
@@ -115,6 +131,7 @@ public static class PropertyEndpoints
             property.Bedrooms = request.Bedrooms;
             property.Bathrooms = request.Bathrooms;
             property.Area = request.Area;
+            property.PlotSize = request.PlotSize;
             property.Latitude = request.Latitude;
             property.Longitude = request.Longitude;
             property.Description = request.Description ?? "";
@@ -126,8 +143,9 @@ public static class PropertyEndpoints
             return Results.Ok(new { message = "Listing updated" });
         }).WithName("UpdateProperty");
 
-        app.MapDelete("/api/properties/{id:int}", async (int id, int userId, AppDbContext db) =>
+        app.MapDelete("/api/properties/{id:int}", [Authorize] async (int id, HttpContext http, AppDbContext db) =>
         {
+            var userId = GetUserId(http);
             var property = await db.Properties.FindAsync(id);
             if (property is null) return Results.NotFound(new { message = "Property not found" });
             if (property.UserId != userId) return Results.Forbid();
@@ -138,8 +156,9 @@ public static class PropertyEndpoints
             return Results.Ok(new { message = "Listing deleted" });
         }).WithName("DeleteProperty");
 
-        app.MapPost("/api/properties", async (CreatePropertyRequest request, int userId, AppDbContext db) =>
+        app.MapPost("/api/properties", [Authorize] async (CreatePropertyRequest request, HttpContext http, AppDbContext db) =>
         {
+            var userId = GetUserId(http);
             var property = new Property
             {
                 UserId = userId,
@@ -151,6 +170,7 @@ public static class PropertyEndpoints
                 Bedrooms = request.Bedrooms,
                 Bathrooms = request.Bathrooms,
                 Area = request.Area,
+                PlotSize = request.PlotSize,
                 Latitude = request.Latitude,
                 Longitude = request.Longitude,
                 Description = request.Description ?? "",
@@ -167,6 +187,11 @@ public static class PropertyEndpoints
         }).WithName("CreateProperty");
 
         return app;
+    }
+
+    private static int GetUserId(HttpContext http)
+    {
+        return int.Parse(http.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
     }
 
     private static double DistanceInMeters(double lat1, double lon1, double lat2, double lon2)

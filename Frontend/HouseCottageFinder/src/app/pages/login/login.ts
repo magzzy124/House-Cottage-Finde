@@ -44,8 +44,8 @@ export class Login implements OnInit {
     this.loading = true;
 
     this.auth.login(this.email, this.password).subscribe({
-      next: (user) => {
-        this.auth.setCurrentUser(user);
+      next: (res) => {
+        this.auth.setCurrentUser(res.user);
         this.favoritesService.loadFavorites();
         this.notificationService.startPolling();
         this.loading = false;

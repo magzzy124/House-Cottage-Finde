@@ -34,20 +34,15 @@ export class FavoritesService {
   private _loading = signal(false);
   loading = this._loading.asReadonly();
 
-  private getUserId(): number | null {
-    return this.auth.currentUser()?.id ?? null;
-  }
-
   loadFavorites() {
-    const userId = this.getUserId();
-    if (!userId) {
+    if (!this.auth.isAuthenticated()) {
       this._favorites.set([]);
       this._favoriteIds.set(new Set());
       return;
     }
 
     this._loading.set(true);
-    this.http.get<FavoriteItem[]>(`${this.api}?userId=${userId}`).subscribe({
+    this.http.get<FavoriteItem[]>(`${this.api}`).subscribe({
       next: (res) => {
         this._favorites.set(res);
         const ids = new Set(res.map((f) => f.propertyId));
@@ -59,12 +54,11 @@ export class FavoritesService {
   }
 
   checkFavorite(propertyId: number) {
-    const userId = this.getUserId();
-    if (!userId) return;
+    if (!this.auth.isAuthenticated()) return;
 
     this.http
       .get<{ isFavorited: boolean }>(
-        `${this.api}/check?userId=${userId}&propertyId=${propertyId}`
+        `${this.api}/check?propertyId=${propertyId}`
       )
       .subscribe({
         next: (res) => {
@@ -82,14 +76,13 @@ export class FavoritesService {
   }
 
   toggleFavorite(propertyId: number) {
-    const userId = this.getUserId();
-    if (!userId) return;
+    if (!this.auth.isAuthenticated()) return;
 
     const isFavorited = this._favoriteIds().has(propertyId);
 
     if (isFavorited) {
       this.http
-        .delete(`${this.api}/${propertyId}?userId=${userId}`)
+        .delete(`${this.api}/${propertyId}`)
         .subscribe({
           next: () => {
             this._favoriteIds.update((ids) => {
@@ -105,7 +98,7 @@ export class FavoritesService {
     } else {
       this.http
         .post<{ favoriteId: number }>(
-          `${this.api}/${propertyId}?userId=${userId}`,
+          `${this.api}/${propertyId}`,
           {}
         )
         .subscribe({

@@ -2,10 +2,10 @@
   class="filters flex items-center gap-3 px-6 py-3 bg-slate-50/80 backdrop-blur-sm border-b border-slate-100 relative z-50"
 >
   <div
-    class="input bg-white rounded-2xl h-12 w-full max-w-96 flex items-center shadow-sm border border-slate-100 hover:border-slate-200 focus-within:border-[#4a8dd0] focus-within:ring-2 focus-within:ring-[#4a8dd0]/10 transition-all duration-200 relative"
+    class="input bg-white rounded-2xl h-12 w-full max-w-96 flex items-center shadow-sm border border-slate-100 hover:border-slate-200 focus-within:ring-2 focus-within:ring-[#4a8dd0]/10 transition-all duration-200 relative"
   >
     <svg
-      class="w-5 h-5 opacity-40 ml-3.5 flex-shrink-0"
+      class="w-5 h-5 opacity-40 ml-3.5 ahrink-0"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
       fill="none"
@@ -24,6 +24,7 @@
         [lang]="'en'"
         [limit]="8"
         [addDetails]="true"
+        [value]="locationSearchValue"
         (placeSelect)="onPlaceSelected($event)"
         (suggestionsChange)="onSuggestionsChange($event)"
       >
@@ -36,7 +37,7 @@
       role="button"
       class="btn h-12 m-0 border border-slate-100 bg-white rounded-2xl cursor-pointer shadow-sm hover:shadow-md hover:border-slate-200 text-sm font-medium text-slate-700 transition-all duration-200 px-4"
     >
-      Radius: {{ radius }} {{ selectedTab() }}
+      Radius: {{ radius }} {{ selectedRadiusType() }}
     </div>
     <div
       tabindex="-1"
@@ -52,12 +53,12 @@
               type="button"
               (click)="selectTab(tab)"
               class="inline-flex h-7 min-w-8 w-full items-center justify-center gap-1.5 whitespace-nowrap px-3 py-2 text-xs font-semibold transition-all duration-200 sm:w-auto cursor-pointer"
-              [class.rounded-lg]="selectedTab() === tab"
-              [class.bg-white]="selectedTab() === tab"
-              [class.shadow-sm]="selectedTab() === tab"
-              [class.text-slate-900]="selectedTab() === tab"
-              [class.bg-transparent]="selectedTab() !== tab"
-              [class.text-slate-500]="selectedTab() !== tab"
+              [class.rounded-lg]="selectedRadiusType() === tab"
+              [class.bg-white]="selectedRadiusType() === tab"
+              [class.shadow-sm]="selectedRadiusType() === tab"
+              [class.text-slate-900]="selectedRadiusType() === tab"
+              [class.bg-transparent]="selectedRadiusType() !== tab"
+              [class.text-slate-500]="selectedRadiusType() !== tab"
             >
               {{ tab }}
             </button>
@@ -71,7 +72,7 @@
           <input
             [(ngModel)]="radius"
             (ngModelChange)="applyFilters()"
-            class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+            class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
             aria-disabled="false"
             aria-describedby=":S2:"
             id="textfield-1"
@@ -119,7 +120,7 @@
       role="button"
       class="btn h-12 m-0 border border-slate-100 bg-white rounded-2xl cursor-pointer shadow-sm hover:shadow-md hover:border-slate-200 text-sm font-medium text-slate-700 transition-all duration-200 px-4"
     >
-      Price: {{ formatPrice(value) }} - {{ formatPrice(maxValue) }}
+      Price: {{ formatPrice(selectedPrice) }} - {{ formatPrice(maxValue) }}
     </div>
     <div
       tabindex="-1"
@@ -128,7 +129,7 @@
       <h1 class="text-sm font-bold text-slate-800">Price range</h1>
 
       <ngx-slider
-        [(value)]="value"
+        [(value)]="selectedPrice"
         [(highValue)]="maxValue"
         [options]="options"
         (userChangeEnd)="applyFilters()"
@@ -139,10 +140,10 @@
           <label class="font-medium text-xs text-slate-500" for="price-min">Min</label>
           <div class="relative w-full">
             <input
-              [(ngModel)]="value"
+              [(ngModel)]="selectedPrice"
               (ngModelChange)="applyFilters()"
               type="number"
-              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
               id="price-min"
             />
           </div>
@@ -154,7 +155,7 @@
               [(ngModel)]="maxValue"
               (ngModelChange)="applyFilters()"
               type="number"
-              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
               id="price-max"
             />
           </div>
@@ -190,7 +191,7 @@
               (ngModelChange)="applyFilters()"
               type="number"
               min="0"
-              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
               id="bedrooms-min"
               placeholder="Any"
             />
@@ -204,7 +205,7 @@
               (ngModelChange)="applyFilters()"
               type="number"
               min="0"
-              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
               id="bedrooms-max"
               placeholder="Any"
             />
@@ -241,7 +242,7 @@
               (ngModelChange)="applyFilters()"
               type="number"
               min="0"
-              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
               id="area-min"
               placeholder="Any"
             />
@@ -255,7 +256,7 @@
               (ngModelChange)="applyFilters()"
               type="number"
               min="0"
-              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
               id="area-max"
               placeholder="Any"
             />
@@ -292,7 +293,7 @@
               (ngModelChange)="applyFilters()"
               type="number"
               min="0"
-              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
               id="plot-min"
               placeholder="Any"
             />
@@ -306,7 +307,7 @@
               (ngModelChange)="applyFilters()"
               type="number"
               min="0"
-              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+              class="w-full rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
               id="plot-max"
               placeholder="Any"
             />
@@ -363,7 +364,7 @@
         class="emptyState flex-1 flex flex-col items-center justify-center gap-5 text-center px-10"
       >
         <div
-          class="w-28 h-28 rounded-3xl bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center shadow-inner"
+          class="w-28 h-28 rounded-3xl bg-linear-to-br from-slate-50 to-slate-100 flex items-center justify-center shadow-inner"
         >
           <svg
             class="w-12 h-12 text-slate-300"
@@ -400,7 +401,7 @@
     }
   </div>
   <div class="right w-[45%] h-full p-4 pl-0 relative z-0">
-    <app-map [radius]="radius" [unit]="selectedTab()" />
+    <app-map [radius]="radius" [unit]="selectedRadiusType()" />
   </div>
 </div>
 
@@ -434,7 +435,7 @@
             [(ngModel)]="saveSearchName"
             type="text"
             placeholder="e.g. Apartments in Belgrade"
-            class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+            class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
             id="search-name"
           />
         </div>

@@ -108,7 +108,7 @@ export class Sell implements OnInit {
       ? this.uploadedImages[this.mainImageIndex]
       : 'house.jpg';
 
-    this.http.post('/api/properties?userId=' + this.auth.currentUser()?.id, {
+    this.http.post('/api/properties', {
       title: this.title,
       address: this.address,
       city: this.city,

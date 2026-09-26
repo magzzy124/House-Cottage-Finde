@@ -1,11 +1,16 @@
-<div class="wrapper w-80 rounded-2xl bg-white cursor-pointer border border-slate-100 relative" (click)="onClick()">
+<div
+  class="wrapper w-80 rounded-2xl bg-white cursor-pointer border border-slate-100 relative"
+  (click)="onClick()"
+>
   <div
     [style.background-image]="'url(' + cardImage() + ')'"
     class="imageWrapper relative h-48 w-full bg-cover overflow-hidden rounded-t-2xl"
   >
-    <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    <div
+      class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+    ></div>
     <div class="absolute top-3 left-3 flex gap-2 z-10">
-      <app-icon-tag [type]="TagType.new"/>
+      <app-icon-tag [type]="TagType.new" />
     </div>
     <div class="absolute top-3 right-3 z-10 flex gap-2">
       <button
@@ -25,7 +30,9 @@
           stroke-linecap="round"
           stroke-linejoin="round"
         >
-          <line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/>
+          <line x1="18" x2="18" y1="20" y2="10" />
+          <line x1="12" x2="12" y1="20" y2="4" />
+          <line x1="6" x2="6" y1="20" y2="14" />
         </svg>
       </button>
       @if (isLoggedIn()) {
@@ -46,11 +53,15 @@
             stroke-linecap="round"
             stroke-linejoin="round"
           >
-            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>
+            <path
+              d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+            />
           </svg>
         </button>
       } @else {
-        <div class="w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm">
+        <div
+          class="w-9 h-9 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-sm"
+        >
           <img src="heart.svg" class="w-4 opacity-40" alt="save" />
         </div>
       }
@@ -58,24 +69,37 @@
   </div>
   <div class="content flex flex-col gap-2 p-4">
     <div class="flex items-center justify-between gap-2">
-      <h1 class="text-xl font-black text-slate-900 tracking-tight">$ {{cardDetails().price}}</h1>
+      <h1 class="text-xl font-black text-slate-900 tracking-tight">$ {{ cardDetails().price }}</h1>
       <span
         class="text-[11px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-lg"
         [style.background-color]="dealBg()"
         [style.color]="dealColor()"
-      >{{ dealType() }}</span>
+        >{{ dealType() }}</span
+      >
     </div>
     <h2 class="text-sm font-semibold text-slate-800 truncate">{{ cardDetails().title }}</h2>
     <p class="text-xs text-slate-400 truncate flex items-center gap-1">
-      <svg class="w-3 h-3 shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+      <svg
+        class="w-3 h-3 shrink-0"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
+        <circle cx="12" cy="10" r="3" />
+      </svg>
       {{ cardDetails().address }}, {{ cardDetails().city }}
     </p>
     <div class="border-t border-slate-100 pt-3 mt-1 flex gap-2">
-      <app-icon-widget [count]="cardDetails().bedrooms" [type]="WidgetType.numOfBedrooms"/>
-      <app-icon-widget [count]="cardDetails().bathrooms" [type]="WidgetType.numOfBathrooms"/>
-      <app-icon-widget [count]="cardDetails().area" [type]="WidgetType.surfaceArea"/>
+      <app-icon-widget [count]="cardDetails().bedrooms" [type]="WidgetType.numOfBedrooms" />
+      <app-icon-widget [count]="cardDetails().bathrooms" [type]="WidgetType.numOfBathrooms" />
+      <app-icon-widget [count]="cardDetails().area" [type]="WidgetType.surfaceArea" />
       @if (cardDetails().plotSize) {
-        <app-icon-widget [count]="cardDetails().plotSize" [type]="WidgetType.plotSize"/>
+        <app-icon-widget [count]="cardDetails().plotSize" [type]="WidgetType.plotSize" />
       }
     </div>
   </div>

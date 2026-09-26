@@ -25,7 +25,7 @@ export class Search implements OnInit {
 
   tabs = ['m', 'km'];
 
-  selectedTab = signal('km');
+  selectedRadiusType = signal('km');
   radius = 10;
 
   dealTypes = ['Any', 'For rent', 'For sale'];
@@ -38,6 +38,7 @@ export class Search implements OnInit {
   minPlotSize: number | null = null;
   maxPlotSize: number | null = null;
 
+  locationSearchValue = '';
   saveSearchName = '';
   saveSearchSuccess = signal(false);
   saveSearchError = signal('');
@@ -52,7 +53,7 @@ export class Search implements OnInit {
     this.applyFilters();
   }
 
-  value: number = 0;
+  selectedPrice: number = 0;
   maxValue: number = 1000000;
   options: Options = {
     floor: 0,
@@ -73,20 +74,20 @@ export class Search implements OnInit {
       ceil: isRent ? 5000 : 1000000
     };
 
-    this.value = 0;
+    this.selectedPrice = 0;
     this.maxValue = isRent ? 5000 : 1000000;
   }
 
   applyFilters() {
     const location = this.selectedLocService.selectedLocation();
-    const radiusInMeters = this.selectedTab() === 'km' ? Number(this.radius) * 1000 : Number(this.radius);
+    const radiusInMeters = this.selectedRadiusType() === 'km' ? Number(this.radius) * 1000 : Number(this.radius);
 
     this.houseService.setFilters({
       lat: location?.lat ?? 44.7866,
       lon: location?.lon ?? 20.4489,
       radiusKm: radiusInMeters / 1000,
       dealType: this.selectedDealType(),
-      minPrice: this.value,
+      minPrice: this.selectedPrice,
       maxPrice: this.maxValue,
       minBedrooms: this.minBedrooms,
       maxBedrooms: this.maxBedrooms,
@@ -102,13 +103,13 @@ export class Search implements OnInit {
   }
 
   selectTab(tab: string) {
-    this.selectedTab.set(tab);
+    this.selectedRadiusType.set(tab);
     this.applyFilters();
   }
 
   resetFilters() {
     this.selectedDealType.set('Any');
-    this.selectedTab.set('km');
+    this.selectedRadiusType.set('km');
     this.radius = 10;
     this.minBedrooms = null;
     this.maxBedrooms = null;
@@ -116,6 +117,7 @@ export class Search implements OnInit {
     this.maxArea = null;
     this.minPlotSize = null;
     this.maxPlotSize = null;
+    this.locationSearchValue = '';
     this.applyPriceRange();
     this.selectedLocService.setSelectedLocation({
       lat: 44.7866,
@@ -157,12 +159,12 @@ export class Search implements OnInit {
     }
 
     const location = this.selectedLocService.selectedLocation();
-    const radiusInMeters = this.selectedTab() === 'km' ? Number(this.radius) * 1000 : Number(this.radius);
+    const radiusInMeters = this.selectedRadiusType() === 'km' ? Number(this.radius) * 1000 : Number(this.radius);
 
     this.savedSearchService.saveSearch({
       name: this.saveSearchName.trim(),
       dealType: this.selectedDealType(),
-      minPrice: this.value,
+      minPrice: this.selectedPrice,
       maxPrice: this.maxValue,
       minBedrooms: this.minBedrooms,
       maxBedrooms: this.maxBedrooms,

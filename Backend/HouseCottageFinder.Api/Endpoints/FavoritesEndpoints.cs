@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using HouseCottageFinder.Api.Data;
 using HouseCottageFinder.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace HouseCottageFinder.Api.Endpoints;
@@ -8,8 +10,9 @@ public static class FavoritesEndpoints
 {
     public static IEndpointRouteBuilder MapFavoritesEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/favorites", async (int userId, AppDbContext db) =>
+        app.MapGet("/api/favorites", [Authorize] async (HttpContext http, AppDbContext db) =>
         {
+            var userId = GetUserId(http);
             var favorites = await db.Favorites
                 .Where(f => f.UserId == userId)
                 .Join(db.Properties,
@@ -36,16 +39,18 @@ public static class FavoritesEndpoints
             return Results.Ok(favorites);
         }).WithName("GetFavorites");
 
-        app.MapGet("/api/favorites/check", async (int userId, int propertyId, AppDbContext db) =>
+        app.MapGet("/api/favorites/check", [Authorize] async (HttpContext http, int propertyId, AppDbContext db) =>
         {
+            var userId = GetUserId(http);
             var isFavorited = await db.Favorites
                 .AnyAsync(f => f.UserId == userId && f.PropertyId == propertyId);
 
             return Results.Ok(new { isFavorited });
         }).WithName("CheckFavorite");
 
-        app.MapPost("/api/favorites/{propertyId:int}", async (int propertyId, int userId, AppDbContext db) =>
+        app.MapPost("/api/favorites/{propertyId:int}", [Authorize] async (int propertyId, HttpContext http, AppDbContext db) =>
         {
+            var userId = GetUserId(http);
             var exists = await db.Favorites
                 .AnyAsync(f => f.UserId == userId && f.PropertyId == propertyId);
 
@@ -66,8 +71,9 @@ public static class FavoritesEndpoints
             return Results.Ok(new { message = "Added to favorites", favoriteId = favorite.Id });
         }).WithName("AddFavorite");
 
-        app.MapDelete("/api/favorites/{propertyId:int}", async (int propertyId, int userId, AppDbContext db) =>
+        app.MapDelete("/api/favorites/{propertyId:int}", [Authorize] async (int propertyId, HttpContext http, AppDbContext db) =>
         {
+            var userId = GetUserId(http);
             var favorite = await db.Favorites
                 .FirstOrDefaultAsync(f => f.UserId == userId && f.PropertyId == propertyId);
 
@@ -83,5 +89,10 @@ public static class FavoritesEndpoints
         }).WithName("RemoveFavorite");
 
         return app;
+    }
+
+    private static int GetUserId(HttpContext http)
+    {
+        return int.Parse(http.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
     }
 }

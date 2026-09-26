@@ -146,7 +146,7 @@ export class EditListing implements OnInit {
       ? this.uploadedImages[this.mainImageIndex]
       : 'house.jpg';
 
-    this.http.put(`/api/properties/${id}?userId=${this.auth.currentUser()?.id}`, {
+    this.http.put(`/api/properties/${id}`, {
       title: this.title,
       address: this.address,
       city: this.city,

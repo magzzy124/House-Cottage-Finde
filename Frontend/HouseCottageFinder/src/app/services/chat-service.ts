@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import * as signalR from '@microsoft/signalr';
 import { AuthService } from './auth-service';
+import * as signalR from '@microsoft/signalr';
 
 export interface ChatMessage {
   id: number;
@@ -28,8 +28,8 @@ export class ChatService {
 
   private hubConnection: signalR.HubConnection | null = null;
 
-  private getUserId(): number | null {
-    return this.auth.currentUser()?.id ?? null;
+  private isAuthenticated(): boolean {
+    return this.auth.isAuthenticated();
   }
 
   private async ensureConnection(): Promise<signalR.HubConnection> {
@@ -42,7 +42,9 @@ export class ChatService {
     }
 
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('/hubs/chat')
+      .withUrl('/hubs/chat', {
+        withCredentials: true,
+      })
       .withAutomaticReconnect()
       .configureLogging(signalR.LogLevel.Warning)
       .build();
@@ -58,12 +60,11 @@ export class ChatService {
     return this.hubConnection;
   }
 
-  async loadMessages(propertyId: number): Promise<void> {
-    const userId = this.getUserId();
-    if (!userId) return;
+  loadMessages(propertyId: number): void {
+    if (!this.isAuthenticated()) return;
 
     this.http
-      .get<ChatMessage[]>(`${this.api}/messages?propertyId=${propertyId}&userId=${userId}`)
+      .get<ChatMessage[]>(`${this.api}/messages?propertyId=${propertyId}`)
       .subscribe({
         next: (res) => this._messages.set(res),
       });
@@ -92,12 +93,11 @@ export class ChatService {
   }
 
   sendMessage(propertyId: number, content: string) {
-    const userId = this.getUserId();
-    if (!userId || !content.trim()) return;
+    if (!this.isAuthenticated() || !content.trim()) return;
 
     this._sending.set(true);
     this.http
-      .post<ChatMessage>(`${this.api}/messages?userId=${userId}`, {
+      .post<ChatMessage>(`${this.api}/messages`, {
         propertyId,
         content: content.trim(),
       })

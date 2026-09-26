@@ -9,6 +9,7 @@ import { IconWidget } from '../../components/icon-widget/icon-widget';
 import { WidgetType } from '../../models/widgetType';
 import { FavoritesService } from '../../services/favorites-service';
 import { AuthService } from '../../services/auth-service';
+import { cartoTileLayer } from '../../services/carto-basemap';
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -141,10 +142,7 @@ export class ListingDetails implements AfterViewInit {
       scrollWheelZoom: false,
     });
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      maxZoom: 19,
-      attribution: '© <a href="https://carto.com/attributions">CARTO</a>',
-    }).addTo(this.map);
+    cartoTileLayer().addTo(this.map);
 
     L.marker([item.latitude, item.longitude])
       .addTo(this.map)

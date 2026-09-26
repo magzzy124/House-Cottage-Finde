@@ -3,6 +3,11 @@
     "target": "http://127.0.0.1:5131",
     "secure": false
   },
+  "/hubs": {
+    "target": "http://127.0.0.1:5131",
+    "secure": false,
+    "ws": true
+  },
   "/uploads": {
     "target": "http://127.0.0.1:5131",
     "secure": false

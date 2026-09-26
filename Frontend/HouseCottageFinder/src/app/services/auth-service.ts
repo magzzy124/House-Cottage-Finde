@@ -45,15 +45,30 @@ export class AuthService {
   private http = inject(HttpClient);
   private api = '/api/auth';
 
-  private _currentUser = signal<User | null>(this.loadFromStorage());
+  private _currentUser = signal<User | null>(null);
   currentUser = this._currentUser.asReadonly();
+
+  private _loaded = signal(false);
+  loaded = this._loaded.asReadonly();
+
+  constructor() {
+    this.restoreSession();
+  }
 
   isAuthenticated() {
     return this._currentUser() !== null;
   }
 
   login(email: string, password: string) {
-    return this.http.post<User>(`${this.api}/login`, { email, password });
+    return this.http.post<{ user: User }>(`${this.api}/login`, { email, password }, { withCredentials: true });
+  }
+
+  logout() {
+    this.http.post(`${this.api}/logout`, {}, { withCredentials: true }).subscribe({
+      next: () => {
+        this._currentUser.set(null);
+      },
+    });
   }
 
   register(payload: RegisterPayload) {
@@ -61,32 +76,27 @@ export class AuthService {
   }
 
   getProfile() {
-    const userId = this._currentUser()?.id;
-    return this.http.get<UserProfile>(`${this.api}/profile?userId=${userId}`);
+    return this.http.get<UserProfile>(`${this.api}/profile`);
   }
 
   updateProfile(payload: UpdateProfilePayload) {
-    const userId = this._currentUser()?.id;
-    return this.http.put<User & { message: string }>(`${this.api}/profile?userId=${userId}`, payload);
+    return this.http.put<User & { message: string }>(`${this.api}/profile`, payload);
   }
 
   setCurrentUser(user: User) {
-    localStorage.setItem('hcf_user', JSON.stringify(user));
     this._currentUser.set(user);
   }
 
-  logout() {
-    localStorage.removeItem('hcf_user');
-    this._currentUser.set(null);
-  }
-
-  private loadFromStorage(): User | null {
-    const raw = localStorage.getItem('hcf_user');
-    if (!raw) return null;
-    try {
-      return JSON.parse(raw) as User;
-    } catch {
-      return null;
-    }
+  private restoreSession() {
+    this.http.get<User>(`${this.api}/me`, { withCredentials: true }).subscribe({
+      next: (user) => {
+        this._currentUser.set(user);
+        this._loaded.set(true);
+      },
+      error: () => {
+        this._currentUser.set(null);
+        this._loaded.set(true);
+      },
+    });
   }
 }

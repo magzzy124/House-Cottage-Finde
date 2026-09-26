@@ -1,5 +1,9 @@
+using System.Security.Claims;
 using HouseCottageFinder.Api.Data;
+using HouseCottageFinder.Api.Hubs;
 using HouseCottageFinder.Api.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace HouseCottageFinder.Api.Endpoints;
@@ -8,8 +12,9 @@ public static class ChatEndpoints
 {
     public static IEndpointRouteBuilder MapChatEndpoints(this IEndpointRouteBuilder app)
     {
-        app.MapGet("/api/chat/threads", async (int userId, AppDbContext db) =>
+        app.MapGet("/api/chat/threads", [Authorize] async (HttpContext http, AppDbContext db) =>
         {
+            var userId = GetUserId(http);
             var threads = await db.Messages
                 .Where(m => m.PropertyId > 0)
                 .GroupBy(m => new { m.PropertyId, m.SenderId })
@@ -30,7 +35,7 @@ public static class ChatEndpoints
             return Results.Ok(threads);
         }).WithName("GetChatThreads");
 
-        app.MapGet("/api/chat/messages", async (int propertyId, int userId, AppDbContext db) =>
+        app.MapGet("/api/chat/messages", [Authorize] async (HttpContext http, int propertyId, AppDbContext db) =>
         {
             var messages = await db.Messages
                 .Where(m => m.PropertyId == propertyId)
@@ -52,8 +57,13 @@ public static class ChatEndpoints
             return Results.Ok(messages);
         }).WithName("GetMessages");
 
-        app.MapPost("/api/chat/messages", async (SendMessageRequest request, int userId, AppDbContext db) =>
+        app.MapPost("/api/chat/messages", [Authorize] async (
+            SendMessageRequest request,
+            HttpContext http,
+            AppDbContext db,
+            IHubContext<ChatHub> hubContext) =>
         {
+            var userId = GetUserId(http);
             var message = new Message
             {
                 PropertyId = request.PropertyId,
@@ -66,7 +76,7 @@ public static class ChatEndpoints
 
             var sender = await db.Users.FindAsync(userId);
 
-            return Results.Ok(new
+            var response = new
             {
                 id = message.Id,
                 propertyId = message.PropertyId,
@@ -74,10 +84,65 @@ public static class ChatEndpoints
                 senderName = sender != null ? sender.FirstName + " " + sender.LastName : "Unknown",
                 content = message.Content,
                 sentAt = message.SentAt
-            });
+            };
+
+            await hubContext.Clients
+                .Group($"property_{request.PropertyId}")
+                .SendAsync("ReceiveMessage", response);
+
+            var property = await db.Properties.FindAsync(request.PropertyId);
+            if (property != null)
+            {
+                int? recipientId = null;
+
+                if (property.UserId != userId)
+                {
+                    recipientId = property.UserId;
+                }
+                else
+                {
+                    var lastOtherMessage = await db.Messages
+                        .Where(m => m.PropertyId == request.PropertyId && m.SenderId != userId)
+                        .OrderByDescending(m => m.SentAt)
+                        .FirstOrDefaultAsync();
+                    if (lastOtherMessage != null)
+                        recipientId = lastOtherMessage.SenderId;
+                }
+
+                if (recipientId.HasValue)
+                {
+                    var alreadyNotified = await db.Notifications.AnyAsync(n =>
+                        n.UserId == recipientId.Value &&
+                        n.PropertyId == request.PropertyId &&
+                        n.Title == "New message" &&
+                        n.CreatedAt > DateTime.UtcNow.AddMinutes(-1));
+
+                    if (!alreadyNotified)
+                    {
+                        var notification = new Notification
+                        {
+                            UserId = recipientId.Value,
+                            PropertyId = request.PropertyId,
+                            Title = "New message",
+                            Message = $"{sender?.FirstName} {sender?.LastName} sent you a message on \"{property.Title}\".",
+                            IsRead = false,
+                            CreatedAt = DateTime.UtcNow
+                        };
+                        db.Notifications.Add(notification);
+                        await db.SaveChangesAsync();
+                    }
+                }
+            }
+
+            return Results.Ok(response);
         }).WithName("SendMessage");
 
         return app;
+    }
+
+    private static int GetUserId(HttpContext http)
+    {
+        return int.Parse(http.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
     }
 }
 

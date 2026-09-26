@@ -34,6 +34,8 @@ public class Property
 
     public int Area { get; set; }
 
+    public int? PlotSize { get; set; }
+
     public double Latitude { get; set; }
 
     public double Longitude { get; set; }

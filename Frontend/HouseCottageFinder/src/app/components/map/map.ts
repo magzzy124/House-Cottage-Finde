@@ -6,6 +6,7 @@ import { SelectedLocation } from '../../services/selected-location';
 import { HouseService } from '../../services/house-service';
 import { FavoritesService } from '../../services/favorites-service';
 import { AuthService } from '../../services/auth-service';
+import { cartoTileLayer } from '../../services/carto-basemap';
 
 @Component({
   selector: 'app-map',
@@ -260,10 +261,8 @@ export class Map implements AfterViewInit {
       zoom: 12
     })
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      maxZoom: 19,
+    cartoTileLayer('light_all', {
       minZoom: 2,
-      attribution: '© <a href="https://carto.com/attributions">CARTO</a>'
     }).addTo(this.map);
 
     this.clusterGroup = L.markerClusterGroup({

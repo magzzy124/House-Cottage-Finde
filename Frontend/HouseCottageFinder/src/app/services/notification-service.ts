@@ -46,20 +46,15 @@ export class NotificationService implements OnDestroy {
     }
   }
 
-  private getUserId(): number | null {
-    return this.auth.currentUser()?.id ?? null;
-  }
-
   loadNotifications() {
-    const userId = this.getUserId();
-    if (!userId) {
+    if (!this.auth.isAuthenticated()) {
       this._notifications.set([]);
       this._unreadCount.set(0);
       return;
     }
 
     this._loading.set(true);
-    this.http.get<AppNotification[]>(`${this.api}?userId=${userId}`).subscribe({
+    this.http.get<AppNotification[]>(`${this.api}`).subscribe({
       next: (res) => {
         this._notifications.set(res);
         this._loading.set(false);
@@ -69,13 +64,12 @@ export class NotificationService implements OnDestroy {
   }
 
   loadUnreadCount() {
-    const userId = this.getUserId();
-    if (!userId) {
+    if (!this.auth.isAuthenticated()) {
       this._unreadCount.set(0);
       return;
     }
 
-    this.http.get<{ count: number }>(`${this.api}/unread-count?userId=${userId}`).subscribe({
+    this.http.get<{ count: number }>(`${this.api}/unread-count`).subscribe({
       next: (res) => this._unreadCount.set(res.count),
     });
   }
@@ -92,10 +86,9 @@ export class NotificationService implements OnDestroy {
   }
 
   markAllAsRead() {
-    const userId = this.getUserId();
-    if (!userId) return;
+    if (!this.auth.isAuthenticated()) return;
 
-    this.http.put(`${this.api}/read-all?userId=${userId}`, {}).subscribe({
+    this.http.put(`${this.api}/read-all`, {}).subscribe({
       next: () => {
         this._notifications.update((ns) => ns.map((n) => ({ ...n, isRead: true })));
         this._unreadCount.set(0);

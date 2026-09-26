@@ -28,7 +28,7 @@ export class MyListings implements OnInit {
 
   loadListings() {
     this.loading.set(true);
-    this.http.get<any[]>(`/api/properties/my?userId=${this.auth.currentUser()?.id}`).subscribe({
+    this.http.get<any[]>('/api/properties/my').subscribe({
       next: (res) => {
         this.listings.set(res);
         this.loading.set(false);
@@ -38,7 +38,7 @@ export class MyListings implements OnInit {
   }
 
   deleteListing(id: number) {
-    this.http.delete(`/api/properties/${id}?userId=${this.auth.currentUser()?.id}`).subscribe({
+    this.http.delete(`/api/properties/${id}`).subscribe({
       next: () => {
         this.listings.update((list) => list.filter((l) => l.id !== id));
       },
