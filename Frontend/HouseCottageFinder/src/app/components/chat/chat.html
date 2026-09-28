@@ -2,7 +2,18 @@
   <div class="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-3">
     @if (chatService.messages().length === 0) {
       <div class="flex-1 flex flex-col items-center justify-center text-center">
-        <svg class="w-10 h-10 text-slate-300 mb-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+        <svg
+          class="w-10 h-10 text-slate-300 mb-3"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+        </svg>
         <p class="text-sm text-slate-400">No messages yet. Start the conversation!</p>
       </div>
     } @else {
@@ -27,7 +38,9 @@
               class="text-[10px] mt-1 text-right"
               [class.text-white/60]="isOwnMessage(msg.senderId)"
               [class.text-slate-400]="!isOwnMessage(msg.senderId)"
-            >{{ formatTime(msg.sentAt) }}</p>
+            >
+              {{ formatTime(msg.sentAt) }}
+            </p>
           </div>
         </div>
       }
@@ -46,7 +59,19 @@
       [disabled]="!messageText.trim() || chatService.sending()"
       class="w-10 h-10 rounded-xl bg-[#4a8dd0] text-white flex items-center justify-center cursor-pointer hover:bg-[#3d7ab8] disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 shadow-sm"
     >
-      <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+      <svg
+        class="w-5 h-5"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="m22 2-7 20-4-9-9-4Z" />
+        <path d="M22 2 11 13" />
+      </svg>
     </button>
   </div>
 </div>

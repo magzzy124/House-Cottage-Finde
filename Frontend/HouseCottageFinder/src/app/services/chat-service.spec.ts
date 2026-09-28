@@ -11,21 +11,31 @@ describe('ChatService', () => {
 
   const mockUser = { id: 1, firstName: 'John', lastName: 'Doe', username: 'johndoe', email: 'john@example.com' };
 
+  const mockThread = {
+    propertyId: 10,
+    otherUserId: 2,
+    otherName: 'Jane Doe',
+    propertyTitle: 'House Alpha',
+    propertyImage: 'house.jpg',
+    lastMessage: 'Hi',
+    lastMessageAt: '2024-01-01T00:00:00Z',
+    unreadCount: 2,
+  };
+
   beforeEach(() => {
     localStorage.clear();
-    vi.useFakeTimers();
     TestBed.configureTestingModule({
       providers: [ChatService, AuthService, provideHttpClient(), provideHttpClientTesting()],
     });
     service = TestBed.inject(ChatService);
     auth = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
+
+    httpMock.expectOne('/api/auth/me').error(new ProgressEvent('error'));
   });
 
   afterEach(() => {
     httpMock.verify();
-    service.stopPolling();
-    vi.useRealTimers();
     localStorage.clear();
   });
 
@@ -33,57 +43,76 @@ describe('ChatService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should start with empty messages', () => {
+  it('should start with empty messages and threads', () => {
     expect(service.messages().length).toBe(0);
+    expect(service.threads().length).toBe(0);
     expect(service.sending()).toBeFalsy();
+    expect(service.unreadTotal()).toBe(0);
   });
 
   describe('loadMessages', () => {
     it('should not make request when not authenticated', () => {
-      service.loadMessages(10);
-      httpMock.expectNone('/api/');
+      service.loadMessages(10, 2);
+      httpMock.expectNone('/api/chat/messages');
     });
 
-    it('should load messages for a property', () => {
+    it('should load only the conversation with the given user', () => {
       auth.setCurrentUser(mockUser);
-      const mockMessages = [
-        { id: 1, propertyId: 10, senderId: 1, senderName: 'John', content: 'Hello', sentAt: '2024-01-01' },
-      ];
+      service.loadMessages(10, 2);
 
-      service.loadMessages(10);
-
-      const req = httpMock.expectOne('/api/chat/messages?propertyId=10&userId=1');
+      const req = httpMock.expectOne('/api/chat/messages?propertyId=10&withUserId=2');
       expect(req.request.method).toBe('GET');
-      req.flush(mockMessages);
+      req.flush([
+        {
+          id: 1,
+          propertyId: 10,
+          senderId: 2,
+          recipientId: 1,
+          senderName: 'Jane Doe',
+          content: 'Hello',
+          sentAt: '2024-01-01',
+          isRead: false,
+        },
+      ]);
 
       expect(service.messages().length).toBe(1);
+      expect(service.messages()[0].recipientId).toBe(1);
       expect(service.messages()[0].content).toBe('Hello');
     });
   });
 
   describe('sendMessage', () => {
     it('should not make request when not authenticated', () => {
-      service.sendMessage(10, 'Hello');
-      httpMock.expectNone('/api/');
+      service.sendMessage(10, 2, 'Hello');
+      httpMock.expectNone('/api/chat/messages');
     });
 
     it('should not send empty messages', () => {
       auth.setCurrentUser(mockUser);
-      service.sendMessage(10, '   ');
-      httpMock.expectNone('/api/');
+      service.sendMessage(10, 2, '   ');
+      httpMock.expectNone('/api/chat/messages');
     });
 
-    it('should POST message and append to messages', () => {
+    it('should POST message with recipient and append to messages', () => {
       auth.setCurrentUser(mockUser);
-      service.sendMessage(10, 'Hello there');
+      service.sendMessage(10, 2, 'Hello there');
 
       expect(service.sending()).toBeTruthy();
 
-      const req = httpMock.expectOne('/api/chat/messages?userId=1');
+      const req = httpMock.expectOne('/api/chat/messages');
       expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual({ propertyId: 10, content: 'Hello there' });
+      expect(req.request.body).toEqual({ propertyId: 10, recipientId: 2, content: 'Hello there' });
 
-      const newMsg = { id: 2, propertyId: 10, senderId: 1, senderName: 'John', content: 'Hello there', sentAt: '2024-01-01' };
+      const newMsg = {
+        id: 2,
+        propertyId: 10,
+        senderId: 1,
+        recipientId: 2,
+        senderName: 'John Doe',
+        content: 'Hello there',
+        sentAt: '2024-01-01',
+        isRead: false,
+      };
       req.flush(newMsg);
 
       expect(service.sending()).toBeFalsy();
@@ -93,51 +122,69 @@ describe('ChatService', () => {
 
     it('should set sending to false on error', () => {
       auth.setCurrentUser(mockUser);
-      service.sendMessage(10, 'Hello');
+      service.sendMessage(10, 2, 'Hello');
 
-      const req = httpMock.expectOne('/api/chat/messages?userId=1');
+      const req = httpMock.expectOne('/api/chat/messages');
       req.error(new ProgressEvent('error'));
 
       expect(service.sending()).toBeFalsy();
     });
   });
 
-  describe('startPolling / stopPolling', () => {
-    it('should load messages immediately when polling starts', () => {
-      auth.setCurrentUser(mockUser);
-      service.startPolling(10);
-
-      const req = httpMock.expectOne('/api/chat/messages?propertyId=10&userId=1');
-      req.flush([]);
-      expect(service.messages().length).toBe(0);
+  describe('threads', () => {
+    it('should not make request when not authenticated', () => {
+      service.loadThreads().subscribe();
+      httpMock.expectNone('/api/chat/threads');
     });
 
-    it('should periodically load messages', () => {
+    it('should load threads and compute unread total', () => {
       auth.setCurrentUser(mockUser);
-      service.startPolling(10);
+      service.loadThreads().subscribe();
 
-      const req = httpMock.expectOne('/api/chat/messages?propertyId=10&userId=1');
-      req.flush([{ id: 1, propertyId: 10, senderId: 1, senderName: 'John', content: 'Hi', sentAt: '' }]);
+      const req = httpMock.expectOne('/api/chat/threads');
+      expect(req.request.method).toBe('GET');
+      req.flush([mockThread, { ...mockThread, propertyId: 11, otherUserId: 3, unreadCount: 1 }]);
 
-      vi.advanceTimersByTime(5000);
-
-      const req2 = httpMock.expectOne('/api/chat/messages?propertyId=10&userId=1');
-      req2.flush([{ id: 1, propertyId: 10, senderId: 1, senderName: 'John', content: 'Hi', sentAt: '' }, { id: 2, propertyId: 10, senderId: 2, senderName: 'Jane', content: 'Hey', sentAt: '' }]);
-
-      expect(service.messages().length).toBe(2);
+      expect(service.threads().length).toBe(2);
+      expect(service.unreadTotal()).toBe(3);
     });
 
-    it('should clear messages when polling stops', () => {
+    it('should filter threads by property', () => {
       auth.setCurrentUser(mockUser);
-      service.startPolling(10);
+      service.loadThreads(10).subscribe();
 
-      const req = httpMock.expectOne('/api/chat/messages?propertyId=10&userId=1');
-      req.flush([{ id: 1, propertyId: 10, senderId: 1, senderName: 'John', content: 'Hi', sentAt: '' }]);
+      const req = httpMock.expectOne('/api/chat/threads?propertyId=10');
+      req.flush([mockThread]);
 
-      expect(service.messages().length).toBe(1);
+      expect(service.threads().length).toBe(1);
+      expect(service.threads()[0].propertyId).toBe(10);
+    });
 
-      service.stopPolling();
-      expect(service.messages().length).toBe(0);
+    it('ensureThreads should fetch only once', () => {
+      auth.setCurrentUser(mockUser);
+      service.ensureThreads();
+      httpMock.expectOne('/api/chat/threads').flush([]);
+
+      service.ensureThreads();
+      httpMock.expectNone('/api/chat/threads');
+    });
+
+    it('refreshThreads should be a no-op before the first load', () => {
+      auth.setCurrentUser(mockUser);
+      service.refreshThreads();
+      httpMock.expectNone('/api/chat/threads');
+    });
+
+    it('clearThreads should reset threads and unread total', () => {
+      auth.setCurrentUser(mockUser);
+      service.loadThreads().subscribe();
+      httpMock.expectOne('/api/chat/threads').flush([mockThread]);
+
+      expect(service.unreadTotal()).toBe(2);
+
+      service.clearThreads();
+      expect(service.threads().length).toBe(0);
+      expect(service.unreadTotal()).toBe(0);
     });
   });
 });

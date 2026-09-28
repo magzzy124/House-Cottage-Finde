@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { effect, inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { catchError, debounceTime, EMPTY, map, switchMap } from 'rxjs';
 
 export interface PropertyFilters {
   lat: number;
@@ -43,13 +45,22 @@ export class HouseService {
     maxPlotSize: null,
   });
 
-  private fetchTimer: ReturnType<typeof setTimeout> | null = null;
-
   constructor() {
-    effect(() => {
-      this.filters();
-      this.fetch();
-    });
+    toObservable(this.filters)
+      .pipe(
+        debounceTime(150),
+        map((f) => this.buildParams(f)),
+        switchMap((params) =>
+          this.http.get<any[]>('/api/properties', { params }).pipe(
+            catchError((err) => {
+              console.error(err);
+              return EMPTY;
+            }),
+          ),
+        ),
+        takeUntilDestroyed(),
+      )
+      .subscribe((res) => this._cardItems.set(res));
   }
 
   setFilters(partial: Partial<PropertyFilters>) {
@@ -69,50 +80,35 @@ export class HouseService {
     return this.http.get<{ price: number; date: string }[]>(`/api/properties/${id}/price-history`);
   }
 
-  private fetch() {
-    if (this.fetchTimer) {
-      clearTimeout(this.fetchTimer);
+  private buildParams(f: PropertyFilters): Record<string, string | number> {
+    const params: Record<string, string | number> = {
+      lat: f.lat,
+      lon: f.lon,
+      radius: f.radiusKm,
+    };
+
+    const setIfPresent = (key: string, value: number | null) => {
+      if (value !== null) {
+        params[key] = value;
+      }
+    };
+
+    if (f.dealType !== 'Any') {
+      params['dealType'] = f.dealType;
     }
-    this.fetchTimer = setTimeout(() => {
-      const f = this.filters();
-      const params: Record<string, string | number> = {
-        lat: f.lat,
-        lon: f.lon,
-        radius: f.radiusKm,
-      };
+    if (f.minPrice !== null && f.minPrice > 0) {
+      params['minPrice'] = f.minPrice;
+    }
+    if (f.maxPrice !== null && f.maxPrice < 1000000) {
+      params['maxPrice'] = f.maxPrice;
+    }
+    setIfPresent('minBedrooms', f.minBedrooms);
+    setIfPresent('maxBedrooms', f.maxBedrooms);
+    setIfPresent('minArea', f.minArea);
+    setIfPresent('maxArea', f.maxArea);
+    setIfPresent('minPlotSize', f.minPlotSize);
+    setIfPresent('maxPlotSize', f.maxPlotSize);
 
-      if (f.dealType !== 'Any') {
-        params['dealType'] = f.dealType;
-      }
-      if (f.minPrice !== null && f.minPrice > 0) {
-        params['minPrice'] = f.minPrice;
-      }
-      if (f.maxPrice !== null && f.maxPrice < 1000000) {
-        params['maxPrice'] = f.maxPrice;
-      }
-      if (f.minBedrooms !== null) {
-        params['minBedrooms'] = f.minBedrooms;
-      }
-      if (f.maxBedrooms !== null) {
-        params['maxBedrooms'] = f.maxBedrooms;
-      }
-      if (f.minArea !== null) {
-        params['minArea'] = f.minArea;
-      }
-      if (f.maxArea !== null) {
-        params['maxArea'] = f.maxArea;
-      }
-      if (f.minPlotSize !== null) {
-        params['minPlotSize'] = f.minPlotSize;
-      }
-      if (f.maxPlotSize !== null) {
-        params['maxPlotSize'] = f.maxPlotSize;
-      }
-
-      this.http.get('/api/properties', { params }).subscribe({
-        next: (res) => this._cardItems.set(res as any[]),
-        error: (err) => console.error(err),
-      });
-    }, 150);
+    return params;
   }
 }

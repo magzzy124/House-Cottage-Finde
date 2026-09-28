@@ -5,6 +5,7 @@ import { AuthService } from './auth-service';
 export interface AppNotification {
   id: number;
   propertyId: number;
+  senderId: number;
   title: string;
   message: string;
   isRead: boolean;

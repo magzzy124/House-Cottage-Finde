@@ -20,6 +20,7 @@ public static class NotificationEndpoints
                 {
                     n.Id,
                     n.PropertyId,
+                    n.SenderId,
                     n.Title,
                     n.Message,
                     n.IsRead,

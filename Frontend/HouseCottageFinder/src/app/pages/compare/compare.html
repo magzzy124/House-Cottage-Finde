@@ -18,7 +18,18 @@
           routerLink="/search"
           class="flex items-center gap-2 text-sm font-semibold text-[#4a8dd0] hover:text-[#3d7ab8] transition-colors cursor-pointer"
         >
-          <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          <svg
+            class="w-4 h-4"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="m15 18-6-6 6-6" />
+          </svg>
           Add more
         </a>
       </div>
@@ -26,9 +37,22 @@
 
     @if (items.length === 0) {
       <div class="flex flex-col items-center justify-center gap-5 text-center py-32">
-        <div class="w-28 h-28 rounded-3xl bg-gradient-to-br from-blue-50 to-slate-100 flex items-center justify-center shadow-inner">
-          <svg class="w-12 h-12 text-[#4a8dd0]/40" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/>
+        <div
+          class="w-28 h-28 rounded-3xl bg-linear-to-br from-blue-50 to-slate-100 flex items-center justify-center shadow-inner"
+        >
+          <svg
+            class="w-12 h-12 text-[#4a8dd0]/40"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="18" x2="18" y1="20" y2="10" />
+            <line x1="12" x2="12" y1="20" y2="4" />
+            <line x1="6" x2="6" y1="20" y2="14" />
           </svg>
         </div>
         <div>
@@ -50,9 +74,13 @@
           <table class="w-full text-sm">
             <thead>
               <tr class="border-b border-slate-100">
-                <th class="text-left px-6 py-4 font-semibold text-slate-500 bg-slate-50/50 w-40 sticky left-0 z-10">Feature</th>
+                <th
+                  class="text-left px-6 py-4 font-semibold text-slate-500 bg-slate-50/50 w-40 sticky left-0 z-10"
+                >
+                  Feature
+                </th>
                 @for (item of items; track item.id) {
-                  <th class="px-4 py-4 min-w-[220px]">
+                  <th class="px-4 py-4 min-w-55">
                     <div class="flex flex-col items-center gap-2">
                       <div class="relative w-full">
                         <div
@@ -60,7 +88,9 @@
                           [style.background-image]="'url(' + item.imageUrl + ')'"
                         ></div>
                       </div>
-                      <p class="font-semibold text-slate-800 text-center text-xs leading-tight">{{ item.title }}</p>
+                      <p class="font-semibold text-slate-800 text-center text-xs leading-tight">
+                        {{ item.title }}
+                      </p>
                       <div class="flex items-center gap-2">
                         <button
                           (click)="viewListing(item.id)"
@@ -83,63 +113,102 @@
             </thead>
             <tbody>
               <tr class="border-b border-slate-50 hover:bg-slate-50/30 transition-colors">
-                <td class="px-6 py-3.5 font-medium text-slate-500 sticky left-0 bg-white z-10">Price</td>
+                <td class="px-6 py-3.5 font-medium text-slate-500 sticky left-0 bg-white z-10">
+                  Price
+                </td>
                 @for (item of items; track item.id) {
-                  <td class="px-4 py-3.5 text-center font-black text-lg text-slate-900">$ {{ formatPrice(item.price) }}</td>
-                }
-              </tr>
-              <tr class="border-b border-slate-50 hover:bg-slate-50/30 transition-colors">
-                <td class="px-6 py-3.5 font-medium text-slate-500 sticky left-0 bg-white z-10">Type</td>
-                @for (item of items; track item.id) {
-                  <td class="px-4 py-3.5 text-center">
-                    <span
-                      class="text-xs font-bold uppercase px-3 py-1 rounded-lg"
-                      [style.background-color]="item.dealType === 'For sale' ? '#e8f1fa' : '#fdf1e2'"
-                      [style.color]="item.dealType === 'For sale' ? '#4a8dd0' : '#f59e0b'"
-                    >{{ item.dealType }}</span>
+                  <td class="px-4 py-3.5 text-center font-black text-lg text-slate-900">
+                    $ {{ formatPrice(item.price) }}
                   </td>
                 }
               </tr>
               <tr class="border-b border-slate-50 hover:bg-slate-50/30 transition-colors">
-                <td class="px-6 py-3.5 font-medium text-slate-500 sticky left-0 bg-white z-10">Location</td>
+                <td class="px-6 py-3.5 font-medium text-slate-500 sticky left-0 bg-white z-10">
+                  Type
+                </td>
                 @for (item of items; track item.id) {
-                  <td class="px-4 py-3.5 text-center text-slate-600">{{ item.address }}, {{ item.city }}</td>
+                  <td class="px-4 py-3.5 text-center">
+                    <span
+                      class="text-xs font-bold uppercase px-3 py-1 rounded-lg"
+                      [style.background-color]="
+                        item.dealType === 'For sale' ? '#e8f1fa' : '#fdf1e2'
+                      "
+                      [style.color]="item.dealType === 'For sale' ? '#4a8dd0' : '#f59e0b'"
+                      >{{ item.dealType }}</span
+                    >
+                  </td>
                 }
               </tr>
               <tr class="border-b border-slate-50 hover:bg-slate-50/30 transition-colors">
-                <td class="px-6 py-3.5 font-medium text-slate-500 sticky left-0 bg-white z-10">Bedrooms</td>
+                <td class="px-6 py-3.5 font-medium text-slate-500 sticky left-0 bg-white z-10">
+                  Location
+                </td>
                 @for (item of items; track item.id) {
-                  <td class="px-4 py-3.5 text-center font-bold text-slate-800 text-lg">{{ item.bedrooms }}</td>
+                  <td class="px-4 py-3.5 text-center text-slate-600">
+                    {{ item.address }}, {{ item.city }}
+                  </td>
                 }
               </tr>
               <tr class="border-b border-slate-50 hover:bg-slate-50/30 transition-colors">
-                <td class="px-6 py-3.5 font-medium text-slate-500 sticky left-0 bg-white z-10">Bathrooms</td>
+                <td class="px-6 py-3.5 font-medium text-slate-500 sticky left-0 bg-white z-10">
+                  Bedrooms
+                </td>
                 @for (item of items; track item.id) {
-                  <td class="px-4 py-3.5 text-center font-bold text-slate-800 text-lg">{{ item.bathrooms }}</td>
+                  <td class="px-4 py-3.5 text-center font-bold text-slate-800 text-lg">
+                    {{ item.bedrooms }}
+                  </td>
                 }
               </tr>
               <tr class="border-b border-slate-50 hover:bg-slate-50/30 transition-colors">
-                <td class="px-6 py-3.5 font-medium text-slate-500 sticky left-0 bg-white z-10">Area</td>
+                <td class="px-6 py-3.5 font-medium text-slate-500 sticky left-0 bg-white z-10">
+                  Bathrooms
+                </td>
                 @for (item of items; track item.id) {
-                  <td class="px-4 py-3.5 text-center font-bold text-slate-800">{{ item.area }} m²</td>
+                  <td class="px-4 py-3.5 text-center font-bold text-slate-800 text-lg">
+                    {{ item.bathrooms }}
+                  </td>
                 }
               </tr>
               <tr class="border-b border-slate-50 hover:bg-slate-50/30 transition-colors">
-                <td class="px-6 py-3.5 font-medium text-slate-500 sticky left-0 bg-white z-10">Plot Size</td>
+                <td class="px-6 py-3.5 font-medium text-slate-500 sticky left-0 bg-white z-10">
+                  Area
+                </td>
                 @for (item of items; track item.id) {
-                  <td class="px-4 py-3.5 text-center font-bold text-slate-800">{{ item.plotSize ? item.plotSize + ' m²' : '—' }}</td>
+                  <td class="px-4 py-3.5 text-center font-bold text-slate-800">
+                    {{ item.area }} m²
+                  </td>
                 }
               </tr>
               <tr class="border-b border-slate-50 hover:bg-slate-50/30 transition-colors">
-                <td class="px-6 py-3.5 font-medium text-slate-500 sticky left-0 bg-white z-10">Price / m²</td>
+                <td class="px-6 py-3.5 font-medium text-slate-500 sticky left-0 bg-white z-10">
+                  Plot Size
+                </td>
                 @for (item of items; track item.id) {
-                  <td class="px-4 py-3.5 text-center font-bold text-[#4a8dd0]">$ {{ formatPrice(pricePerSqm(item)) }}</td>
+                  <td class="px-4 py-3.5 text-center font-bold text-slate-800">
+                    {{ item.plotSize ? item.plotSize + ' m²' : '—' }}
+                  </td>
+                }
+              </tr>
+              <tr class="border-b border-slate-50 hover:bg-slate-50/30 transition-colors">
+                <td class="px-6 py-3.5 font-medium text-slate-500 sticky left-0 bg-white z-10">
+                  Price / m²
+                </td>
+                @for (item of items; track item.id) {
+                  <td class="px-4 py-3.5 text-center font-bold text-[#4a8dd0]">
+                    $ {{ formatPrice(pricePerSqm(item)) }}
+                  </td>
                 }
               </tr>
               <tr class="hover:bg-slate-50/30 transition-colors">
-                <td class="px-6 py-3.5 font-medium text-slate-500 sticky left-0 bg-white z-10">Description</td>
+                <td class="px-6 py-3.5 font-medium text-slate-500 sticky left-0 bg-white z-10">
+                  Description
+                </td>
                 @for (item of items; track item.id) {
-                  <td class="px-4 py-3.5 text-center text-xs text-slate-500 max-w-[220px] leading-relaxed">{{ item.description || '—' }}</td>
+                  <td
+                    class="px-4 py-3.5 text-center text-xs text-slate-500 max-w-55 leading-relaxed"
+                  >
+                    {{ item.description || '—' }}
+                  </td>
                 }
               </tr>
             </tbody>

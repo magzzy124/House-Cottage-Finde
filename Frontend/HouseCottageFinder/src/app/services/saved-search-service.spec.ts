@@ -81,6 +81,8 @@ describe('SavedSearchService', () => {
         maxBedrooms: 4,
         minArea: 50,
         maxArea: 120,
+        minPlotSize: null,
+        maxPlotSize: null,
         lat: 44.8176,
         lon: 20.4569,
         radiusKm: 5,

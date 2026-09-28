@@ -170,6 +170,20 @@ public static class AuthEndpoints
             });
         }).WithName("UpdateProfile");
 
+        app.MapGet("/api/users/{id:int}", [Authorize] async (int id, AppDbContext db) =>
+        {
+            var user = await db.Users.FindAsync(id);
+            if (user is null) return Results.NotFound(new { message = "User not found" });
+
+            return Results.Ok(new
+            {
+                id = user.Id,
+                firstName = user.FirstName,
+                lastName = user.LastName,
+                username = user.Username
+            });
+        }).WithName("GetUser");
+
         return app;
     }
 

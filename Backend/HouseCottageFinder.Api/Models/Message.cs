@@ -11,6 +11,10 @@ public class Message
 
     public int SenderId { get; set; }
 
+    public int RecipientId { get; set; }
+
+    public bool IsRead { get; set; }
+
     [MaxLength(1000)]
     public string Content { get; set; } = string.Empty;
 

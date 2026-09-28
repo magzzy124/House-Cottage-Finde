@@ -55,7 +55,7 @@ describe('Search', () => {
   });
 
   it('should default to km tab', () => {
-    expect(component.selectedTab()).toBe('km');
+    expect(component.selectedRadiusType()).toBe('km');
   });
 
   it('should default radius to 10', () => {
@@ -84,7 +84,7 @@ describe('Search', () => {
   describe('selectTab', () => {
     it('should update tab signal', () => {
       component.selectTab('m');
-      expect(component.selectedTab()).toBe('m');
+      expect(component.selectedRadiusType()).toBe('m');
     });
   });
 
@@ -151,7 +151,7 @@ describe('Search', () => {
       component.resetFilters();
 
       expect(component.selectedDealType()).toBe('Any');
-      expect(component.selectedTab()).toBe('km');
+      expect(component.selectedRadiusType()).toBe('km');
       expect(component.radius).toBe(10);
       expect(component.minBedrooms).toBeNull();
       expect(component.maxBedrooms).toBeNull();

@@ -23,12 +23,18 @@ export class Notifications implements OnInit {
     this.notificationService.loadNotifications();
   }
 
-  onNotificationClick(notification: { id: number; propertyId: number; isRead: boolean; title: string }) {
+  onNotificationClick(notification: {
+    id: number;
+    propertyId: number;
+    senderId: number;
+    isRead: boolean;
+    title: string;
+  }) {
     if (!notification.isRead) {
       this.notificationService.markAsRead(notification.id);
     }
     if (notification.title === 'New message') {
-      this.router.navigate(['/chat', notification.propertyId]);
+      this.router.navigate(['/chat', notification.propertyId, notification.senderId]);
     } else {
       this.router.navigate(['/listing', notification.propertyId]);
     }

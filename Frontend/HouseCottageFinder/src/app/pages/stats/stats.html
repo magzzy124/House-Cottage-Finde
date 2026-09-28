@@ -2,19 +2,25 @@
   <div class="max-w-6xl mx-auto px-8 py-8">
     <div class="mb-8">
       <h1 class="text-2xl font-bold text-slate-900">Market Statistics</h1>
-      <p class="text-sm text-slate-400 mt-1">Overview of the real estate market across all regions</p>
+      <p class="text-sm text-slate-400 mt-1">
+        Overview of the real estate market across all regions
+      </p>
     </div>
 
     @if (statsService.loading()) {
       <div class="flex flex-col items-center justify-center gap-5 text-center py-32">
-        <div class="w-12 h-12 border-4 border-[#4a8dd0] border-t-transparent rounded-full animate-spin"></div>
+        <div
+          class="w-12 h-12 border-4 border-[#4a8dd0] border-t-transparent rounded-full animate-spin"
+        ></div>
         <p class="text-slate-400 text-sm font-medium">Loading statistics...</p>
       </div>
     } @else {
       @if (statsService.overview(); as overview) {
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
           <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
-            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Total Listings</p>
+            <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide">
+              Total Listings
+            </p>
             <p class="text-3xl font-black text-slate-900 mt-2">{{ overview.totalListings }}</p>
           </div>
           <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
@@ -23,11 +29,15 @@
           </div>
           <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
             <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Avg Price</p>
-            <p class="text-3xl font-black text-[#4a8dd0] mt-2">{{ formatPrice(overview.avgPrice) }}</p>
+            <p class="text-3xl font-black text-[#4a8dd0] mt-2">
+              {{ formatPrice(overview.avgPrice) }}
+            </p>
           </div>
           <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
             <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Avg $/m²</p>
-            <p class="text-3xl font-black text-[#4a8dd0] mt-2">{{ formatPrice(overview.avgPricePerSqm) }}</p>
+            <p class="text-3xl font-black text-[#4a8dd0] mt-2">
+              {{ formatPrice(overview.avgPricePerSqm) }}
+            </p>
           </div>
         </div>
 
@@ -38,7 +48,14 @@
               <p class="text-sm font-semibold text-slate-700">For Sale</p>
             </div>
             <p class="text-2xl font-black text-slate-900">{{ overview.forSale }}</p>
-            <p class="text-xs text-slate-400 mt-1">Avg {{ formatPrice(overview.priceByDeal.find(d => d.dealType === 'For sale')?.avgPrice ?? 0) }}</p>
+            <p class="text-xs text-slate-400 mt-1">
+              Avg
+              {{
+                formatPrice(
+                  overview.priceByDeal.find((d) => d.dealType === 'For sale')?.avgPrice ?? 0
+                )
+              }}
+            </p>
           </div>
           <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
             <div class="flex items-center gap-3 mb-3">
@@ -46,7 +63,14 @@
               <p class="text-sm font-semibold text-slate-700">For Rent</p>
             </div>
             <p class="text-2xl font-black text-slate-900">{{ overview.forRent }}</p>
-            <p class="text-xs text-slate-400 mt-1">Avg {{ formatPrice(overview.priceByDeal.find(d => d.dealType === 'For rent')?.avgPrice ?? 0) }}</p>
+            <p class="text-xs text-slate-400 mt-1">
+              Avg
+              {{
+                formatPrice(
+                  overview.priceByDeal.find((d) => d.dealType === 'For rent')?.avgPrice ?? 0
+                )
+              }}
+            </p>
           </div>
           <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
             <div class="flex items-center gap-3 mb-3">
@@ -64,17 +88,23 @@
           <div class="flex flex-col gap-3">
             @for (region of statsService.regions(); track region.city) {
               <div class="flex items-center gap-4">
-                <span class="text-sm font-medium text-slate-700 w-28 shrink-0 truncate">{{ region.city }}</span>
+                <span class="text-sm font-medium text-slate-700 w-28 shrink-0 truncate">{{
+                  region.city
+                }}</span>
                 <div class="flex-1 h-8 bg-slate-50 rounded-lg overflow-hidden relative">
                   <div
                     class="h-full rounded-lg transition-all duration-500 flex items-center justify-end pr-3"
                     [style.width]="barWidth(region.totalListings, maxListings())"
-                    [style.background-color]="region.forSale > region.forRent ? '#4a8dd0' : '#f59e0b'"
+                    [style.background-color]="
+                      region.forSale > region.forRent ? '#4a8dd0' : '#f59e0b'
+                    "
                   >
                     <span class="text-xs font-bold text-white">{{ region.totalListings }}</span>
                   </div>
                 </div>
-                <span class="text-xs text-slate-400 w-20 text-right shrink-0">{{ region.forSale }} sale / {{ region.forRent }} rent</span>
+                <span class="text-xs text-slate-400 w-20 text-right shrink-0"
+                  >{{ region.forSale }} sale / {{ region.forRent }} rent</span
+                >
               </div>
             }
           </div>
@@ -86,13 +116,17 @@
           <div class="flex flex-col gap-3">
             @for (region of statsService.regions(); track region.city) {
               <div class="flex items-center gap-4">
-                <span class="text-sm font-medium text-slate-700 w-28 shrink-0 truncate">{{ region.city }}</span>
+                <span class="text-sm font-medium text-slate-700 w-28 shrink-0 truncate">{{
+                  region.city
+                }}</span>
                 <div class="flex-1 h-8 bg-slate-50 rounded-lg overflow-hidden relative">
                   <div
-                    class="h-full rounded-lg bg-gradient-to-r from-[#4a8dd0] to-[#3568a0] transition-all duration-500 flex items-center justify-end pr-3"
+                    class="h-full rounded-lg bg-linear-to-r from-[#4a8dd0] to-[#3568a0] transition-all duration-500 flex items-center justify-end pr-3"
                     [style.width]="barWidth(region.avgPricePerSqm, maxAvgPrice())"
                   >
-                    <span class="text-xs font-bold text-white">{{ formatPrice(region.avgPricePerSqm) }}/m²</span>
+                    <span class="text-xs font-bold text-white"
+                      >{{ formatPrice(region.avgPricePerSqm) }}/m²</span
+                    >
                   </div>
                 </div>
               </div>
@@ -122,11 +156,17 @@
                 @for (region of statsService.regions(); track region.city) {
                   <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
                     <td class="px-6 py-3.5 font-semibold text-slate-800">{{ region.city }}</td>
-                    <td class="text-right px-4 py-3.5 font-bold text-[#4a8dd0]">{{ region.totalListings }}</td>
+                    <td class="text-right px-4 py-3.5 font-bold text-[#4a8dd0]">
+                      {{ region.totalListings }}
+                    </td>
                     <td class="text-right px-4 py-3.5 text-slate-600">{{ region.forSale }}</td>
                     <td class="text-right px-4 py-3.5 text-slate-600">{{ region.forRent }}</td>
-                    <td class="text-right px-4 py-3.5 font-medium text-slate-800">{{ formatPrice(region.avgPrice) }}</td>
-                    <td class="text-right px-4 py-3.5 font-medium text-[#4a8dd0]">{{ formatPrice(region.avgPricePerSqm) }}</td>
+                    <td class="text-right px-4 py-3.5 font-medium text-slate-800">
+                      {{ formatPrice(region.avgPrice) }}
+                    </td>
+                    <td class="text-right px-4 py-3.5 font-medium text-[#4a8dd0]">
+                      {{ formatPrice(region.avgPricePerSqm) }}
+                    </td>
                     <td class="text-right px-4 py-3.5 text-slate-600">{{ region.avgArea }} m²</td>
                     <td class="text-right px-6 py-3.5 text-slate-600">{{ region.avgBedrooms }}</td>
                   </tr>

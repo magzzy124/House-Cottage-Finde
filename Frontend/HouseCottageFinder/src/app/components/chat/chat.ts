@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../services/chat-service';
 import { AuthService } from '../../services/auth-service';
@@ -11,6 +11,7 @@ import { AuthService } from '../../services/auth-service';
 })
 export class Chat implements OnInit, OnDestroy {
   propertyId = input.required<number>();
+  withUserId = input.required<number>();
 
   chatService = inject(ChatService);
   authService = inject(AuthService);
@@ -20,11 +21,11 @@ export class Chat implements OnInit, OnDestroy {
   currentUserId = computed(() => this.authService.currentUser()?.id ?? 0);
 
   ngOnInit() {
-    this.chatService.startListening(this.propertyId());
+    this.chatService.startListening(this.propertyId(), this.withUserId());
   }
 
   ngOnDestroy() {
-    this.chatService.stopListening(this.propertyId());
+    this.chatService.stopListening(this.propertyId(), this.withUserId());
   }
 
   isOwnMessage(senderId: number): boolean {
@@ -38,7 +39,7 @@ export class Chat implements OnInit, OnDestroy {
 
   send() {
     if (!this.messageText.trim() || this.chatService.sending()) return;
-    this.chatService.sendMessage(this.propertyId(), this.messageText);
+    this.chatService.sendMessage(this.propertyId(), this.withUserId(), this.messageText);
     this.messageText = '';
   }
 

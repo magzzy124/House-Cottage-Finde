@@ -11,6 +11,8 @@ public class Notification
 
     public int PropertyId { get; set; }
 
+    public int SenderId { get; set; }
+
     [MaxLength(200)]
     public string Title { get; set; } = string.Empty;
 

@@ -60,11 +60,11 @@ export class AuthService {
   }
 
   login(email: string, password: string) {
-    return this.http.post<{ user: User }>(`${this.api}/login`, { email, password }, { withCredentials: true });
+    return this.http.post<{ user: User }>(`${this.api}/login`, { email, password });
   }
 
   logout() {
-    this.http.post(`${this.api}/logout`, {}, { withCredentials: true }).subscribe({
+    this.http.post(`${this.api}/logout`, {}).subscribe({
       next: () => {
         this._currentUser.set(null);
       },
@@ -88,7 +88,7 @@ export class AuthService {
   }
 
   private restoreSession() {
-    this.http.get<User>(`${this.api}/me`, { withCredentials: true }).subscribe({
+    this.http.get<User>(`${this.api}/me`).subscribe({
       next: (user) => {
         this._currentUser.set(user);
         this._loaded.set(true);

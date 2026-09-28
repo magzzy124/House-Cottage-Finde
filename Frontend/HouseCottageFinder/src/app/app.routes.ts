@@ -14,6 +14,7 @@ import { Notifications } from './pages/notifications/notifications';
 import { SavedSearches } from './pages/saved-searches/saved-searches';
 import { MyListings } from './pages/my-listings/my-listings';
 import { EditListing } from './pages/edit-listing/edit-listing';
+import { Messages } from './pages/messages/messages';
 
 export const routes: Routes = [
   {
@@ -62,8 +63,12 @@ export const routes: Routes = [
     component: Profile
   },
   {
-    path: "chat/:id",
+    path: "chat/:propertyId/:userId",
     component: ChatPage
+  },
+  {
+    path: "messages",
+    component: Messages
   },
   {
     path: "notifications",

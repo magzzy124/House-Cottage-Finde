@@ -24,7 +24,19 @@ const MOCK_PROPERTY = {
   city: 'Belgrade',
   price: 200000,
   imageUrl: 'house.jpg',
+  userId: OTHER_USER.id,
 };
+
+interface MockMessage {
+  id: number;
+  propertyId: number;
+  senderId: number;
+  recipientId: number;
+  senderName: string;
+  content: string;
+  sentAt: string;
+  isRead: boolean;
+}
 
 function mockProperty(page: import('@playwright/test').Page) {
   return page.route(`**/api/properties/${PROPERTY_ID}`, (route) =>
@@ -32,6 +44,31 @@ function mockProperty(page: import('@playwright/test').Page) {
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify(MOCK_PROPERTY),
+    })
+  );
+}
+
+function mockThreads(page: import('@playwright/test').Page) {
+  return page.route('**/api/chat/threads*', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([]),
+    })
+  );
+}
+
+function mockParticipant(page: import('@playwright/test').Page) {
+  return page.route(`**/api/users/${OTHER_USER.id}`, (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        id: OTHER_USER.id,
+        firstName: OTHER_USER.firstName,
+        lastName: OTHER_USER.lastName,
+        username: 'otheruser',
+      }),
     })
   );
 }
@@ -49,9 +86,9 @@ function mockMessagesEmpty(page: import('@playwright/test').Page) {
   });
 }
 
-function mockSendMessage(page: import('@playwright/test').Page, userId: number, senderName: string) {
+function mockSendMessage(page: import('@playwright/test').Page, senderId: number, senderName: string) {
   let nextId = 1000;
-  return page.route(`**/api/chat/messages?userId=*`, (route) => {
+  return page.route(`**/api/chat/messages*`, (route) => {
     if (route.request().method() === 'POST') {
       const body = route.request().postDataJSON();
       return route.fulfill({
@@ -60,10 +97,12 @@ function mockSendMessage(page: import('@playwright/test').Page, userId: number, 
         body: JSON.stringify({
           id: nextId++,
           propertyId: body.propertyId,
-          senderId: userId,
+          senderId,
+          recipientId: body.recipientId,
           senderName,
           content: body.content,
           sentAt: new Date().toISOString(),
+          isRead: false,
         }),
       });
     }
@@ -71,16 +110,7 @@ function mockSendMessage(page: import('@playwright/test').Page, userId: number, 
   });
 }
 
-function mockMessagesWithHistory(
-  page: import('@playwright/test').Page,
-  messages: Array<{
-    id: number;
-    senderId: number;
-    senderName: string;
-    content: string;
-    sentAt: string;
-  }>
-) {
+function mockMessagesWithHistory(page: import('@playwright/test').Page, messages: MockMessage[]) {
   return page.route(`**/api/chat/messages*`, (route) => {
     if (route.request().method() === 'GET') {
       return route.fulfill({
@@ -120,14 +150,7 @@ async function getLoggedInUserId(page: import('@playwright/test').Page): Promise
   return user.id;
 }
 
-async function injectSignalRMessage(page: import('@playwright/test').Page, message: unknown) {
-  await page.evaluate((msg) => {
-    const win = window as any;
-    if (win.__chatServiceInstance) {
-      win.__chatServiceInstance._messages.update((msgs: any[]) => [...msgs, msg]);
-    }
-  }, message);
-}
+const CONVERSATION_URL = `/chat/${PROPERTY_ID}/${OTHER_USER.id}`;
 
 test.describe('Chat messages', () => {
   test.beforeAll(async ({ browser }) => {
@@ -138,47 +161,76 @@ test.describe('Chat messages', () => {
 
   test('should load chat page without auth but not fetch messages', async ({ page }) => {
     await mockProperty(page);
-    await page.goto(`/chat/${PROPERTY_ID}`);
-    await expect(page).toHaveURL(new RegExp(`/chat/${PROPERTY_ID}`));
+    await mockParticipant(page);
+    await page.goto(CONVERSATION_URL);
+    await expect(page).toHaveURL(new RegExp(`/chat/${PROPERTY_ID}/${OTHER_USER.id}`));
     await expect(page.locator('h2:has-text("E2E Test Property")')).toBeVisible();
     await expect(page.locator('app-chat')).toBeVisible();
   });
 
-  test('should show chat UI with property info', async ({ page }) => {
+  test('should show chat UI with the other user name', async ({ page }) => {
     await mockProperty(page);
+    await mockParticipant(page);
+    await mockThreads(page);
     await mockMessagesEmpty(page);
 
     await loginUser(page);
-    await page.goto(`/chat/${PROPERTY_ID}`);
+    await page.goto(CONVERSATION_URL);
 
     await expect(page.locator('h2:has-text("E2E Test Property")')).toBeVisible();
     await expect(page.locator('text=Knez Mihailova 12, Belgrade')).toBeVisible();
     await expect(page.locator('text=$ 200000')).toBeVisible();
+    await expect(page.locator('text=Other User')).toBeVisible();
     await expect(page.locator('a:has-text("Back to listing")')).toBeVisible();
     await expect(page.locator('app-chat')).toBeVisible();
     await expect(page.locator('input[placeholder="Type a message..."]')).toBeVisible();
-    await expect(page.locator('button svg')).toBeVisible();
+  });
+
+  test('should request only the conversation with the given user', async ({ page }) => {
+    await mockProperty(page);
+    await mockParticipant(page);
+    await mockThreads(page);
+    await mockMessagesEmpty(page);
+
+    await loginUser(page);
+
+    const messagesRequest = page.waitForRequest(
+      (req) => req.url().includes('/api/chat/messages') && req.method() === 'GET'
+    );
+    await page.goto(CONVERSATION_URL);
+
+    const req = await messagesRequest;
+    const url = new URL(req.url());
+    expect(url.searchParams.get('propertyId')).toBe(String(PROPERTY_ID));
+    expect(url.searchParams.get('withUserId')).toBe(String(OTHER_USER.id));
   });
 
   test('should show empty state when no messages', async ({ page }) => {
     await mockProperty(page);
+    await mockParticipant(page);
+    await mockThreads(page);
     await mockMessagesEmpty(page);
 
     await loginUser(page);
-    await page.goto(`/chat/${PROPERTY_ID}`);
+    await page.goto(CONVERSATION_URL);
 
     await expect(page.locator('text=No messages yet. Start the conversation!')).toBeVisible();
   });
 
-  test('should send a message and display it', async ({ page }) => {
+  test('should send a message with a recipient', async ({ page }) => {
     await mockProperty(page);
+    await mockParticipant(page);
+    await mockThreads(page);
     await mockMessagesEmpty(page);
 
     await loginUser(page);
     const userId = await getLoggedInUserId(page);
     await mockSendMessage(page, userId, `${TEST_USER.firstName} ${TEST_USER.lastName}`);
 
-    await page.goto(`/chat/${PROPERTY_ID}`);
+    const sendRequest = page.waitForRequest(
+      (req) => req.url().includes('/api/chat/messages') && req.method() === 'POST'
+    );
+    await page.goto(CONVERSATION_URL);
 
     const input = page.locator('input[placeholder="Type a message..."]');
     await input.fill('Is this still available?');
@@ -186,23 +238,30 @@ test.describe('Chat messages', () => {
     const sendBtn = page.locator('button:has(svg)').last();
     await sendBtn.click();
 
+    const req = await sendRequest;
+    expect(req.postDataJSON().recipientId).toBe(OTHER_USER.id);
     await expect(page.locator('text=Is this still available?')).toBeVisible();
   });
 
-  test('should display messages from other users', async ({ page }) => {
+  test('should display messages from the other user', async ({ page }) => {
     await mockProperty(page);
+    await mockParticipant(page);
+    await mockThreads(page);
     await mockMessagesWithHistory(page, [
       {
         id: 1,
+        propertyId: PROPERTY_ID,
         senderId: OTHER_USER.id,
+        recipientId: 1,
         senderName: `${OTHER_USER.firstName} ${OTHER_USER.lastName}`,
         content: 'Hello, is this property still available?',
         sentAt: new Date().toISOString(),
+        isRead: false,
       },
     ]);
 
     await loginUser(page);
-    await page.goto(`/chat/${PROPERTY_ID}`);
+    await page.goto(CONVERSATION_URL);
 
     await expect(page.locator('text=Hello, is this property still available?')).toBeVisible();
     await expect(page.locator(`text=${OTHER_USER.firstName} ${OTHER_USER.lastName}`)).toBeVisible();
@@ -210,13 +269,15 @@ test.describe('Chat messages', () => {
 
   test('should send message on Enter key', async ({ page }) => {
     await mockProperty(page);
+    await mockParticipant(page);
+    await mockThreads(page);
     await mockMessagesEmpty(page);
 
     await loginUser(page);
     const userId = await getLoggedInUserId(page);
     await mockSendMessage(page, userId, `${TEST_USER.firstName} ${TEST_USER.lastName}`);
 
-    await page.goto(`/chat/${PROPERTY_ID}`);
+    await page.goto(CONVERSATION_URL);
 
     const input = page.locator('input[placeholder="Type a message..."]');
     await input.fill('Sent via Enter');
@@ -227,10 +288,12 @@ test.describe('Chat messages', () => {
 
   test('should disable send button when input is empty', async ({ page }) => {
     await mockProperty(page);
+    await mockParticipant(page);
+    await mockThreads(page);
     await mockMessagesEmpty(page);
 
     await loginUser(page);
-    await page.goto(`/chat/${PROPERTY_ID}`);
+    await page.goto(CONVERSATION_URL);
 
     const sendBtn = page.locator('button:has(svg)').last();
     await expect(sendBtn).toBeDisabled();
@@ -244,7 +307,7 @@ test.describe('Chat messages', () => {
   });
 });
 
-test.describe('Two-user chat', () => {
+test.describe('Direct messages', () => {
   const USER_A = {
     firstName: 'Alice',
     lastName: 'Smith',
@@ -293,7 +356,7 @@ test.describe('Two-user chat', () => {
     await page.close();
   });
 
-  test('two users can see each other messages in the same chat', async ({ browser }) => {
+  test('two users share one private conversation per listing', async ({ browser }) => {
     const contextA = await browser.newContext();
     const contextB = await browser.newContext();
     const pageA = await contextA.newPage();
@@ -301,39 +364,46 @@ test.describe('Two-user chat', () => {
 
     await mockProperty(pageA);
     await mockProperty(pageB);
+    await mockParticipant(pageA);
+    await mockParticipant(pageB);
+    await mockThreads(pageA);
+    await mockThreads(pageB);
 
-    const history: Array<{
-      id: number;
-      senderId: number;
-      senderName: string;
-      content: string;
-      sentAt: string;
-    }> = [];
-
+    const history: MockMessage[] = [];
     let nextId = 1;
 
-    function setupRoutes(page: import('@playwright/test').Page) {
+    function setupRoutes(
+      page: import('@playwright/test').Page,
+      senderId: number,
+      senderName: string
+    ) {
       page.route(`**/api/chat/messages*`, (route) => {
         if (route.request().method() === 'GET') {
+          const withUserId = Number(
+            new URL(route.request().url()).searchParams.get('withUserId')
+          );
+          const messages = history.filter(
+            (m) =>
+              (m.senderId === senderId && m.recipientId === withUserId) ||
+              (m.senderId === withUserId && m.recipientId === senderId)
+          );
           return route.fulfill({
             status: 200,
             contentType: 'application/json',
-            body: JSON.stringify(history),
+            body: JSON.stringify(messages),
           });
         }
         if (route.request().method() === 'POST') {
           const body = route.request().postDataJSON();
-          const userId = Number(new URL(route.request().url()).searchParams.get('userId'));
-          const senderName = userId === USER_A.id
-            ? `${USER_A.firstName} ${USER_A.lastName}`
-            : `${USER_B.firstName} ${USER_B.lastName}`;
-          const msg = {
+          const msg: MockMessage = {
             id: nextId++,
             propertyId: body.propertyId,
-            senderId: userId,
+            senderId,
+            recipientId: body.recipientId,
             senderName,
             content: body.content,
             sentAt: new Date().toISOString(),
+            isRead: false,
           };
           history.push(msg);
           return route.fulfill({
@@ -345,9 +415,6 @@ test.describe('Two-user chat', () => {
         route.fallback();
       });
     }
-
-    setupRoutes(pageA);
-    setupRoutes(pageB);
 
     await pageA.goto('/login');
     await pageA.fill('#email', USER_A.email);
@@ -363,31 +430,138 @@ test.describe('Two-user chat', () => {
     await pageB.waitForURL('**/search**', { timeout: 10000 });
     USER_B.id = await getLoggedInUserId(pageB);
 
-    await pageA.goto(`/chat/${PROPERTY_ID}`);
+    setupRoutes(pageA, USER_A.id, `${USER_A.firstName} ${USER_A.lastName}`);
+    setupRoutes(pageB, USER_B.id, `${USER_B.firstName} ${USER_B.lastName}`);
+
+    await pageA.goto(`/chat/${PROPERTY_ID}/${USER_B.id}`);
     await expect(pageA.locator('text=No messages yet')).toBeVisible();
 
-    await pageB.goto(`/chat/${PROPERTY_ID}`);
+    await pageB.goto(`/chat/${PROPERTY_ID}/${USER_A.id}`);
     await expect(pageB.locator('text=No messages yet')).toBeVisible();
 
     const inputA = pageA.locator('input[placeholder="Type a message..."]');
     await inputA.fill('Hey Bob, is this still available?');
     await inputA.press('Enter');
 
-    await expect(pageA.locator('text=Hey Bob, is this still available?')).toBeVisible({ timeout: 5000 });
+    await expect(pageA.locator('text=Hey Bob, is this still available?')).toBeVisible({
+      timeout: 5000,
+    });
 
     await pageB.reload();
-    await expect(pageB.locator('text=Hey Bob, is this still available?')).toBeVisible({ timeout: 5000 });
+    await expect(pageB.locator('text=Hey Bob, is this still available?')).toBeVisible({
+      timeout: 5000,
+    });
 
     const inputB = pageB.locator('input[placeholder="Type a message..."]');
     await inputB.fill('Yes it is! Want to schedule a viewing?');
     await inputB.press('Enter');
 
-    await expect(pageB.locator('text=Yes it is! Want to schedule a viewing?')).toBeVisible({ timeout: 5000 });
+    await expect(pageB.locator('text=Yes it is! Want to schedule a viewing?')).toBeVisible({
+      timeout: 5000,
+    });
 
     await pageA.reload();
-    await expect(pageA.locator('text=Yes it is! Want to schedule a viewing?')).toBeVisible({ timeout: 5000 });
+    await expect(pageA.locator('text=Yes it is! Want to schedule a viewing?')).toBeVisible({
+      timeout: 5000,
+    });
 
     await contextA.close();
     await contextB.close();
+  });
+
+  test('a conversation is scoped to its two participants', async ({ browser }) => {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+
+    await mockProperty(page);
+    await mockParticipant(page);
+    await mockThreads(page);
+
+    const history: MockMessage[] = [
+      {
+        id: 1,
+        propertyId: PROPERTY_ID,
+        senderId: USER_A.id,
+        recipientId: USER_B.id,
+        senderName: `${USER_A.firstName} ${USER_A.lastName}`,
+        content: 'Only Alice and Bob should see this',
+        sentAt: new Date().toISOString(),
+        isRead: true,
+      },
+    ];
+
+    page.route(`**/api/chat/messages*`, (route) => {
+      if (route.request().method() === 'GET') {
+        const withUserId = Number(
+          new URL(route.request().url()).searchParams.get('withUserId')
+        );
+        const messages = history.filter(
+          (m) =>
+            (m.senderId === USER_A.id && m.recipientId === withUserId) ||
+            (m.senderId === withUserId && m.recipientId === USER_A.id)
+        );
+        return route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(messages),
+        });
+      }
+      route.fallback();
+    });
+
+    await page.goto('/login');
+    await page.fill('#email', USER_A.email);
+    await page.fill('#password', USER_A.password);
+    await page.click('button:has-text("Sign in")');
+    await page.waitForURL('**/search**', { timeout: 10000 });
+
+    await page.goto(`/chat/${PROPERTY_ID}/${OTHER_USER.id}`);
+    await expect(page.locator('text=No messages yet. Start the conversation!')).toBeVisible({
+      timeout: 10000,
+    });
+    await expect(page.locator('text=Only Alice and Bob should see this')).toHaveCount(0);
+
+    await context.close();
+  });
+});
+
+test.describe('Messages inbox', () => {
+  test('should list conversations and open one', async ({ page }) => {
+    await page.route('**/api/chat/threads*', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([
+          {
+            propertyId: PROPERTY_ID,
+            otherUserId: OTHER_USER.id,
+            otherName: 'Other User',
+            propertyTitle: 'E2E Test Property',
+            propertyImage: 'house.jpg',
+            lastMessage: 'Is this still available?',
+            lastMessageAt: new Date().toISOString(),
+            unreadCount: 2,
+          },
+        ]),
+      })
+    );
+
+    await loginUser(page);
+    await page.goto('/messages');
+
+    await expect(page.locator('h1:has-text("Messages")')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=Other User')).toBeVisible();
+    await expect(page.locator('text=Is this still available?')).toBeVisible();
+
+    await page.locator('button:has-text("Other User")').click();
+    await expect(page).toHaveURL(
+      new RegExp(`/chat/${PROPERTY_ID}/${OTHER_USER.id}`),
+      { timeout: 10000 }
+    );
+  });
+
+  test('should require auth', async ({ page }) => {
+    await page.goto('/messages');
+    await expect(page).toHaveURL(/.*login/, { timeout: 10000 });
   });
 });

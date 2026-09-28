@@ -5,6 +5,7 @@ import { AuthService } from './services/auth-service';
 import { FavoritesService } from './services/favorites-service';
 import { CompareService } from './services/compare-service';
 import { NotificationService } from './services/notification-service';
+import { ChatService } from './services/chat-service';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +21,7 @@ export class App implements OnInit {
   private favoritesService = inject(FavoritesService);
   protected compareService = inject(CompareService);
   protected notificationService = inject(NotificationService);
+  protected chatService = inject(ChatService);
   private router = inject(Router);
 
   private currentUrl = signal('');
@@ -36,6 +38,7 @@ export class App implements OnInit {
     if (this.auth.isAuthenticated()) {
       this.favoritesService.loadFavorites();
       this.notificationService.startPolling();
+      this.chatService.ensureThreads();
     }
   }
 
@@ -43,6 +46,7 @@ export class App implements OnInit {
     this.auth.logout();
     this.favoritesService.loadFavorites();
     this.notificationService.ngOnDestroy();
+    this.chatService.disconnect();
     this.router.navigate(['/login']);
   }
 }

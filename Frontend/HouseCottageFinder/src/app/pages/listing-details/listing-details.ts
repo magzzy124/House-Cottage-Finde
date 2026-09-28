@@ -42,7 +42,7 @@ export class ListingDetails implements AfterViewInit {
   priceHistory = signal<PricePoint[]>([]);
 
   galleryItems = computed(() => {
-    console.log("galleryitems computed")
+    console.log('galleryitems computed');
     const item = this.listing();
     if (!item) return [];
     let urls: string[] = [];
@@ -61,6 +61,12 @@ export class ListingDetails implements AfterViewInit {
   });
 
   isLoggedIn = computed(() => this.authService.isAuthenticated());
+
+  isOwner = computed(() => {
+    const item = this.listing();
+    const user = this.authService.currentUser();
+    return !!item && !!user && item.userId === user.id;
+  });
 
   priceStats = computed(() => {
     const history = this.priceHistory();

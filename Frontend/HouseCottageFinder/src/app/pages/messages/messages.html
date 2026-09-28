@@ -1,0 +1,111 @@
+<div class="h-[calc(100vh-72px)] overflow-y-auto">
+  <div class="max-w-3xl mx-auto px-8 py-8">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">Messages</h1>
+        <p class="text-sm text-slate-400 mt-1">
+          @if (propertyFilter()) {
+            @if (filteredTitle(); as title) {
+              Conversations about &ldquo;{{ title }}&rdquo;
+            } @else {
+              Conversations about this listing
+            }
+          } @else {
+            Your conversations with buyers and sellers
+          }
+        </p>
+      </div>
+      @if (propertyFilter()) {
+        <button
+          (click)="clearFilter()"
+          class="text-sm font-semibold text-slate-500 hover:text-[#4a8dd0] transition-colors cursor-pointer px-4 py-2"
+        >
+          Show all
+        </button>
+      }
+    </div>
+
+    @if (chatService.loadingThreads() && chatService.threads().length === 0) {
+      <div class="flex flex-col items-center justify-center gap-5 text-center py-32">
+        <div class="w-12 h-12 border-4 border-[#4a8dd0] border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-slate-400 text-sm font-medium">Loading conversations...</p>
+      </div>
+    } @else if (threads().length > 0) {
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        @for (thread of threads(); track thread.propertyId + '-' + thread.otherUserId) {
+          <button
+            (click)="openThread(thread)"
+            class="w-full flex items-center gap-4 px-5 py-4 text-left border-b border-slate-50 last:border-b-0 hover:bg-slate-50/60 transition-colors cursor-pointer"
+          >
+            <div
+              class="w-12 h-12 rounded-xl bg-cover bg-center shrink-0 border border-slate-100"
+              [style.background-image]="'url(' + (thread.propertyImage || 'house.jpg') + ')'"
+            ></div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <h3
+                  class="text-sm truncate"
+                  [class.font-bold]="thread.unreadCount > 0"
+                  [class.font-semibold]="thread.unreadCount === 0"
+                  [class.text-slate-800]="true"
+                >
+                  {{ thread.otherName }}
+                </h3>
+                <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-md bg-[#e8f1fa] text-[#4a8dd0] shrink-0">
+                  {{ thread.propertyTitle }}
+                </span>
+              </div>
+              <p
+                class="text-xs mt-0.5 truncate"
+                [class.text-slate-500]="thread.unreadCount === 0"
+                [class.font-semibold]="thread.unreadCount > 0"
+                [class.text-slate-800]="thread.unreadCount > 0"
+              >
+                {{ thread.lastMessage }}
+              </p>
+            </div>
+            <div class="flex flex-col items-end gap-1 shrink-0">
+              <span class="text-[11px] text-slate-400">{{ formatDate(thread.lastMessageAt) }}</span>
+              @if (thread.unreadCount > 0) {
+                <span
+                  class="min-w-[20px] h-5 bg-[#4a8dd0] text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1.5"
+                >
+                  {{ thread.unreadCount > 99 ? '99+' : thread.unreadCount }}
+                </span>
+              }
+            </div>
+          </button>
+        }
+      </div>
+    } @else {
+      <div class="flex flex-col items-center justify-center gap-5 text-center py-32">
+        <div class="w-28 h-28 rounded-3xl bg-linear-to-br from-blue-50 to-slate-100 flex items-center justify-center shadow-inner">
+          <svg
+            class="w-12 h-12 text-[#4a8dd0]/40"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold text-slate-700">No conversations yet</h3>
+          <p class="text-sm text-slate-400 mt-2 max-w-xs mx-auto leading-relaxed">
+            Messages from buyers and sellers will show up here.
+          </p>
+        </div>
+        <a
+          routerLink="/search"
+          class="bg-[#4a8dd0] text-white font-semibold text-sm px-7 py-3 rounded-full hover:bg-[#3d7ab8] shadow-md shadow-[#4a8dd0]/20 hover:shadow-lg transition-all duration-200 cursor-pointer"
+        >
+          Browse listings
+        </a>
+      </div>
+    }
+  </div>
+</div>

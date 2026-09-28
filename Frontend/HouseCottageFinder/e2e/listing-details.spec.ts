@@ -10,6 +10,7 @@ const TEST_USER = {
 };
 
 const PROPERTY_ID = 42;
+const OWNER_ID = 777;
 
 const MOCK_PROPERTY = {
   id: PROPERTY_ID,
@@ -26,6 +27,7 @@ const MOCK_PROPERTY = {
   latitude: 44.8176,
   longitude: 20.4569,
   description: 'A beautiful test property in the center of Belgrade.',
+  userId: OWNER_ID,
 };
 
 const MOCK_PRICE_HISTORY = [
@@ -172,7 +174,7 @@ test.describe('Listing details', () => {
     await expect(page.locator('a:has-text("Pošaljite poruku")')).toBeVisible({ timeout: 10000 });
   });
 
-  test('should show chat link navigates to chat page', async ({ page }) => {
+  test('should show chat link navigates to the owner conversation', async ({ page }) => {
     mockProperty(page);
     mockFavoriteCheck(page);
 
@@ -182,7 +184,31 @@ test.describe('Listing details', () => {
     const chatLink = page.locator('a:has-text("Pošaljite poruku")');
     await expect(chatLink).toBeVisible({ timeout: 10000 });
     await chatLink.click();
-    await expect(page).toHaveURL(new RegExp(`/chat/${PROPERTY_ID}`), { timeout: 10000 });
+    await expect(page).toHaveURL(new RegExp(`/chat/${PROPERTY_ID}/${OWNER_ID}`), {
+      timeout: 10000,
+    });
+  });
+
+  test('should show edit and messages buttons to the owner', async ({ page }) => {
+    mockFavoriteCheck(page);
+
+    await loginUser(page);
+
+    const raw = await page.evaluate(() => localStorage.getItem('hcf_user'));
+    const ownerId = JSON.parse(raw!).id;
+    page.route(`**/api/properties/${PROPERTY_ID}`, (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ ...MOCK_PROPERTY, userId: ownerId }),
+      })
+    );
+
+    await page.goto(`/listing/${PROPERTY_ID}`);
+
+    await expect(page.locator('a:has-text("Edit listing")')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('a:has-text("Messages")')).toBeVisible();
+    await expect(page.locator('a:has-text("Pošaljite poruku")')).toHaveCount(0);
   });
 
   test('should show price history chart when data exists', async ({ page }) => {
