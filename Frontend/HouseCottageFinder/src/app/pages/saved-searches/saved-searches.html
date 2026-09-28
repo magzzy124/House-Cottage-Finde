@@ -12,8 +12,18 @@
         routerLink="/notifications"
         class="flex items-center gap-2 text-sm font-semibold text-[#4a8dd0] hover:text-[#3d7ab8] transition-colors cursor-pointer"
       >
-        <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+        <svg
+          class="w-4 h-4"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
         </svg>
         Notifications
       </a>
@@ -21,32 +31,55 @@
 
     @if (savedSearchService.loading()) {
       <div class="flex flex-col items-center justify-center gap-5 text-center py-32">
-        <div class="w-12 h-12 border-4 border-[#4a8dd0] border-t-transparent rounded-full animate-spin"></div>
+        <div
+          class="w-12 h-12 border-4 border-[#4a8dd0] border-t-transparent rounded-full animate-spin"
+        ></div>
         <p class="text-slate-400 text-sm font-medium">Loading saved searches...</p>
       </div>
     } @else if (savedSearchService.searches().length > 0) {
       <div class="flex flex-col gap-3">
         @for (search of savedSearchService.searches(); track search.id) {
-          <div class="flex items-center justify-between p-5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-200">
+          <div
+            class="flex items-center justify-between p-5 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-200"
+          >
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-3">
-                <h3 class="text-sm font-bold text-slate-800">{{ search.name || 'Unnamed search' }}</h3>
-                <span class="text-xs text-slate-400">{{ search.createdAt | date:'mediumDate' }}</span>
+                <h3 class="text-sm font-bold text-slate-800">
+                  {{ search.name || 'Unnamed search' }}
+                </h3>
+                <span class="text-xs text-slate-400">{{
+                  search.createdAt | date: 'mediumDate'
+                }}</span>
               </div>
               <p class="text-sm text-slate-500 mt-1.5">{{ formatCriteria(search) }}</p>
             </div>
             <button
               (click)="deleteSearch(search.id)"
-              class="ml-4 w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all duration-200 cursor-pointer flex-shrink-0"
+              class="ml-4 w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all duration-200 cursor-pointer shrink-0"
             >
-              <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+              <svg
+                class="w-4 h-4"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M3 6h18" />
+                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+              </svg>
             </button>
           </div>
         }
       </div>
     } @else {
       <div class="flex flex-col items-center justify-center gap-5 text-center py-32">
-        <div class="w-28 h-28 rounded-3xl bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center shadow-inner">
+        <div
+          class="w-28 h-28 rounded-3xl bg-linear-to-br from-slate-50 to-slate-100 flex items-center justify-center shadow-inner"
+        >
           <svg
             class="w-12 h-12 text-slate-300"
             xmlns="http://www.w3.org/2000/svg"
@@ -57,13 +90,15 @@
             stroke-linecap="round"
             stroke-linejoin="round"
           >
-            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
           </svg>
         </div>
         <div>
           <h3 class="text-xl font-bold text-slate-700">No saved searches</h3>
           <p class="text-sm text-slate-400 mt-2 max-w-xs mx-auto leading-relaxed">
-            Use the "Save search" button on the search page to save your filter criteria and get notified about new matching listings.
+            Use the "Save search" button on the search page to save your filter criteria and get
+            notified about new matching listings.
           </p>
         </div>
         <a

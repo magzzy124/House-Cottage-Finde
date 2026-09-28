@@ -1,8 +1,12 @@
-<div class="min-h-[calc(100vh-72px)] flex items-center justify-center bg-gradient-to-br from-slate-50 via-white to-blue-50/30 p-5">
+<div
+  class="min-h-[calc(100vh-72px)] flex items-center justify-center bg-linear-to-br from-slate-50 via-white to-blue-50/30 p-5"
+>
   <div class="w-full max-w-md">
     <div class="text-center mb-8">
-      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#4a8dd0] to-[#3568a0] flex items-center justify-center shadow-lg shadow-[#4a8dd0]/20 mx-auto mb-4">
-        <img src="house.svg" alt="HouseFinder" class="w-8 h-8 brightness-0 invert" />
+      <div
+        class="w-16 h-16 rounded-2xl bg-linear-to-br from-[#4a8dd0] to-[#3568a0] flex items-center justify-center shadow-lg shadow-[#4a8dd0]/20 mx-auto mb-4"
+      >
+        <img src="/house.svg" alt="HouseFinder" class="w-8 h-8 brightness-0 invert" />
       </div>
       <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Create account</h1>
       <p class="text-sm text-slate-400 mt-2">Join HouseFinder to start searching</p>
@@ -18,7 +22,7 @@
               id="firstName"
               type="text"
               placeholder="John"
-              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
             />
           </div>
 
@@ -29,7 +33,7 @@
               id="lastName"
               type="text"
               placeholder="Doe"
-              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
             />
           </div>
         </div>
@@ -42,7 +46,7 @@
               id="username"
               type="text"
               placeholder="johndoe"
-              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
             />
           </div>
 
@@ -53,7 +57,7 @@
               id="phone"
               type="tel"
               placeholder="+1 555 123 4567"
-              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
             />
           </div>
         </div>
@@ -65,7 +69,7 @@
             id="email"
             type="email"
             placeholder="you@example.com"
-            class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+            class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
           />
         </div>
 
@@ -77,16 +81,27 @@
               id="password"
               [type]="showPassword ? 'text' : 'password'"
               placeholder="Create a password"
-              class="w-full rounded-xl border border-slate-200 px-4 py-3 pr-12 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 pr-12 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
             />
             <button
               type="button"
               (click)="togglePassword()"
               class="absolute inset-y-0 right-0 flex items-center px-4 cursor-pointer text-slate-400 hover:text-slate-600 transition-colors"
             >
-              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                class="h-5 w-5"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 @if (showPassword) {
-                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <path
+                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+                  ></path>
                   <line x1="1" y1="1" x2="23" y2="23"></line>
                 } @else {
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -98,7 +113,9 @@
         </div>
 
         <div class="flex flex-col gap-2">
-          <label class="text-sm font-semibold text-slate-700" for="confirmPassword">Confirm password</label>
+          <label class="text-sm font-semibold text-slate-700" for="confirmPassword"
+            >Confirm password</label
+          >
           <div class="relative w-full">
             <input
               [(ngModel)]="confirmPassword"
@@ -106,7 +123,7 @@
               [type]="showPassword ? 'text' : 'password'"
               placeholder="Re-enter your password"
               (ngModelChange)="onPasswordChange()"
-              class="w-full rounded-xl border border-slate-200 px-4 py-3 pr-12 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 pr-12 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
               [class.border-red-400]="mismatch"
               [class.focus:border-red-400]="mismatch"
               [class.focus:ring-red-400/10]="mismatch"
@@ -116,9 +133,20 @@
               (click)="togglePassword()"
               class="absolute inset-y-0 right-0 flex items-center px-4 cursor-pointer text-slate-400 hover:text-slate-600 transition-colors"
             >
-              <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg
+                class="h-5 w-5"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
                 @if (showPassword) {
-                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                  <path
+                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+                  ></path>
                   <line x1="1" y1="1" x2="23" y2="23"></line>
                 } @else {
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -136,7 +164,7 @@
           type="button"
           (click)="onRegister()"
           [disabled]="loading"
-          class="w-full rounded-xl py-3 text-sm font-bold text-white bg-gradient-to-r from-[#4a8dd0] to-[#3568a0] hover:from-[#3d7ab8] hover:to-[#2d5a8c] shadow-lg shadow-[#4a8dd0]/25 hover:shadow-xl hover:shadow-[#4a8dd0]/30 disabled:opacity-60 transition-all duration-200 cursor-pointer mt-1"
+          class="w-full rounded-xl py-3 text-sm font-bold text-white bg-linear-to-r from-[#4a8dd0] to-[#3568a0] hover:from-[#3d7ab8] hover:to-[#2d5a8c] shadow-lg shadow-[#4a8dd0]/25 hover:shadow-xl hover:shadow-[#4a8dd0]/30 disabled:opacity-60 transition-all duration-200 cursor-pointer mt-1"
         >
           @if (loading) {
             <span class="loading loading-spinner loading-sm"></span>
@@ -147,14 +175,18 @@
         </button>
 
         @if (error) {
-          <div class="bg-red-50 text-red-600 text-sm font-medium px-4 py-3 rounded-xl border border-red-200">
+          <div
+            class="bg-red-50 text-red-600 text-sm font-medium px-4 py-3 rounded-xl border border-red-200"
+          >
             {{ error }}
           </div>
         }
 
         <p class="text-center text-sm text-slate-500 mt-1">
           Already have an account?
-          <a routerLink="/login" class="font-semibold text-[#4a8dd0] hover:underline cursor-pointer">Sign in</a>
+          <a routerLink="/login" class="font-semibold text-[#4a8dd0] hover:underline cursor-pointer"
+            >Sign in</a
+          >
         </p>
       </div>
     </div>

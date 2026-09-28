@@ -42,7 +42,6 @@ export class ListingDetails implements AfterViewInit {
   priceHistory = signal<PricePoint[]>([]);
 
   galleryItems = computed(() => {
-    console.log('galleryitems computed');
     const item = this.listing();
     if (!item) return [];
     let urls: string[] = [];

@@ -5,7 +5,19 @@
 
     @if (success()) {
       <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-6 text-center">
-        <svg class="w-12 h-12 text-emerald-500 mx-auto mb-3" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <svg
+          class="w-12 h-12 text-emerald-500 mx-auto mb-3"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+          <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
         <p class="text-lg font-bold text-emerald-700">Listing created!</p>
         <p class="text-sm text-emerald-600 mt-1">Redirecting to your listing...</p>
       </div>
@@ -18,13 +30,15 @@
               [(ngModel)]="title"
               type="text"
               placeholder="e.g. Modern apartment in city center"
-              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
             />
           </div>
 
           <div class="flex flex-col gap-2">
             <label class="text-sm font-semibold text-slate-700">Address *</label>
-            <div class="rounded-xl border border-slate-200 focus-within:border-[#4a8dd0] focus-within:ring-2 focus-within:ring-[#4a8dd0]/10 transition-all duration-200 overflow-visible">
+            <div
+              class="rounded-xl border border-slate-200 focus-within:ring-2 focus-within:ring-[#4a8dd0]/10 transition-all duration-200 overflow-visible"
+            >
               <geoapify-geocoder-autocomplete
                 placeholder="Search for an address..."
                 [lang]="'en'"
@@ -46,7 +60,7 @@
               type="text"
               placeholder="Auto-filled from address"
               readonly
-              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none bg-slate-50 text-slate-600"
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none bg-slate-50"
             />
           </div>
 
@@ -62,7 +76,9 @@
                   [class.shadow-sm]="dealType === type"
                   [class.text-slate-900]="dealType === type"
                   [class.text-slate-500]="dealType !== type"
-                >{{ type }}</button>
+                >
+                  {{ type }}
+                </button>
               }
             </div>
           </div>
@@ -74,7 +90,7 @@
                 [(ngModel)]="price"
                 type="number"
                 placeholder="0"
-                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
               />
             </div>
             <div class="flex flex-col gap-2">
@@ -83,7 +99,7 @@
                 [(ngModel)]="bedrooms"
                 type="number"
                 placeholder="0"
-                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
               />
             </div>
             <div class="flex flex-col gap-2">
@@ -92,7 +108,7 @@
                 [(ngModel)]="bathrooms"
                 type="number"
                 placeholder="0"
-                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
               />
             </div>
           </div>
@@ -103,7 +119,7 @@
               [(ngModel)]="area"
               type="number"
               placeholder="0"
-              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
             />
           </div>
 
@@ -113,7 +129,7 @@
               [(ngModel)]="plotSize"
               type="number"
               placeholder="Optional"
-              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
             />
           </div>
 
@@ -129,23 +145,46 @@
                 >
                   <img [src]="img" class="w-full h-full object-cover" />
                   @if (i === mainImageIndex) {
-                    <span class="absolute top-1.5 left-1.5 bg-[#4a8dd0] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md">Main</span>
+                    <span
+                      class="absolute top-1.5 left-1.5 bg-[#4a8dd0] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md"
+                      >Main</span
+                    >
                   }
                   <button
                     (click)="removeImage(i); $event.stopPropagation()"
                     class="absolute top-1.5 right-1.5 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer hover:bg-red-600"
-                  >×</button>
+                  >
+                    ×
+                  </button>
                 </div>
               }
               <label
                 class="w-28 h-28 rounded-xl border-2 border-dashed border-slate-300 hover:border-[#4a8dd0] flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all duration-200 group"
               >
                 @if (uploading()) {
-                  <div class="w-5 h-5 border-2 border-[#4a8dd0] border-t-transparent rounded-full animate-spin"></div>
+                  <div
+                    class="w-5 h-5 border-2 border-[#4a8dd0] border-t-transparent rounded-full animate-spin"
+                  ></div>
                   <span class="text-[10px] text-slate-400 font-medium">Uploading...</span>
                 } @else {
-                  <svg class="w-6 h-6 text-slate-400 group-hover:text-[#4a8dd0] transition-colors" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
-                  <span class="text-[10px] text-slate-400 group-hover:text-[#4a8dd0] font-medium transition-colors">Add photos</span>
+                  <svg
+                    class="w-6 h-6 text-slate-400 group-hover:text-[#4a8dd0] transition-colors"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" x2="12" y1="3" y2="15" />
+                  </svg>
+                  <span
+                    class="text-[10px] text-slate-400 group-hover:text-[#4a8dd0] font-medium transition-colors"
+                    >Add photos</span
+                  >
                 }
                 <input
                   type="file"
@@ -167,12 +206,14 @@
               [(ngModel)]="description"
               rows="4"
               placeholder="Describe your property..."
-              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10 resize-none"
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10 resize-none"
             ></textarea>
           </div>
 
           @if (error()) {
-            <div class="bg-red-50 text-red-600 text-sm font-medium px-4 py-3 rounded-xl border border-red-200">
+            <div
+              class="bg-red-50 text-red-600 text-sm font-medium px-4 py-3 rounded-xl border border-red-200"
+            >
               {{ error() }}
             </div>
           }
@@ -180,7 +221,7 @@
           <button
             (click)="onSubmit()"
             [disabled]="loading()"
-            class="w-full rounded-xl py-3 text-sm font-bold text-white bg-gradient-to-r from-[#4a8dd0] to-[#3568a0] hover:from-[#3d7ab8] hover:to-[#2d5a8c] shadow-lg shadow-[#4a8dd0]/25 hover:shadow-xl hover:shadow-[#4a8dd0]/30 disabled:opacity-60 transition-all duration-200 cursor-pointer"
+            class="w-full rounded-xl py-3 text-sm font-bold text-white bg-linear-to-r from-[#4a8dd0] to-[#3568a0] hover:from-[#3d7ab8] hover:to-[#2d5a8c] shadow-lg shadow-[#4a8dd0]/25 hover:shadow-xl hover:shadow-[#4a8dd0]/30 disabled:opacity-60 transition-all duration-200 cursor-pointer"
           >
             @if (loading()) {
               <span class="loading loading-spinner loading-sm"></span>

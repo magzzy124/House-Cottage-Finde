@@ -4,14 +4,18 @@
 
     @if (loading()) {
       <div class="flex flex-col items-center justify-center gap-5 text-center py-32">
-        <div class="w-12 h-12 border-4 border-[#4a8dd0] border-t-transparent rounded-full animate-spin"></div>
+        <div
+          class="w-12 h-12 border-4 border-[#4a8dd0] border-t-transparent rounded-full animate-spin"
+        ></div>
         <p class="text-slate-400 text-sm font-medium">Loading profile...</p>
       </div>
     } @else if (profile(); as p) {
       <div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-8 mb-6">
         <div class="flex items-center gap-5 mb-8">
-          <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#4a8dd0] to-[#3568a0] flex items-center justify-center shadow-lg shadow-[#4a8dd0]/20">
-            <img src="user.svg" alt="User" class="w-10 h-10 brightness-0 invert" />
+          <div
+            class="w-20 h-20 rounded-2xl bg-linear-to-br from-[#4a8dd0] to-[#3568a0] flex items-center justify-center shadow-lg shadow-[#4a8dd0]/20"
+          >
+            <img src="/user.svg" alt="User" class="w-10 h-10 brightness-0 invert" />
           </div>
           <div>
             <h2 class="text-xl font-bold text-slate-900">{{ p.firstName }} {{ p.lastName }}</h2>
@@ -35,7 +39,11 @@
           </div>
           <div class="bg-slate-50 rounded-xl p-4">
             <p class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Account</p>
-            <a routerLink="/favorites" class="text-sm font-medium text-[#4a8dd0] hover:underline mt-1 inline-block">View favorites →</a>
+            <a
+              routerLink="/favorites"
+              class="text-sm font-medium text-[#4a8dd0] hover:underline mt-1 inline-block"
+              >View favorites →</a
+            >
           </div>
         </div>
       </div>
@@ -50,7 +58,7 @@
               <input
                 [(ngModel)]="firstName"
                 type="text"
-                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
               />
             </div>
             <div class="flex flex-col gap-2">
@@ -58,7 +66,7 @@
               <input
                 [(ngModel)]="lastName"
                 type="text"
-                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
               />
             </div>
           </div>
@@ -68,12 +76,14 @@
             <input
               [(ngModel)]="phone"
               type="tel"
-              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
             />
           </div>
 
           <div class="border-t border-slate-100 pt-6 mt-1">
-            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wide mb-4">Change password</h3>
+            <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wide mb-4">
+              Change password
+            </h3>
           </div>
 
           <div class="flex flex-col gap-2">
@@ -82,7 +92,7 @@
               [(ngModel)]="currentPassword"
               type="password"
               placeholder="Enter current password"
-              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+              class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
             />
           </div>
 
@@ -93,7 +103,7 @@
                 [(ngModel)]="newPassword"
                 type="password"
                 placeholder="New password"
-                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
               />
             </div>
             <div class="flex flex-col gap-2">
@@ -102,19 +112,23 @@
                 [(ngModel)]="confirmPassword"
                 type="password"
                 placeholder="Confirm password"
-                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#4a8dd0] focus:ring-2 focus:ring-[#4a8dd0]/10"
+                class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm font-medium placeholder-slate-400 outline-none transition-all duration-200 focus:ring-2 focus:ring-[#4a8dd0]/10"
               />
             </div>
           </div>
 
           @if (success()) {
-            <div class="bg-emerald-50 text-emerald-700 text-sm font-medium px-4 py-3 rounded-xl border border-emerald-200">
+            <div
+              class="bg-emerald-50 text-emerald-700 text-sm font-medium px-4 py-3 rounded-xl border border-emerald-200"
+            >
               {{ success() }}
             </div>
           }
 
           @if (error()) {
-            <div class="bg-red-50 text-red-600 text-sm font-medium px-4 py-3 rounded-xl border border-red-200">
+            <div
+              class="bg-red-50 text-red-600 text-sm font-medium px-4 py-3 rounded-xl border border-red-200"
+            >
               {{ error() }}
             </div>
           }
@@ -122,7 +136,7 @@
           <button
             (click)="onSave()"
             [disabled]="saving()"
-            class="w-full rounded-xl py-3 text-sm font-bold text-white bg-gradient-to-r from-[#4a8dd0] to-[#3568a0] hover:from-[#3d7ab8] hover:to-[#2d5a8c] shadow-lg shadow-[#4a8dd0]/25 hover:shadow-xl hover:shadow-[#4a8dd0]/30 disabled:opacity-60 transition-all duration-200 cursor-pointer"
+            class="w-full rounded-xl py-3 text-sm font-bold text-white bg-linear-to-r from-[#4a8dd0] to-[#3568a0] hover:from-[#3d7ab8] hover:to-[#2d5a8c] shadow-lg shadow-[#4a8dd0]/25 hover:shadow-xl hover:shadow-[#4a8dd0]/30 disabled:opacity-60 transition-all duration-200 cursor-pointer"
           >
             @if (saving()) {
               <span class="loading loading-spinner loading-sm"></span>
