@@ -1,6 +1,6 @@
-# House Cottage Finder
+# House-Cottage-Finder
 
-House Cottage Finder je full-stack web aplikacija za kupovinu i izdavanje nekretnina (kuće, vikendice, stanovi) na tržištu Srbije. Korisnik pretražuje oglase preko mapе sa filterima i radijusom, upoređuje nekretnine, čuva omiljene i sačuvane pretrage, a kupac i prodavac komuniciraju uživo preko chata. Svaki registrovani korisnik može i da oglašava nekretnine.
+House-Cottage-Finder je full-stack web aplikacija za kupovinu i izdavanje nekretnina (kuće, vikendice, stanovi) na tržištu Srbije. Korisnik pretražuje oglase preko mapе sa filterima i radijusom, upoređuje nekretnine, čuva omiljene i sačuvane pretrage, a kupac i prodavac komuniciraju uživo preko chata. Svaki registrovani korisnik može i da oglašava nekretnine.
 
 ## Funkcionalnosti
 
@@ -36,7 +36,7 @@ House Cottage Finder je full-stack web aplikacija za kupovinu i izdavanje nekret
 ## Struktura projekta
 
 ```text
-House-Cottage-Finde/
+House-Cottage-Finder/
 ├── Backend/
 │   └── HouseCottageFinder.Api/
 │       ├── Data/                  AppDbContext, DemoDataSeeder, seed.sql
@@ -243,13 +243,3 @@ npm run e2e
 
 Playwright je podešen na `baseURL http://localhost:4200`, Chromium, headless režim isključen (`playwright.config.ts`). E2e scenariji pokrivaju: `auth`, `navbar`, `search`, `listing-details`, `sell`, `edit-listing`, `my-listings`, `favorites`, `compare`, `chat`, `notifications`, `profile`.
 
-## Poznate napomene
-
-- Baza se resetuje pri svakom pokretanju backenda;
-- Geoapify API ključ je hardkodiran u `Frontend/HouseCottageFinder/src/app/app.config.ts`;
-- JWT ključ i lozinka baze nalaze se u `appsettings.json` (namena: lokalni razvoj);
-- Tri endpointa trenutno nemaju `[Authorize]`: `PUT /api/notifications/{id}/read`, `DELETE /api/saved-searches/{id}` i `POST /api/upload`.
-
-## Autor
-
-**Danil** – [github.com/magzzy124](https://github.com/magzzy124)
