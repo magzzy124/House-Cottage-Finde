@@ -17,6 +17,16 @@ public static class DemoDataSeeder
         db.Users.AddRange(owner, alice, bob);
         await db.SaveChangesAsync();
 
+        var orphaned = await db.Properties.Where(p => p.UserId == 0).ToListAsync();
+        if (orphaned.Count > 0)
+        {
+            foreach (var property in orphaned)
+            {
+                property.UserId = owner.Id;
+            }
+            await db.SaveChangesAsync();
+        }
+
         var listing = new Property
         {
             UserId = owner.Id,
